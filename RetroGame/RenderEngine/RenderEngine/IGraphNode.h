@@ -8,7 +8,6 @@
 #include <combaseapi.h>
 #include <vector>
 
-#include "Camera.h"
 
 namespace rendering {
 
@@ -17,10 +16,12 @@ namespace rendering {
 	class IGraphNode
 	{
 	public:
-		IGraphNode(glm::mat4 const& basis) : m_basis(basis), m_parent(), m_children(), m_id() { auto _ = CoCreateGuid(&this->m_id); }
+		IGraphNode(glm::vec2 const& pos) : m_position(pos), m_parent(), m_children(), m_id() {
+			auto _ = CoCreateGuid(&this->m_id);
+		}
 
 		// Renders this node and its children
-		virtual void Render(rendering::Camera const& camera, int framebuffer = 0) = 0;
+		virtual void Render(int const framebuffer = 0) = 0;
 
 
 
@@ -58,13 +59,13 @@ namespace rendering {
 		}
 
 		// Gets the basis of this node
-		glm::mat4x4 GetBasis(void) const {
-			return this->m_basis;
+		glm::vec2 GetPosition(void) const noexcept {
+			return this->m_position;
 		}
 
 		// Sets the basis of this node
-		void SetBasis(glm::mat4x4 const& basis) {
-			this->m_basis = basis;
+		void SetPosition(glm::vec2 const& pos) noexcept {
+			this->m_position = pos;
 		}
 
 		// Gets the GUID of this node
@@ -82,23 +83,10 @@ namespace rendering {
 			this->m_parent = parent;
 		}
 
-		// Get the matrix of the parents
-		glm::mat4x4 InWorld() const {
-			auto parent = this->m_parent;
-			auto matrix = glm::mat4(1.f);
-			while (parent != nullptr)
-			{
-				matrix = parent->GetBasis() * matrix;
-				parent = parent->GetParent();
-			}
-			return matrix;
-		}
-
-
 	protected:
 		std::vector<IGraphNode*>	m_children;
 		IGraphNode* m_parent;
-		glm::mat4x4					m_basis;
+		glm::vec2					m_position;
 		GUID						m_id;
 	};
 
