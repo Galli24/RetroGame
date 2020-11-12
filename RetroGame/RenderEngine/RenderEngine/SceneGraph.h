@@ -33,6 +33,9 @@ namespace Rendering {
 		// Render the scene
 		void Render(float const deltaTime) const;
 
+		// Update the scene
+		void Update(float const deltaTime) const;
+
 		// Get the Window.
 		Rendering::Window &GetWindow();
 

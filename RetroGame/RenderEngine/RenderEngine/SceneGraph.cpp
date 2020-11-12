@@ -23,8 +23,6 @@ void Rendering::SceneGraph::Render(float const deltaTime) const
 	this->m_window.ProcessInput();
 	this->m_window.ClearWindow();
 
-	for (auto& node : this->m_nodes)
-		node->UpdateGraphics(deltaTime, this->m_window.size);
 
 	for (auto& node : this->m_nodes)
 		node->Render(this->m_window.size);
@@ -32,6 +30,16 @@ void Rendering::SceneGraph::Render(float const deltaTime) const
 	this->m_window.BlitWindow();
 }
 
+
+void Rendering::SceneGraph::Update(float const deltaTime) const
+{
+
+	for (auto& node : this->m_nodes)
+		node->UpdatePosition(deltaTime, this->m_window.size);
+
+	for (auto& node : this->m_nodes)
+		node->UpdateGraphics(deltaTime, this->m_window.size);
+}
 
 Rendering::Window& Rendering::SceneGraph::GetWindow()
 {

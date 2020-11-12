@@ -126,11 +126,11 @@
     </Link>
     <PreBuildEvent>
       <Command>xcopy $(ProjectDir)Shader $(OutputPath)Shader /Y /I /E
-xcopy $(ProjectDir)Textures $(OutputPath)Textures /Y /I /E</Command>
+xcopy $(ProjectDir)Sprites $(OutputPath)Sprites /Y /I /E</Command>
     </PreBuildEvent>
     <CustomBuildStep>
       <Command>xcopy $(ProjectDir)Shader $(OutputPath)Shader /Y /I /E
-xcopy $(ProjectDir)Textures $(OutputPath)Textures /Y /I /E</Command>
+xcopy $(ProjectDir)Sprites $(OutputPath)Sprites /Y /I /E</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,6 +151,14 @@ xcopy $(ProjectDir)Textures $(OutputPath)Textures /Y /I /E</Command>
       <AdditionalLibraryDirectories>$(ProjectDir)..\external_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>STB_IMAGE.lib;glad.lib;glm_static.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Command>xcopy $(ProjectDir)Shader $(OutputPath)Shader /Y /I /E
+xcopy $(ProjectDir)Sprites $(OutputPath)Sprites /Y /I /E</Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>xcopy $(ProjectDir)Shader $(OutputPath)Shader /Y /I /E
+xcopy $(ProjectDir)Sprites $(OutputPath)Sprites /Y /I /E</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\RenderEngine\RenderEngine.vcxproj">
@@ -165,6 +173,7 @@ xcopy $(ProjectDir)Textures $(OutputPath)Textures /Y /I /E</Command>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Sprites\Bowser.png" />
     <Image Include="Textures\debug.png" />
     <Image Include="Textures\metal.png" />
   </ItemGroup>

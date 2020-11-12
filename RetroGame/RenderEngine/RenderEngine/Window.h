@@ -7,7 +7,7 @@
 
 namespace Rendering {
 
-	typedef glm::vec<2, int, glm::defaultp> vec2int;
+	using vec2int = glm::vec<2, int, glm::defaultp>;
 
 	class Window
 	{
@@ -28,8 +28,8 @@ namespace Rendering {
 		*/
 
 		void	OnWindowResize(int const x, int const y);
-		void	OnScroll(int const x, int const y);
-		void	OnMouseMove(int const x, int const y);
+		void	OnScroll(double const x, double const y);
+		void	OnMouseMove(double const x, double const y);
 
 		/*
 			Properties

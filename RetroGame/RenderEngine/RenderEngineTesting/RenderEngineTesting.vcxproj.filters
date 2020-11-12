@@ -25,6 +25,9 @@
     <Filter Include="Resource Files\Shader\Vertex">
       <UniqueIdentifier>{8710222f-6c30-4e83-89eb-9571d7b6723f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Sprites">
+      <UniqueIdentifier>{e39bfcbc-0d23-4d75-93dc-bb42d04306ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Fragment\plane.frag">
@@ -45,6 +48,9 @@
     </Image>
     <Image Include="Textures\metal.png">
       <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Sprites\Bowser.png">
+      <Filter>Resource Files\Sprites</Filter>
     </Image>
   </ItemGroup>
 </Project>

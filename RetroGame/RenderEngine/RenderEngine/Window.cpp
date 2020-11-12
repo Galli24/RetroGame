@@ -11,7 +11,7 @@ Rendering::Window::Window(std::string const& name, vec2int const& size)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef _DEBUG
-	this->m_window = glfwCreateWindow(1080, 720, this->m_windowName.c_str(), nullptr, nullptr);
+	this->m_window = glfwCreateWindow(1280, 720, this->m_windowName.c_str(), nullptr, nullptr);
 #else
 	this->m_window = glfwCreateWindow(this->size[0], this->size[1], this->m_windowName.c_str(), glfwGetPrimaryMonitor(), nullptr);
 #endif
@@ -32,12 +32,12 @@ Rendering::Window::Window(std::string const& name, vec2int const& size)
 
 	auto cursorPos = [](GLFWwindow* win, double x, double y) {
 		auto window = static_cast<Rendering::Window*>(glfwGetWindowUserPointer(win));
-		window->OnMouseMove((int)x, (int)y);
+		window->OnMouseMove(x, y);
 	};
 
 	auto scroll = [](GLFWwindow* win, double x, double y) {
 		auto window = static_cast<Rendering::Window*>(glfwGetWindowUserPointer(win));
-		window->OnScroll((int)x, (int)y);
+		window->OnScroll(x, y);
 	};
 
 	glfwMakeContextCurrent(this->m_window);
@@ -80,11 +80,11 @@ void Rendering::Window::OnWindowResize(int const x, int const y)
 	this->size = { x, y };
 }
 
-void Rendering::Window::OnScroll(int const x, int const y)
+void Rendering::Window::OnScroll(double const x, double const y)
 {
 }
 
-void Rendering::Window::OnMouseMove(int const xpos, int const ypos)
+void Rendering::Window::OnMouseMove(double const xpos, double const ypos)
 {
 	static bool firstMouse = true;
 	static double lastX = 0, lastY = 0;
@@ -97,8 +97,8 @@ void Rendering::Window::OnMouseMove(int const xpos, int const ypos)
 		firstMouse = false;
 	}
 
-	float xoffset = xpos - (int)lastX;
-	float yoffset = lastY - (int)ypos; // reversed since y-coordinates go from bottom to top
+	auto xoffset = xpos - lastX;
+	auto yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
 	lastX = xpos;
 	lastY = ypos;

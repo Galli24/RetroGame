@@ -1,5 +1,5 @@
 #pragma once
-
+#include <glm/glm.hpp>
 
 
 namespace Rendering {
@@ -9,7 +9,7 @@ namespace Rendering {
 		{
 		public:
 			// Update position (patterns etc).
-			virtual void UpdatePosition(float deltaTime) = 0;
+			virtual void UpdatePosition(float deltaTime, glm::vec2 const& winSize) = 0;
 		};
 
 

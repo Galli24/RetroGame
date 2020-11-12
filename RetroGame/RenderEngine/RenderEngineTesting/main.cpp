@@ -15,7 +15,7 @@ int main(void)
 	float deltaTime = 0;
 	auto &win = sceneGraph.GetWindow();
 	win.clearColor = { 1, 1, 1, 1 };
-	auto sprite = Rendering::Sprite{ {0, 0}, {100, 100} };
+	auto sprite = Rendering::Sprite{ "./Sprites/Bowser.png", {0, 0}, {64, 96}, {10, 10} };
 	sceneGraph.AddNode(&sprite);
 
 	// Loop until the user closes the window
@@ -27,6 +27,7 @@ int main(void)
 		auto currentFrame = (float)glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
+		sceneGraph.Update(deltaTime);
 		sceneGraph.Render(deltaTime);
 	}
 

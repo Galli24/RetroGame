@@ -9,12 +9,13 @@
 #include <vector>
 
 #include "IRenderable.h"
+#include "IMovable.h"
 
 namespace Rendering {
 	namespace Interface {
 
 		// Base class for the Rendering elements
-		class IGraphNode : public IRenderable
+		class IGraphNode : public IRenderable, public IMovable
 		{
 		public:
 			IGraphNode(glm::vec2 const& pos) : m_position(pos), m_parent(), m_children(), m_id() {
@@ -81,9 +82,12 @@ namespace Rendering {
 
 
 			// Update graphical properties of the node
-			virtual void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) = 0;
+			void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) override = 0;
 			// Rendering the node
-			virtual void Render(glm::vec2 const& winSize) = 0;
+			void Render(glm::vec2 const& winSize) override = 0;
+
+			// Update position (patterns etc).
+			void UpdatePosition(float deltaTime, glm::vec2 const& winSize) override = 0;
 
 		protected:
 			std::vector<IGraphNode*>	m_children;
