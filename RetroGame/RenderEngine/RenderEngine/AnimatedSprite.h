@@ -14,7 +14,7 @@ namespace Rendering {
 	class AnimatedSprite : public Rendering::Interface::IGraphNode
 	{
 	public:
-		AnimatedSprite(std::vector<std::string> const& sprites, glm::vec2 const& position, glm::vec2 const& size, glm::vec2 const& scale = glm::vec2{ 1, 1 });
+		AnimatedSprite(std::vector<std::string> const& sprites, float const frameDuration, glm::vec2 const& position, glm::vec2 const& size, glm::vec2 const& scale = glm::vec2{ 1, 1 });
 
 		void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) override;
 		void Render(glm::vec2 const& winSize) override;
@@ -30,6 +30,7 @@ namespace Rendering {
 		glm::vec2						m_size;
 		glm::vec2						m_scale;
 		std::vector<Rendering::Texture>	m_textures;
+		float							m_frameDuration;
 		float							m_lifeTime;
 
 	};

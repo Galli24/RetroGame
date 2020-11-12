@@ -1,10 +1,13 @@
 #include "AnimatedSprite.h"
 
 
-Rendering::AnimatedSprite::AnimatedSprite(std::vector<std::string> const& sprites, glm::vec2 const& position, glm::vec2 const& size, glm::vec2 const& scale)
-	: Rendering::Interface::IGraphNode(position),
+Rendering::AnimatedSprite::AnimatedSprite(std::vector<std::string> const& sprites, float const frameDuration, glm::vec2 const& position, glm::vec2 const& size, glm::vec2 const& scale)
+	: 
+	Rendering::Interface::IGraphNode(position),
 	m_size(size),
-	m_scale(scale)
+	m_scale(scale),
+	m_lifeTime(0),
+	m_frameDuration(frameDuration)
 {
 	std::string fs =
 		"#version 330 core\n"
@@ -101,5 +104,5 @@ glm::vec2 Rendering::AnimatedSprite::GetActualSize() const
 
 Rendering::Texture &Rendering::AnimatedSprite::CurrentTexture()
 {
-	return this->m_textures[(int)m_lifeTime % this->m_textures.size()];
+	return this->m_textures[(int)(m_lifeTime / m_frameDuration) % this->m_textures.size()];
 }

@@ -16,7 +16,8 @@ int main(void)
 	auto& win = sceneGraph.GetWindow();
 	win.clearColor = { 1, 1, 1, 1 };
 	auto sprite = Rendering::AnimatedSprite{ 
-		{"./Sprites/Bowser.png", "./Sprites/BowserPink.png", "./Sprites/BowserBlue.png"}, 
+		{"./Sprites/Bowser.png", "./Sprites/BowserPink.png", "./Sprites/BowserBlue.png"},
+		2,
 		{0, 0}, 
 		{64, 96}, 
 		{5, 5} 
