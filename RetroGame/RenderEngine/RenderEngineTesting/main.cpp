@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "SceneGraph.h"
-#include "Sprite.h"
+#include "AnimatedSprite.h"
 
 
 int main(void)
@@ -13,9 +13,14 @@ int main(void)
 
 	float lastFrame = 0;
 	float deltaTime = 0;
-	auto &win = sceneGraph.GetWindow();
+	auto& win = sceneGraph.GetWindow();
 	win.clearColor = { 1, 1, 1, 1 };
-	auto sprite = Rendering::Sprite{ "./Sprites/Bowser.png", {0, 0}, {64, 96}, {10, 10} };
+	auto sprite = Rendering::AnimatedSprite{ 
+		{"./Sprites/Bowser.png", "./Sprites/BowserPink.png", "./Sprites/BowserBlue.png"}, 
+		{0, 0}, 
+		{64, 96}, 
+		{5, 5} 
+	};
 	sceneGraph.AddNode(&sprite);
 
 	// Loop until the user closes the window
