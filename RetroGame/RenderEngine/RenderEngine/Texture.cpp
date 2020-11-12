@@ -1,9 +1,6 @@
 #include "Texture.h"
-#include <glad\glad.h>
-#include <stb_image.h>
-#include <iostream>
 
-rendering::Texture::Texture(std::string const& path, int const textureUnit) : m_textureUnit(textureUnit)
+Rendering::Texture::Texture(std::string const& path, int const textureUnit) : m_textureUnit(textureUnit)
 {
 	glGenTextures(1, &this->m_textureId);
 
@@ -35,7 +32,7 @@ rendering::Texture::Texture(std::string const& path, int const textureUnit) : m_
 	stbi_image_free(data);
 }
 
-void rendering::Texture::Use() const
+void Rendering::Texture::Use() const
 {
 	glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
 	glBindTexture(GL_TEXTURE_2D, this->m_textureId);

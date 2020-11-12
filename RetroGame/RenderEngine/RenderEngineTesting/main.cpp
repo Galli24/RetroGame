@@ -2,11 +2,12 @@
 #include <GLFW/glfw3.h>
 
 #include "SceneGraph.h"
+#include "Sprite.h"
 
 
 int main(void)
 {
-	rendering::SceneGraph sceneGraph({ 1080, 720 }, "RetroGame");
+	Rendering::SceneGraph sceneGraph({ 1920, 1080 }, "RetroGame");
 
 
 
@@ -14,6 +15,8 @@ int main(void)
 	float deltaTime = 0;
 	auto &win = sceneGraph.GetWindow();
 	win.clearColor = { 1, 1, 1, 1 };
+	auto sprite = Rendering::Sprite{ {0, 0}, {100, 100} };
+	sceneGraph.AddNode(&sprite);
 
 	// Loop until the user closes the window
 
@@ -21,10 +24,10 @@ int main(void)
 
 	while (!win.ShouldClose())
 	{
-		float currentFrame = glfwGetTime();
+		auto currentFrame = (float)glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-		sceneGraph.Render();
+		sceneGraph.Render(deltaTime);
 	}
 
 	return 0;

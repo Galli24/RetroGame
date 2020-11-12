@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace rendering {
+namespace Rendering {
 
 	typedef glm::vec<2, int, glm::defaultp> vec2int;
 
@@ -36,13 +36,13 @@ namespace rendering {
 		*/
 
 		// Ranged Value [0, 1]
-		glm::vec4 clearColor;
+		glm::vec4		clearColor;
+		vec2int			size;
 
 
 	private:
 		GLFWwindow*		m_window;
 		std::string		m_windowName;
-		vec2int			m_size;
 		glm::vec2		m_mousePosition;
 	};
 

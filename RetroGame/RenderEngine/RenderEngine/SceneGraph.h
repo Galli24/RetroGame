@@ -11,12 +11,12 @@
 #include "Window.h"
 
 
-namespace rendering {
+namespace Rendering {
 
 	typedef glm::vec<2, int, glm::defaultp> vec2int;
 
 	/* 
-		Main rendering class. 
+		Main Rendering class. 
 		Call Init to init the OpenGL context and create a Window. 
 		Renders a scene based on a tree view where each node's model matrix depends depends on its parent's one.
 	*/
@@ -31,14 +31,19 @@ namespace rendering {
 		~SceneGraph();
 
 		// Render the scene
-		void Render() const;
+		void Render(float const deltaTime) const;
 
 		// Get the Window.
-		rendering::Window &GetWindow();
+		Rendering::Window &GetWindow();
+
+		// Add rendering node
+		size_t AddNode(Interface::IGraphNode* node);
+
+		size_t RemoveNode(Interface::IGraphNode* node);
 
 	private:
-		std::vector<IGraphNode*> m_nodes; 
-		rendering::Window m_window;
+		std::vector<Interface::IGraphNode*> m_nodes; 
+		Rendering::Window m_window;
 	};
 
 
