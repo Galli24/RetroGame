@@ -41,6 +41,23 @@ namespace AuthServer.Controllers
         #region Logic
 
         [AllowAnonymous]
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] UserDto userDto)
+        {
+            var user = _mapper.Map<User>(userDto);
+
+            try
+            {
+                _userService.Create(user, userDto.Password);
+                return Ok();
+            }
+            catch (RegisterException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] UserDto userDto)
         {
@@ -68,23 +85,6 @@ namespace AuthServer.Controllers
                 email = user.Email,
                 token = tokenString
             });
-        }
-
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] UserDto userDto)
-        {
-            var user = _mapper.Map<User>(userDto);
-
-            try
-            {
-                _userService.Create(user, userDto.Password);
-                return Ok();
-            }
-            catch (RegisterException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
         }
 
         #endregion
