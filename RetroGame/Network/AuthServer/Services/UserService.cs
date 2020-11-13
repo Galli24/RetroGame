@@ -37,7 +37,7 @@ namespace AuthServer.Services
 
         public UserService(IConfiguration config)
         {
-            var client = new MongoClient(config.GetConnectionString("AeroGrow"));
+            var client = new MongoClient(config.GetConnectionString("DB"));
             var database = client.GetDatabase("Auth");
             _users = database.GetCollection<User>("Users");
             _passwordHasher = new BCryptPasswordHasher<User>();
