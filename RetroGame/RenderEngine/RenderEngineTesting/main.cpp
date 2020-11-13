@@ -15,14 +15,14 @@ int main(void)
 	float deltaTime = 0;
 	auto& win = sceneGraph.GetWindow();
 	win.clearColor = { 1, 1, 1, 1 };
-	auto sprite = Rendering::AnimatedSprite{ 
+	auto sprite = Rendering::AnimatedSprite{
 		{"./Sprites/Bowser.png", "./Sprites/BowserPink.png", "./Sprites/BowserBlue.png"},
-		2,
-		{0, 0}, 
-		{64, 96}, 
-		{5, 5} 
+		0.5,
+		{0, 0},
+		{64, 96},
+		{5, 5}
 	};
-	sceneGraph.AddNode(&sprite);
+	sceneGraph.nodes.push_back(&sprite);
 
 	// Loop until the user closes the window
 

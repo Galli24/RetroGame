@@ -38,14 +38,10 @@ namespace Rendering {
 
 		// Get the Window.
 		Rendering::Window &GetWindow();
+		std::vector<Interface::IGraphNode*> nodes; 
 
-		// Add rendering node
-		size_t AddNode(Interface::IGraphNode* node);
-
-		size_t RemoveNode(Interface::IGraphNode* node);
 
 	private:
-		std::vector<Interface::IGraphNode*> m_nodes; 
 		Rendering::Window m_window;
 	};
 

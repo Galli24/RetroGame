@@ -1,5 +1,5 @@
 #include "AnimatedSprite.h"
-
+#include <algorithm>
 
 Rendering::AnimatedSprite::AnimatedSprite(std::vector<std::string> const& sprites, float const frameDuration, glm::vec2 const& position, glm::vec2 const& size, glm::vec2 const& scale)
 	: 
@@ -68,7 +68,7 @@ void Rendering::AnimatedSprite::Render(glm::vec2 const& winSize)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	this->m_shader.use();
-	this->m_shader.setVec2("u_position", this->m_position);
+	this->m_shader.setVec2("u_position", this->position);
 	this->m_shader.setVec2("u_winSize", winSize);
 	this->m_shader.setVec2("u_size", this->m_size);
 	this->m_shader.setVec2("u_scale", m_scale);
@@ -81,20 +81,20 @@ void Rendering::AnimatedSprite::Render(glm::vec2 const& winSize)
 	this->m_mesh.draw();
 
 	glDisable(GL_BLEND);
-
 }
 
 void Rendering::AnimatedSprite::UpdatePosition(float deltaTime, glm::vec2 const& winSize)
 {
 	static glm::vec2 dir = glm::vec2{ 300, 300 };
 
-	if (this->m_position.x + this->GetActualSize().x > winSize.x || this->m_position.x < 0)
+	if (this->position.x + this->GetActualSize().x > winSize.x || this->position.x < 0)
 		dir.x *= -1;
 
-	if (this->m_position.y + this->GetActualSize().y > winSize.y || this->m_position.y < 0)
+	if (this->position.y + this->GetActualSize().y > winSize.y || this->position.y < 0)
 		dir.y *= -1;
 
-	this->m_position += dir * deltaTime;
+	this->position += dir * deltaTime;
+	glm::clamp(this->position, glm::vec2{0, 0}, winSize);
 }
 
 glm::vec2 Rendering::AnimatedSprite::GetActualSize() const

@@ -1,7 +1,7 @@
 #include "Window.h"
 
 Rendering::Window::Window(std::string const& name, vec2int const& size)
-	: m_window(nullptr), m_windowName(name), size(size), m_mousePosition({0, 0})
+	: m_window(nullptr), m_windowName(name), size(size), m_mousePosition({0, 0}), clearColor({1, 1, 1, 1})
 {
 	if (!glfwInit())
 		throw std::exception("Can't init GLFW");

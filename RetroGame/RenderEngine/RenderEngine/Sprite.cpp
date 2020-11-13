@@ -65,7 +65,7 @@ void Rendering::Sprite::Render(glm::vec2 const& winSize)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	this->m_shader.use();
-	this->m_shader.setVec2("u_position", this->m_position);
+	this->m_shader.setVec2("u_position", this->position);
 	this->m_shader.setVec2("u_winSize", winSize);
 	this->m_shader.setVec2("u_size", this->m_size);
 	this->m_shader.setVec2("u_scale", m_scale);
@@ -82,13 +82,13 @@ void Rendering::Sprite::UpdatePosition(float deltaTime, glm::vec2 const& winSize
 {
 	static glm::vec2 dir = glm::vec2{ 300, 300 };
 
-	if (this->m_position.x + this->GetActualSize().x > winSize.x || this->m_position.x < 0)
+	if (this->position.x + this->GetActualSize().x > winSize.x || this->position.x < 0)
 		dir.x *= -1;
 
-	if (this->m_position.y + this->GetActualSize().y > winSize.y || this->m_position.y < 0)
+	if (this->position.y + this->GetActualSize().y > winSize.y || this->position.y < 0)
 		dir.y *= -1;
 
-	this->m_position += dir * deltaTime;
+	this->position += dir * deltaTime;
 }
 
 glm::vec2 Rendering::Sprite::GetActualSize() const

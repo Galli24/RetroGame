@@ -24,7 +24,7 @@ void Rendering::SceneGraph::Render(float const deltaTime) const
 	this->m_window.ClearWindow();
 
 
-	for (auto& node : this->m_nodes)
+	for (auto& node : this->nodes)
 		node->Render(this->m_window.size);
 
 	this->m_window.BlitWindow();
@@ -34,29 +34,15 @@ void Rendering::SceneGraph::Render(float const deltaTime) const
 void Rendering::SceneGraph::Update(float const deltaTime) const
 {
 
-	for (auto& node : this->m_nodes)
+	for (auto& node : this->nodes)
 		node->UpdatePosition(deltaTime, this->m_window.size);
 
-	for (auto& node : this->m_nodes)
+	for (auto& node : this->nodes)
 		node->UpdateGraphics(deltaTime, this->m_window.size);
 }
 
 Rendering::Window& Rendering::SceneGraph::GetWindow()
 {
 	return this->m_window;
-}
-
-size_t Rendering::SceneGraph::AddNode(Interface::IGraphNode* node)
-{
-	this->m_nodes.push_back(node);
-	return m_nodes.size();
-}
-
-size_t Rendering::SceneGraph::RemoveNode(Interface::IGraphNode* node)
-{
-	auto elt = std::find(this->m_nodes.begin(), this->m_nodes.end(), node);
-	if (elt != this->m_nodes.end())
-		this->m_nodes.erase(elt);
-	return this->m_nodes.size();
 }
 
