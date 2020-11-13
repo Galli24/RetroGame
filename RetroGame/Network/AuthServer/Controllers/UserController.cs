@@ -5,6 +5,7 @@ using AuthServer.Services;
 using AuthServer.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -85,6 +86,28 @@ namespace AuthServer.Controllers
                 email = user.Email,
                 token = tokenString
             });
+        }
+
+        [HttpPost("verify")]
+        public IActionResult Verify([FromBody] UserDto userDto)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var userId = identity.Name;
+            var user = _userService.GetUserById(userId);
+
+            if (user == null)
+                return StatusCode(StatusCodes.Status401Unauthorized, new
+                {
+                    error = "User does not exist"
+                });
+            
+            if (user.Username != userDto.Username)
+                return StatusCode(StatusCodes.Status401Unauthorized, new
+                {
+                    error = "User does not match"
+                });
+
+            return Ok();
         }
 
         #endregion
