@@ -91,10 +91,10 @@ namespace AuthServer
                     // Issuer key stuff
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true,
+                    RequireSignedTokens = true,
                     // Expiration
                     RequireExpirationTime = true,
-                    RequireSignedTokens = true,
+                    ValidateLifetime = true,
                     // Validation stuff, leave false for now
                     ValidateIssuer = false,
                     ValidateAudience = false
@@ -167,13 +167,8 @@ namespace AuthServer
             return key;
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
@@ -181,7 +176,7 @@ namespace AuthServer
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseMvc();
         }
