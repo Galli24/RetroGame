@@ -34,11 +34,11 @@ namespace AuthServer
 
         #region Constructor
 
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, ILogger<Startup> logger, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
+            _logger = logger;
             LoggingUtils.LoggerFactory = loggerFactory;
-            _logger = LoggingUtils.CreateLogger<Startup>();
         }
 
         #endregion
