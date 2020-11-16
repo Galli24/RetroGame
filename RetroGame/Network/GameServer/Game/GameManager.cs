@@ -1,4 +1,5 @@
 ﻿using GameServer.Server;
+using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
 using System;
@@ -20,19 +21,7 @@ namespace GameServer.Game
         private readonly Socket _player;
 
         private readonly ConcurrentQueue<ClientMessage> _messages;
-        private readonly Queue<GameResponse> _responses;
-
-        private class GameResponse
-        {
-            public Socket Receiver { get; private set; }
-            public ServerMessage Response { get; private set; }
-
-            public GameResponse(Socket receiver, ServerMessage response)
-            {
-                Receiver = receiver;
-                Response = response;
-            }
-        }
+        private readonly Queue<ServerMessage> _responses;
 
         #endregion
 
@@ -47,7 +36,7 @@ namespace GameServer.Game
             _player = player;
 
             _messages = new ConcurrentQueue<ClientMessage>();
-            _responses = new Queue<GameResponse>();
+            _responses = new Queue<ServerMessage>();
             _clock = new GameClock();
         }
 
@@ -112,9 +101,9 @@ namespace GameServer.Game
         {
             while (_responses.Count > 0)
             {
-                var dequeued = _responses.TryDequeue(out GameResponse gameResponse);
+                var dequeued = _responses.TryDequeue(out ServerMessage serverMessage);
                 if (!dequeued) continue;
-                TCPServer.SendServerMessage(gameResponse.Receiver, gameResponse.Response);
+                serverMessage.Send();
             }
         }
 
