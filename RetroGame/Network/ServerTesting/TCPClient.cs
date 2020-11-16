@@ -29,6 +29,9 @@ namespace ServerTesting
 
         #endregion
 
+        public delegate void OnServerMessageDelegate(ServerMessage message);
+        public OnServerMessageDelegate OnServerMessage { get; set; }
+
         #region Logic
 
         public TCPClient(string ip, ushort serverPort)
@@ -151,7 +154,7 @@ namespace ServerTesting
                     state.Data = new MemoryStream(state.Buffer, 0, readBytes, false, true);
                     var message = Message.DeserializeFromStream(state.Data);
                     if (message.MessageType == MessageType.SERVER)
-                        NetworkCallbacks.OnServerMessage((ServerMessage)message);
+                        OnServerMessage((ServerMessage)message);
                     state.SizeBuffer = new byte[4];
                     state.Socket.BeginReceive(state.SizeBuffer, 0, 4, SocketFlags.None, new AsyncCallback(OnReceivePacketSize), state);
                 }

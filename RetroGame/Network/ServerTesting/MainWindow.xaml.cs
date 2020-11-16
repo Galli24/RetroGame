@@ -21,7 +21,7 @@ namespace ServerTesting
         public MainWindow()
         {
             _tcpClient = new TCPClient("127.0.0.1", 27015);
-            NetworkCallbacks.OnServerMessage += OnServerMessage;
+            _tcpClient.OnServerMessage += OnServerMessage;
 
             InitializeComponent();
         }
