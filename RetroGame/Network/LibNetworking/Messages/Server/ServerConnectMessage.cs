@@ -4,7 +4,7 @@ using System.Net.Sockets;
 namespace LibNetworking.Messages.Server
 {
     [ProtoContract]
-    public class ServerConnectMessage : ServerMessage
+    public sealed class ServerConnectMessage : ServerMessage
     {
         [ProtoMember(1)]
         public bool Authorized { get; private set; }

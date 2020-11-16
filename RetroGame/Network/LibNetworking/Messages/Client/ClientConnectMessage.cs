@@ -3,7 +3,7 @@
 namespace LibNetworking.Messages.Client
 {
     [ProtoContract]
-    public class ClientConnectMessage : ClientMessage
+    public sealed class ClientConnectMessage : ClientMessage
     {
         [ProtoMember(1)]
         public string Token { get; private set; }
