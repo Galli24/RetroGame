@@ -87,7 +87,7 @@ namespace AuthServer
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     // Time drift compensation
-                    ClockSkew = TimeSpan.FromMinutes(5),
+                    ClockSkew = TimeSpan.FromMinutes(1),
                     // Issuer key stuff
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuerSigningKey = true,

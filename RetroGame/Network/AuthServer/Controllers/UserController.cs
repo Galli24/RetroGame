@@ -74,7 +74,7 @@ namespace AuthServer.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(10),
+                Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -82,12 +82,15 @@ namespace AuthServer.Controllers
 
             return Ok(new
             {
+                id = user.Id.ToString(),
                 username = user.Username,
                 email = user.Email,
                 token = tokenString
             });
         }
 
+        // This route should be setup
+        // to only accept requests from the Game Server
         [HttpPost("verify")]
         public IActionResult Verify([FromBody] UserDto userDto)
         {
@@ -101,7 +104,7 @@ namespace AuthServer.Controllers
                     error = "User does not exist"
                 });
             
-            if (user.Username != userDto.Username)
+            if (user.Username != userDto.Username || userId != userDto.Id)
                 return StatusCode(StatusCodes.Status401Unauthorized, new
                 {
                     error = "User does not match"
