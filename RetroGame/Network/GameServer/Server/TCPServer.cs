@@ -1,12 +1,10 @@
-﻿using LibNetworking;
-using LibNetworking.Messages;
+﻿using LibNetworking.Messages;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 
 namespace GameServer.Server
 {
@@ -18,13 +16,8 @@ namespace GameServer.Server
         private readonly ushort _serverPort;
         private Socket _socket;
 
-        private class SocketState
-        {
-            public Socket Socket;
-            public byte[] SizeBuffer;
-            public byte[] Buffer;
-            public MemoryStream Data;
-        }
+        public delegate void OnClientMessageDelegate(SocketState client, ClientMessage message);
+        public OnClientMessageDelegate OnClientMessage;
 
         #endregion
 
@@ -68,11 +61,10 @@ namespace GameServer.Server
         private void OnReceivePacketSize(IAsyncResult result)
         {
             var state = (SocketState)result.AsyncState;
-            var socket = state.Socket;
 
             try
             {
-                int readBytes = socket.EndReceive(result);
+                int readBytes = state.Socket.EndReceive(result);
                 if (readBytes == 4)
                 {
                     if (BitConverter.IsLittleEndian)
@@ -80,7 +72,7 @@ namespace GameServer.Server
 
                     var packetSize = BitConverter.ToInt32(state.SizeBuffer);
                     state.Buffer = new byte[packetSize + 1];
-                    socket.BeginReceive(state.Buffer, 0, packetSize, SocketFlags.None, new AsyncCallback(OnReceivePacket), state);
+                    state.Socket.BeginReceive(state.Buffer, 0, packetSize, SocketFlags.None, new AsyncCallback(OnReceivePacket), state);
                 }
                 else
                 {
@@ -96,18 +88,17 @@ namespace GameServer.Server
         private void OnReceivePacket(IAsyncResult result)
         {
             var state = (SocketState)result.AsyncState;
-            var socket = state.Socket;
 
             try
             {
-                int readBytes = socket.EndReceive(result);
+                int readBytes = state.Socket.EndReceive(result);
                 if (readBytes > 0)
                 {
                     state.Data = new MemoryStream(state.Buffer, 0, readBytes, false, true);
                     var message = Message.DeserializeFromStream(state.Data);
                     if (message.MessageType == MessageType.CLIENT)
-                        NetworkCallbacks.OnClientMessage(socket, (ClientMessage)message);
-                    if (IsSocketDisposed(state.Socket))
+                        OnClientMessage(state, (ClientMessage)message);
+                    if (state.IsSocketDisposed)
                         return;
                     state.SizeBuffer = new byte[4];
                     state.Socket.BeginReceive(state.SizeBuffer, 0, 4, SocketFlags.None, new AsyncCallback(OnReceivePacketSize), state);
@@ -123,13 +114,6 @@ namespace GameServer.Server
             }
         }
 
-        private static bool IsSocketDisposed(Socket socket)
-        {
-            var bfIsDisposed = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetProperty;
-            var field = socket.GetType().GetProperty("Disposed", bfIsDisposed);
-            return (bool)field.GetValue(socket, null);
-        }
-
         public static void SendServerMessage(Socket client, ServerMessage message)
         {
             Console.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {client.RemoteEndPoint}");
@@ -143,9 +127,11 @@ namespace GameServer.Server
             client.Send(serializedResponse);
         }
 
-        public static void CloseSocket(Socket socket) => socket.Close();
-
-        private static void CloseSocketState(SocketState ci) => ci.Socket.Close();
+        internal static void CloseSocketState(SocketState ci)
+        {
+            ci.Socket.Close();
+            ci.IsSocketDisposed = true;
+        }
 
 
         #endregion
