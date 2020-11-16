@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 
 namespace GameServer.Server
 {
@@ -60,7 +61,7 @@ namespace GameServer.Server
             }
             catch
             {
-                CloseSocket(state);
+                CloseSocketState(state);
             }
         }
 
@@ -83,12 +84,12 @@ namespace GameServer.Server
                 }
                 else
                 {
-                    CloseSocket(state);
+                    CloseSocketState(state);
                 }
             }
             catch
             {
-                CloseSocket(state);
+                CloseSocketState(state);
             }
         }
 
@@ -106,18 +107,27 @@ namespace GameServer.Server
                     var message = Message.DeserializeFromStream(state.Data);
                     if (message.MessageType == MessageType.CLIENT)
                         NetworkCallbacks.OnClientMessage(socket, (ClientMessage)message);
+                    if (IsSocketDisposed(state.Socket))
+                        return;
                     state.SizeBuffer = new byte[4];
                     state.Socket.BeginReceive(state.SizeBuffer, 0, 4, SocketFlags.None, new AsyncCallback(OnReceivePacketSize), state);
                 }
                 else
                 {
-                    CloseSocket(state);
+                    CloseSocketState(state);
                 }
             }
             catch
-            {
-                CloseSocket(state);
+            { 
+                CloseSocketState(state);
             }
+        }
+
+        private static bool IsSocketDisposed(Socket socket)
+        {
+            var bfIsDisposed = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetProperty;
+            var field = socket.GetType().GetProperty("Disposed", bfIsDisposed);
+            return (bool)field.GetValue(socket, null);
         }
 
         public static void SendServerMessage(Socket client, ServerMessage message)
@@ -133,7 +143,10 @@ namespace GameServer.Server
             client.Send(serializedResponse);
         }
 
-        private static void CloseSocket(SocketState ci) => ci.Socket.Close();
+        public static void CloseSocket(Socket socket) => socket.Close();
+
+        private static void CloseSocketState(SocketState ci) => ci.Socket.Close();
+
 
         #endregion
     }
