@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BCrypt.Net;
+using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace AuthServer.PasswordHasher
@@ -7,7 +8,7 @@ namespace AuthServer.PasswordHasher
     {
         #region Properties
 
-        public override string HashPassword(TUser user, string password) => BCrypt.Net.BCrypt.HashPassword(password);
+        public override string HashPassword(TUser user, string password) => BCrypt.Net.BCrypt.EnhancedHashPassword(password, workFactor: 11, HashType.SHA384);
 
         #endregion
 
@@ -18,7 +19,7 @@ namespace AuthServer.PasswordHasher
             if (hashedPassword == null) { throw new ArgumentNullException(nameof(hashedPassword)); }
             if (providedPassword == null) { throw new ArgumentNullException(nameof(providedPassword)); }
 
-            if (BCrypt.Net.BCrypt.Verify(providedPassword, hashedPassword))
+            if (BCrypt.Net.BCrypt.EnhancedVerify(providedPassword, hashedPassword, HashType.SHA384))
             {
                 return PasswordVerificationResult.Success;
             }
