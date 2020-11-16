@@ -6,6 +6,7 @@ namespace LibNetworking.Messages.Client
     {
         UNDEFINED,
         CONNECT,
+        RECONNECT,
     }
 
     public enum MessageTarget
