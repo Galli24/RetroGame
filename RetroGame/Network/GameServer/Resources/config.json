@@ -1,4 +1,5 @@
 {
   "ip": "0.0.0.0",
-  "port":  42069
+  "port": 27015,
+  "authServerUri": "https://localhost:5001"
 }

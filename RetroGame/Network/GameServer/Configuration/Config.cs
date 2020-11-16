@@ -8,15 +8,17 @@ namespace GameServer.Configuration
     {
         public string IP { get; private set; }
         public ushort Port { get; private set; }
+        public string AuthServerURI { get; private set; }
 
         private static readonly string _directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RetroGame");
         private static readonly string _configFileName = "config.json";
         private static readonly string _configFilePath = Path.Combine(_directoryPath, _configFileName);
 
-        public Config(string ip, ushort port)
+        public Config(string ip, ushort port, string authServerUri)
         {
             IP = ip;
             Port = port;
+            AuthServerURI = authServerUri;
         }
 
         public static Config Parse()
