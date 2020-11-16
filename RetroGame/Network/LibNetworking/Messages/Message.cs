@@ -13,7 +13,7 @@ namespace LibNetworking.Messages
         CLIENT
     }
 
-    [ProtoContract]
+    [ProtoContract(SkipConstructor = true)]
     [ProtoInclude(1, typeof(ClientMessage))]
     [ProtoInclude(2, typeof(ServerMessage))]
     public abstract class Message
@@ -37,13 +37,13 @@ namespace LibNetworking.Messages
         public static Message DeserializeFromStream(MemoryStream zipStream)
         {
             using var rawStream = new MemoryStream(zipStream.GetBuffer());
-            return Serializer.Deserialize<Message>(rawStream);
+            return Serializer.DeserializeWithLengthPrefix<Message>(rawStream, PrefixStyle.Base128);
         }
 
         public static byte[] SerializeToBytes(Message message)
         {
             using var rawStream = new MemoryStream();
-            Serializer.Serialize(rawStream, message);
+            Serializer.SerializeWithLengthPrefix(rawStream, message, PrefixStyle.Base128);
             return rawStream.ToArray();
         }
     }

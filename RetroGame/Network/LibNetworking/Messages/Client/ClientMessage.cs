@@ -5,6 +5,7 @@ namespace LibNetworking.Messages.Client
     public enum ClientMessageType
     {
         UNDEFINED,
+        CONNECT,
     }
 
     public enum MessageTarget
@@ -15,7 +16,8 @@ namespace LibNetworking.Messages.Client
         GAME,
     }
 
-    [ProtoContract]
+    [ProtoContract(SkipConstructor = true)]
+    [ProtoInclude(3, typeof(ClientConnectMessage))]
     public abstract class ClientMessage : Message
     {
         [ProtoMember(1)]
