@@ -1,18 +1,27 @@
-﻿using GameServer.Lobby;
+﻿using GameServer.Configuration;
+using GameServer.Lobby;
+using GameServer.Utils;
 using LibNetworking;
 using LibNetworking.Messages.Client;
+using LibNetworking.Messages.Server;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Net.Http;
 using System.Net.Sockets;
 
 namespace GameServer.Server
 {
     class ClientMessageHandler
     {
+        private readonly Config _config;
         private readonly LobbyManager _lobbyManager;
 
-        public ClientMessageHandler(LobbyManager lobbyManager)
-        {
-            _lobbyManager = lobbyManager;
+        private static readonly HttpClient _client = new HttpClient();
 
+        public ClientMessageHandler(Config config, LobbyManager lobbyManager)
+        {
+            _config = config;
+            _lobbyManager = lobbyManager;
             NetworkCallbacks.OnClientMessage += OnClientMessage;
         }
 
@@ -22,7 +31,7 @@ namespace GameServer.Server
             switch (message.MessageTarget)
             {
                 case MessageTarget.CONNECT:
-                    // TODO: Connection handler
+                    OnConnectMessage(client, (ClientConnectMessage)message);
                     break;
                 case MessageTarget.LOBBBY:
                     // TODO: Lobby message messages & handler
@@ -35,32 +44,47 @@ namespace GameServer.Server
             }
         }
 
-        /*private Lobby.Lobby GetLobbyAndAuthClient(Socket client, ushort lobbyId, byte clientId)
+        private async void OnConnectMessage(Socket client, ClientConnectMessage message)
         {
-            var lobby = _globalManager.LobbyManager.GetLobby(lobbyId);
-            if (lobby?.AuthenticatedClient(client, clientId) == true)
-                return lobby;
-            return null;
+            _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", message.Token);
+            var body = "{\"id\":\"" + message.Id + "\",\"username\":\"" + message.Username + "\"}";
+
+            int statusCode = -1;
+            string responseData = string.Empty;
+
+            try
+            {
+                using var content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
+                using var response = await _client.PostAsync(_config.AuthServerURI + "/api/v1/users/verify", content).ConfigureAwait(false);
+                statusCode = (int)response.StatusCode;
+                responseData = await response.Content.ReadAsStringAsync();
+            }
+            catch
+            {
+                new ServerConnectMessage(client, false, "An internal exception occured, please try again later").Send();
+                TCPServer.CloseSocket(client);
+                return;
+            }
+
+            if (statusCode == 200)
+                new ServerConnectMessage(client, true, "").Send();
+            else if (statusCode == 401)
+            {
+                var jsonData = JObject.Parse(responseData);
+                var error = jsonData.ContainsKey("error") ? jsonData["error"].ToString() : string.Empty;
+
+                ServerConnectMessage response = error switch
+                {
+                    "User does not exist" or "User does not match" => new ServerConnectMessage(client, false, "Wrong username or password"),
+                    _ => new ServerConnectMessage(client, false, "Something unexpected happened, please try again"),
+                };
+                response.Send();
+                TCPServer.CloseSocket(client);
+            } else
+            {
+                new ServerConnectMessage(client, false, "An internal exception occured, please try again later").Send();
+                TCPServer.CloseSocket(client);
+            }
         }
-
-        private void OnLobbyJoin(Socket client, JoinLobbyMessage message) => _globalManager.LobbyManager.HandleLobbyJoinRequest(client, message.LobbySearchCode);
-
-        private void OnLobbyReady(Socket client, LobbyReadyMessage message)
-        {
-            var lobby = GetLobbyAndAuthClient(client, message.LobbyId, message.ClientId);
-            lobby?.ClientReady(message.ClientId, message.Ready);
-        }
-
-        private void OnGameStart(Socket client, GameStartMessage message)
-        {
-            var lobby = GetLobbyAndAuthClient(client, message.LobbyId, message.ClientId);
-            lobby?.StartGame(message.ClientId);
-        }
-
-        private void OnGameMessage(Socket client, ushort lobbyId, byte clientId, Message message)
-        {
-            var lobby = GetLobbyAndAuthClient(client, lobbyId, clientId);
-            lobby?.EnqueueGameMessage(message);
-        }*/
     }
 }

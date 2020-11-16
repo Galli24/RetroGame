@@ -20,7 +20,7 @@ namespace GameServer
 
             LobbyManager = new LobbyManager();
 
-            ClientMessageHandler = new ClientMessageHandler(LobbyManager);
+            ClientMessageHandler = new ClientMessageHandler(Config, LobbyManager);
         }
 
         public void Start()
