@@ -6,11 +6,23 @@ namespace LibNetworking.Messages.Server
     public enum ServerMessageType
     {
         UNDEFINED,
-        CONNECT,
+        // Connect
+        CONNECTED,
+        // Lobby
+        LOBBY_CREATED,
+        LOBBY_JOINED,
+        LOBBY_PLAYER_JOINED,
+        LOBBY_PLAYER_LEFT,
     }
 
     [ProtoContract(SkipConstructor = true)]
-    [ProtoInclude(2, typeof(ServerConnectMessage))]
+    // Connect
+    [ProtoInclude(2, typeof(ServerConnectedMessage))]
+    // Lobby
+    [ProtoInclude(3, typeof(ServerLobbyCreatedMessage))]
+    [ProtoInclude(4, typeof(ServerLobbyJoinedMessage))]
+    [ProtoInclude(5, typeof(ServerLobbyPlayerJoinedMessage))]
+    [ProtoInclude(6, typeof(ServerLobbyPlayerLeftMessage))]
     public abstract class ServerMessage : Message
     {
         [ProtoIgnore]

@@ -25,10 +25,16 @@ namespace GameServer.Handlers
                     ConnectMessageHandler.OnConnectMessage(client, message);
                     break;
                 case MessageTarget.LOBBBY:
-                    // TODO: Lobby message messages & handler
+                    if (client.IsAuthenticated)
+                    {
+                        // TODO: Lobby message messages & handler
+                    }
                     break;
                 case MessageTarget.GAME:
-                    // TODO: Game messages & handler
+                    if (client.IsAuthenticated)
+                    {
+                        // TODO: Game messages & handler
+                    }
                     break;
                 default:
                     break;

@@ -43,7 +43,7 @@ namespace GameServer.Handlers
             }
             catch
             {
-                new ServerConnectMessage(client.Socket, false, "An internal exception occured, please try again later").Send();
+                new ServerConnectedMessage(client.Socket, false, "An internal exception occured, please try again later").Send();
                 TCPServer.CloseSocketState(client);
                 return;
             }
@@ -53,24 +53,24 @@ namespace GameServer.Handlers
                 client.IsAuthenticated = true;
                 client.UID = message.Id;
                 client.Username = message.Username;
-                new ServerConnectMessage(client.Socket, true, "").Send();
+                new ServerConnectedMessage(client.Socket, true, "").Send();
             }
             else if (statusCode == 401)
             {
                 var jsonData = JObject.Parse(responseData);
                 var error = jsonData.ContainsKey("error") ? jsonData["error"].ToString() : string.Empty;
 
-                ServerConnectMessage response = error switch
+                ServerConnectedMessage response = error switch
                 {
-                    "User does not exist" or "User does not match" => new ServerConnectMessage(client.Socket, false, "Wrong username or password"),
-                    _ => new ServerConnectMessage(client.Socket, false, "Something unexpected happened, please try again"),
+                    "User does not exist" or "User does not match" => new ServerConnectedMessage(client.Socket, false, "Wrong username or password"),
+                    _ => new ServerConnectedMessage(client.Socket, false, "Something unexpected happened, please try again"),
                 };
                 response.Send();
                 TCPServer.CloseSocketState(client);
             }
             else
             {
-                new ServerConnectMessage(client.Socket, false, "An internal exception occured, please try again later").Send();
+                new ServerConnectedMessage(client.Socket, false, "An internal exception occured, please try again later").Send();
                 TCPServer.CloseSocketState(client);
             }
         }

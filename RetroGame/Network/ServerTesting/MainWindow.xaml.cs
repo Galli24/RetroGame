@@ -30,8 +30,8 @@ namespace ServerTesting
         {
             switch (message.ServerMessageType)
             {
-                case ServerMessageType.CONNECT:
-                    var connectMessage = (ServerConnectMessage)message;
+                case ServerMessageType.CONNECTED:
+                    var connectMessage = (ServerConnectedMessage)message;
                     if (connectMessage.Authorized)
                     {
                         Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, (System.Action)delegate ()

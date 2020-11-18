@@ -4,18 +4,18 @@ using System.Net.Sockets;
 namespace LibNetworking.Messages.Server
 {
     [ProtoContract]
-    public sealed class ServerConnectMessage : ServerMessage
+    public sealed class ServerConnectedMessage : ServerMessage
     {
         [ProtoMember(1)]
         public bool Authorized { get; private set; }
         [ProtoMember(2)]
         public string Reason { get; private set; }
 
-        public ServerConnectMessage()
-            : base (null, ServerMessageType.CONNECT) { }
+        public ServerConnectedMessage()
+            : base (null, ServerMessageType.CONNECTED) { }
 
-        public ServerConnectMessage(Socket destination, bool authorized, string reason)
-            : base(destination, ServerMessageType.CONNECT)
+        public ServerConnectedMessage(Socket destination, bool authorized, string reason)
+            : base(destination, ServerMessageType.CONNECTED)
         {
             Authorized = authorized;
             Reason = reason;

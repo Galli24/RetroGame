@@ -5,8 +5,13 @@ namespace LibNetworking.Messages.Client
     public enum ClientMessageType
     {
         UNDEFINED,
+        // Connect
         CONNECT,
         RECONNECT,
+        // Lobby
+        LOBBY_CREATE,
+        LOBBY_JOIN,
+        LOBBY_LEAVE
     }
 
     public enum MessageTarget
@@ -18,7 +23,13 @@ namespace LibNetworking.Messages.Client
     }
 
     [ProtoContract(SkipConstructor = true)]
+    // Connect
     [ProtoInclude(3, typeof(ClientConnectMessage))]
+    [ProtoInclude(4, typeof(ClientReconnectMessage))]
+    // Lobby
+    [ProtoInclude(5, typeof(ClientLobbyCreateMessage))]
+    [ProtoInclude(6, typeof(ClientLobbyJoinMessage))]
+    [ProtoInclude(7, typeof(ClientLobbyLeaveMessage))]
     public abstract class ClientMessage : Message
     {
         [ProtoMember(1)]
