@@ -116,7 +116,8 @@ namespace GameServer.Server
 
         public static void SendServerMessage(Socket client, ServerMessage message)
         {
-            Console.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {client.RemoteEndPoint}");
+            // Console.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {client.RemoteEndPoint}");
+            Console.WriteLine($"Response {message.ServerMessageType}");
 
             var serializedResponse = Message.SerializeToBytes(message);
             var sizeBytes = BitConverter.GetBytes(serializedResponse.Length);

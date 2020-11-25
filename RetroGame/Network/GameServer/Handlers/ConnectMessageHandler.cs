@@ -3,7 +3,9 @@ using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace GameServer.Handlers
 {
@@ -16,9 +18,11 @@ namespace GameServer.Handlers
             switch (message.ClientMessageType)
             {
                 case ClientMessageType.CONNECT:
+                    Console.WriteLine("Request CONNECT");
                     OnConnect(client, (ClientConnectMessage)message);
                     break;
                 case ClientMessageType.RECONNECT:
+                    Console.WriteLine("Request RECONNECT");
                     OnReconnect(client, (ClientReconnectMessage)message);
                     break;
                 default:
@@ -26,9 +30,8 @@ namespace GameServer.Handlers
             }
         }
 
-        private static async void OnConnect(SocketState client, ClientConnectMessage message)
+        private static async void OnConnect(SocketState client, ClientConnectMessage message, bool retrying = false)
         {
-            _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", message.Token);
             var body = "{\"id\":\"" + message.Id + "\",\"username\":\"" + message.Username + "\"}";
 
             int statusCode = -1;
@@ -37,7 +40,12 @@ namespace GameServer.Handlers
             try
             {
                 using var content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
-                using var response = await _client.PostAsync(GlobalManager.Instance.Config.AuthServerURI + "/api/v1/users/verify", content).ConfigureAwait(false);
+                using var requestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalManager.Instance.Config.AuthServerURI + "/api/v1/users/verify");
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", message.Token);
+                requestMessage.Headers.Add("GameServerAuth", GlobalManager.Instance.DBClient.GetHeaderKey());
+                requestMessage.Content = content;
+
+                using var response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
                 statusCode = (int)response.StatusCode;
                 responseData = await response.Content.ReadAsStringAsync();
             }
@@ -67,6 +75,11 @@ namespace GameServer.Handlers
                 };
                 response.Send();
                 TCPServer.CloseSocketState(client);
+            }
+            else if (statusCode == 403 && !retrying)
+            {
+                GlobalManager.Instance.DBClient.ResetAndFetchHeaderKey();
+                OnConnect(client, message, true);
             }
             else
             {

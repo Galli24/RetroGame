@@ -1,4 +1,5 @@
 ﻿using GameServer.Configuration;
+using GameServer.Database;
 using GameServer.Handlers;
 using GameServer.Lobby;
 using GameServer.Server;
@@ -12,6 +13,7 @@ namespace GameServer
         public static GlobalManager Instance;
 
         public readonly Config Config;
+        public readonly DatabaseClient DBClient;
         public readonly TCPServer Server;
         public readonly ClientMessageHandler ClientMessageHandler;
         public readonly LobbyManager LobbyManager;
@@ -25,6 +27,10 @@ namespace GameServer
 
             Console.WriteLine("Getting configuration...");
             Config = Config.Parse();
+            Console.WriteLine("Configuration loaded");
+
+            DBClient = new DatabaseClient(Config.DatabaseURI);
+
             Server = new TCPServer(Config.IP, Config.Port);
 
             LobbyManager = new LobbyManager();

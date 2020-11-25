@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using AuthServer.Middleware;
+using MongoDB.Bson;
 
 namespace AuthServer
 {
@@ -112,12 +114,16 @@ namespace AuthServer
 
             // Get encryption key
             _configuration["AppSettings:Secret"] = config.Configuration.GetValueOrDefault("encryption_key", string.Empty);
+            // Get header key
+            _configuration["AppSettings:HeaderKey"] = config.Configuration.GetValueOrDefault("header_key", string.Empty);
 
             var appSettingsSection = _configuration.GetSection("AppSettings");
             appSettingsSection["AppSettings:Secret"] = _configuration["AppSettings:Secret"];
+            appSettingsSection["AppSettings:HeaderKey"] = _configuration["AppSettings:HeaderKey"];
 
             var appSettings = appSettingsSection.Get<AppSettings>();
             appSettings.Secret = appSettingsSection["AppSettings:Secret"];
+            HeaderKey.Set(appSettingsSection["AppSettings:HeaderKey"]);
 
             // Propagate the AppSettings throughout the API
             services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
@@ -138,6 +144,19 @@ namespace AuthServer
                 return GenerateDefaultConfig(configurations);
 
             _logger.LogInformation("Configuration found");
+            _logger.LogInformation("Generating GameServer header key...");
+
+            var headerKey = GenerateJwtSecret();
+            if (!apiConfig.Configuration.ContainsKey("header_key"))
+                apiConfig.Configuration.Add("header_key", headerKey);
+            else
+                apiConfig.Configuration["header_key"] = headerKey;
+
+            var filter = Builders<Config>.Filter.Eq("_id", "auth_configuration");
+            var update = Builders<Config>.Update.Set("configuration", apiConfig.Configuration);
+            configurations.UpdateOne(filter, update);
+
+            _logger.LogInformation("GameServer header key generated");
 
             return apiConfig;
         }
@@ -174,10 +193,10 @@ namespace AuthServer
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
+            app.UseMiddleware<RequestLoggingMiddleware>();
+
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
-
             app.UseMvc();
         }
 

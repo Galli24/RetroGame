@@ -1,4 +1,5 @@
-﻿using AuthServer.Dtos;
+﻿using AuthServer.Attributes;
+using AuthServer.Dtos;
 using AuthServer.Exceptions;
 using AuthServer.Models;
 using AuthServer.Services;
@@ -89,9 +90,8 @@ namespace AuthServer.Controllers
             });
         }
 
-        // This route should be setup
-        // to only accept requests from the Game Server
         [HttpPost("verify")]
+        [GameServerAuth]
         public IActionResult Verify([FromBody] UserDto userDto)
         {
             var identity = (ClaimsIdentity)User.Identity;
