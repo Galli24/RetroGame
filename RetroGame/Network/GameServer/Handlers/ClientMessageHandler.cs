@@ -26,9 +26,7 @@ namespace GameServer.Handlers
                     break;
                 case MessageTarget.LOBBBY:
                     if (client.IsAuthenticated)
-                    {
-                        // TODO: Lobby message messages & handler
-                    }
+                        LobbyMessageHandler.OnLobbyMessage(client, message);
                     break;
                 case MessageTarget.GAME:
                     if (client.IsAuthenticated)
