@@ -37,7 +37,8 @@ namespace ServerTesting
                         Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, (System.Action)delegate ()
                         {
                             Error.Text = "Connected";
-                            button_connect.Visibility = Visibility.Visible;
+                            button_connect.Visibility = Visibility.Hidden;
+                            button_create_lobby.Visibility = Visibility.Visible;
                         });
                     } else
                     {
@@ -45,6 +46,24 @@ namespace ServerTesting
                         {
                             Error.Text = connectMessage.Reason;
                             button_connect.Visibility = Visibility.Visible;
+                        });
+                    }
+                    break;
+                case ServerMessageType.LOBBY_CREATED:
+                    var createdMessage = (ServerLobbyCreatedMessage)message;
+                    if (createdMessage.HasJoined)
+                    {
+                        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, (System.Action)delegate ()
+                        {
+                            Error.Text = "Created";
+                            button_create_lobby.Visibility = Visibility.Visible;
+                        });
+                    } else
+                    {
+                        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, (System.Action)delegate ()
+                        {
+                            Error.Text = createdMessage.Reason;
+                            button_create_lobby.Visibility = Visibility.Visible;
                         });
                     }
                     break;
@@ -105,6 +124,16 @@ namespace ServerTesting
                      button_connect.Visibility = Visibility.Visible;
                  });
             }
+        }
+
+        private void CreateLobby(object sender, RoutedEventArgs e)
+        {
+            Error.Text = "Creating...";
+            button_create_lobby.Visibility = Visibility.Hidden;
+            var name = UsernameBox.Text;
+            var password = PasswordBox.Text;
+
+            _tcpClient.SendClientMessage(new ClientLobbyCreateMessage(name, password));
         }
     }
 }

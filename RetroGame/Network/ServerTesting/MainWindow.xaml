@@ -10,6 +10,7 @@
         <TextBox Name="UsernameBox" HorizontalAlignment="Left" Margin="362,151,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox Name="PasswordBox" HorizontalAlignment="Left" Margin="362,174,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Button Name="button_connect" Content="Connect" HorizontalAlignment="Left" Margin="400,197,0,0" VerticalAlignment="Top" Click="Connect"/>
+        <Button Name="button_create_lobby" Visibility="Hidden" Content="Create Lobby" HorizontalAlignment="Left" Margin="400,197,0,0" VerticalAlignment="Top" Click="CreateLobby"/>
         <TextBlock Name="Error" HorizontalAlignment="Left" Margin="328,222,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Center" Width="188"/>
     </Grid>
 </Window>
