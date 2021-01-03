@@ -1,7 +1,7 @@
 ﻿using GameServer.Configuration;
 using GameServer.Database;
 using GameServer.Handlers;
-using GameServer.Lobby;
+using GameServer.Lobbies;
 using GameServer.Server;
 using System;
 

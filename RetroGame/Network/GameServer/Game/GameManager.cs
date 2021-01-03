@@ -1,10 +1,10 @@
-﻿using GameServer.Utils;
+﻿using GameServer.Server;
+using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,9 +16,6 @@ namespace GameServer.Game
 
         #region Netcode members
 
-        private readonly Socket _host;
-        private readonly Socket _player;
-
         private readonly ConcurrentQueue<ClientMessage> _messages;
         private readonly Queue<ServerMessage> _responses;
 
@@ -29,11 +26,8 @@ namespace GameServer.Game
         public bool Started { get; private set; }
         private bool _isRunning;
 
-        public GameManager(Socket host, Socket player)
+        public GameManager()
         {
-            _host = host;
-            _player = player;
-
             _messages = new ConcurrentQueue<ClientMessage>();
             _responses = new Queue<ServerMessage>();
             _clock = new GameClock();
