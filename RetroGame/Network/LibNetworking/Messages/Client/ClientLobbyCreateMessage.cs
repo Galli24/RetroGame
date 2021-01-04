@@ -15,10 +15,10 @@ namespace LibNetworking.Messages.Client
         public ushort Slots { get; private set; }
 
         public ClientLobbyCreateMessage()
-            : base(ClientMessageType.LOBBY_CREATE, MessageTarget.LOBBBY) { }
+            : base(ClientMessageType.LOBBY_CREATE, MessageTarget.LOBBY) { }
 
         public ClientLobbyCreateMessage(string name, string password)
-            : base(ClientMessageType.LOBBY_CREATE, MessageTarget.LOBBBY)
+            : base(ClientMessageType.LOBBY_CREATE, MessageTarget.LOBBY)
         {
             Name = name.Trim();
             if (!string.IsNullOrEmpty(password.Trim()))

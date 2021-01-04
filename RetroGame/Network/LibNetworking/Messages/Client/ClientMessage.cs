@@ -11,6 +11,7 @@ namespace LibNetworking.Messages.Client
         LOBBY_CREATE,
         LOBBY_JOIN,
         LOBBY_READY,
+        LOBBY_START,
         LOBBY_LEAVE
     }
 
@@ -18,7 +19,7 @@ namespace LibNetworking.Messages.Client
     {
         UNDEFINED,
         CONNECT,
-        LOBBBY,
+        LOBBY,
         GAME,
     }
 
@@ -29,7 +30,8 @@ namespace LibNetworking.Messages.Client
     [ProtoInclude(4, typeof(ClientLobbyCreateMessage))]
     [ProtoInclude(5, typeof(ClientLobbyJoinMessage))]
     [ProtoInclude(6, typeof(ClientLobbyReadyMessage))]
-    [ProtoInclude(7, typeof(ClientLobbyLeaveMessage))]
+    [ProtoInclude(7, typeof(ClientLobbyStartMessage))]
+    [ProtoInclude(8, typeof(ClientLobbyLeaveMessage))]
     public abstract class ClientMessage : Message
     {
         [ProtoMember(1)]

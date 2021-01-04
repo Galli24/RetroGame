@@ -24,7 +24,7 @@ namespace GameServer.Handlers
                 case MessageTarget.CONNECT:
                     ConnectMessageHandler.OnConnectMessage(client, message);
                     break;
-                case MessageTarget.LOBBBY:
+                case MessageTarget.LOBBY:
                     if (client.IsAuthenticated)
                         LobbyMessageHandler.OnLobbyMessage(client, message);
                     break;

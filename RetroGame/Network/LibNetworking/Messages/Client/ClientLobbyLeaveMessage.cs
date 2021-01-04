@@ -6,6 +6,6 @@ namespace LibNetworking.Messages.Client
     public sealed class ClientLobbyLeaveMessage : ClientMessage
     {
         public ClientLobbyLeaveMessage()
-            : base(ClientMessageType.LOBBY_LEAVE, MessageTarget.LOBBBY) { }
+            : base(ClientMessageType.LOBBY_LEAVE, MessageTarget.LOBBY) { }
     }
 }

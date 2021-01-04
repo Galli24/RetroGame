@@ -11,10 +11,10 @@ namespace LibNetworking.Messages.Client
         public string Password { get; private set; }
 
         public ClientLobbyJoinMessage()
-            : base(ClientMessageType.LOBBY_JOIN, MessageTarget.LOBBBY) { }
+            : base(ClientMessageType.LOBBY_JOIN, MessageTarget.LOBBY) { }
 
         public ClientLobbyJoinMessage(string name, string password)
-            : base(ClientMessageType.LOBBY_JOIN, MessageTarget.LOBBBY)
+            : base(ClientMessageType.LOBBY_JOIN, MessageTarget.LOBBY)
         {
             Name = name;
             Password = password.Trim();
