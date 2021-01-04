@@ -21,10 +21,6 @@ namespace GameServer.Handlers
                     Console.WriteLine("Request CONNECT");
                     OnConnect(client, (ClientConnectMessage)message);
                     break;
-                case ClientMessageType.RECONNECT:
-                    Console.WriteLine("Request RECONNECT");
-                    OnReconnect(client, (ClientReconnectMessage)message);
-                    break;
                 default:
                     return;
             }
@@ -86,14 +82,6 @@ namespace GameServer.Handlers
                 new ServerConnectedMessage(client.Socket, false, "An internal exception occured, please try again later").Send();
                 TCPServer.CloseSocketState(client);
             }
-        }
-
-        private static void OnReconnect(SocketState client, ClientReconnectMessage message)
-        {
-            OnConnect(client, new ClientConnectMessage(message.Token, message.Id, message.Username));
-
-            // TODO: Implement reonnection
-            // Requires Lobbies
         }
     }
 }
