@@ -51,7 +51,12 @@ namespace GameServer.Handlers
             if (lobby == null)
                 new ServerLobbyJoinedMessage(client.Socket, false, "Does not exist", string.Empty, false, 0, new List<string>()).Send();
             else
-                lobby.PlayerJoin(client);
+            {
+                if (lobby.HasPassword && message.Password == lobby.Password)
+                    lobby.PlayerJoin(client);
+                else
+                    new ServerLobbyJoinedMessage(client.Socket, false, "Wrong password", string.Empty, false, 0, new List<string>()).Send();
+            }
         }
 
         private static void OnLobbyLeave(SocketState client)
