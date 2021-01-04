@@ -11,9 +11,10 @@ namespace LibNetworking.Messages.Server
         // Lobby
         LOBBY_CREATED,
         LOBBY_JOINED,
+        LOBBY_STARTED,
         LOBBY_PLAYER_JOINED,
         LOBBY_PLAYER_READY,
-        LOBBY_PLAYER_LEFT,
+        LOBBY_PLAYER_LEFT
     }
 
     [ProtoContract(SkipConstructor = true)]
@@ -22,9 +23,10 @@ namespace LibNetworking.Messages.Server
     // Lobby
     [ProtoInclude(3, typeof(ServerLobbyCreatedMessage))]
     [ProtoInclude(4, typeof(ServerLobbyJoinedMessage))]
-    [ProtoInclude(5, typeof(ServerLobbyPlayerJoinedMessage))]
-    [ProtoInclude(6, typeof(ServerLobbyPlayerReadyMessage))]
-    [ProtoInclude(7, typeof(ServerLobbyPlayerLeftMessage))]
+    [ProtoInclude(5, typeof(ServerLobbyStartedMessage))]
+    [ProtoInclude(6, typeof(ServerLobbyPlayerJoinedMessage))]
+    [ProtoInclude(7, typeof(ServerLobbyPlayerReadyMessage))]
+    [ProtoInclude(8, typeof(ServerLobbyPlayerLeftMessage))]
     public abstract class ServerMessage : Message
     {
         [ProtoIgnore]

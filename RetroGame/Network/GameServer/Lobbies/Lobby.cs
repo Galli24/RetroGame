@@ -33,46 +33,30 @@ namespace GameServer.Lobbies
             _gameManager = new GameManager();
         }
 
-        /*public bool AuthenticatedClient(Socket client, byte clientId)
-        {
-            if ((client == _host && clientId == 0) || (client == _player && clientId == 1))
-                return true;
-            return false;
-        }
-
-        public void ClientReady(byte clientId, bool ready)
-        {
-            if (clientId == 0)
-            {
-                if (_hostIsReady != ready)
-                {
-                    _hostIsReady = ready;
-                    // TODO
-                    // TCPServer.LobbyReady(_player, clientId, ready);
-                }
-            }
-            else if (clientId == 1)
-            {
-                if (_playerIsReady != ready)
-                {
-                    _playerIsReady = ready;
-                    // TODO
-                    // TCPServer.LobbyReady(_host, clientId, ready);
-                }
-            }
-        }*/
-
         public void StartGame(SocketState state)
         {
-            var player = Players[state.Username];
+            var startingPlayer = Players[state.Username];
 
-            if (player.IsHost && !_gameManager.Started)
+            if (startingPlayer.IsHost && !_gameManager.Started)
             {
-                // TODO: Requires GameStartedMessage
-                // foreach (var p in _players)
-                //    TCPServer.SendServerMessage(p.State.Socket, )
+                if (!AllPlayersReady())
+                {
+                    new ServerLobbyStartedMessage(state.Socket, false, "Not all players are ready").Send();
+                    return;
+                }
+
+                foreach (var player in Players.Values)
+                    new ServerLobbyStartedMessage(player.State.Socket, true).Send();
                 _gameManager.Start();
             }
+        }
+
+        private bool AllPlayersReady()
+        {
+            foreach (var player in Players.Values)
+                if (!player.IsReady)
+                    return false;
+            return true;
         }
 
         public void EnqueueGameMessage(ClientMessage message)

@@ -22,13 +22,17 @@ namespace GameServer.Handlers
                     Console.WriteLine("Request LOBBY_JOIN");
                     OnLobbyJoin(client, (ClientLobbyJoinMessage)message);
                     break;
-                case ClientMessageType.LOBBY_LEAVE:
-                    Console.WriteLine("Request LOBBY_LEAVE");
-                    OnLobbyLeave(client);
-                    break;
                 case ClientMessageType.LOBBY_READY:
                     Console.WriteLine("Request LOBBY_READY");
                     OnLobbyReady(client, (ClientLobbyReadyMessage)message);
+                    break;
+                case ClientMessageType.LOBBY_START:
+                    Console.WriteLine("Request LOBBY_START");
+                    OnLobbyStart(client);
+                    break;
+                case ClientMessageType.LOBBY_LEAVE:
+                    Console.WriteLine("Request LOBBY_LEAVE");
+                    OnLobbyLeave(client);
                     break;
                 default:
                     return;
@@ -59,18 +63,24 @@ namespace GameServer.Handlers
             }
         }
 
-        private static void OnLobbyLeave(SocketState client)
-        {
-            var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromUsername(client.Username);
-            if (lobby != null)
-                lobby.PlayerLeave(client);
-        }
-
         private static void OnLobbyReady(SocketState client, ClientLobbyReadyMessage message)
         {
             var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromUsername(client.Username);
             if (lobby != null)
                 lobby.PlayerReady(client, message.Ready);
+        }
+        private static void OnLobbyStart(SocketState client)
+        {
+            var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromUsername(client.Username);
+            if (lobby != null)
+                lobby.StartGame(client);
+        }
+
+        private static void OnLobbyLeave(SocketState client)
+        {
+            var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromUsername(client.Username);
+            if (lobby != null)
+                lobby.PlayerLeave(client);
         }
     }
 }
