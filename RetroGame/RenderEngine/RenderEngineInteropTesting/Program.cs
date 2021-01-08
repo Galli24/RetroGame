@@ -13,7 +13,7 @@ namespace RenderEngineInteropTesting
             float lastFrame = 0;
             float deltaTime = 0;
 
-            var sc = new SceneGraph(new Vector2(1920, 1080), "C# Window");
+            var sc = new SceneGraph(new Vector2(2560, 1440), "C# Window");
             var a = new AnimatedSprite(new[] {
                 "C:\\Users\\jerem\\Pictures\\PixelArt\\Bowser.png",
                 "C:\\Users\\jerem\\Pictures\\PixelArt\\BowserPink.png",

@@ -13,7 +13,7 @@
 
 namespace Rendering {
 
-	typedef glm::vec<2, int, glm::defaultp> vec2int;
+	using vec2int = glm::vec<2, int, glm::defaultp>;
 
 	/* 
 		Main Rendering class. 
@@ -36,6 +36,7 @@ namespace Rendering {
 		// Update the scene
 		void Update(float const deltaTime) const;
 
+		void Blit() const;
 		// Get the Window.
 		Rendering::Window &GetWindow();
 		std::vector<Interface::IGraphNode*> nodes; 

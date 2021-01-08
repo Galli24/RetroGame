@@ -3,6 +3,7 @@
 
 void Rendering::Mesh::init(float const* vertices, int const bufferSize, int const nbVertex)
 {
+	m_size = nbVertex;
 	glGenVertexArrays(1, &m_vao);
 	glGenBuffers(1, &m_vbo);
 
@@ -10,10 +11,20 @@ void Rendering::Mesh::init(float const* vertices, int const bufferSize, int cons
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBufferData(GL_ARRAY_BUFFER, bufferSize, vertices, GL_STATIC_DRAW);
+}
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	m_size = nbVertex;
+void Rendering::Mesh::attribPtr(int index, int size, int ptr, int stride)
+{
+	glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)ptr);
+	glEnableVertexAttribArray(index);
+
+}
+
+void Rendering::Mesh::updateBuffer(int const size, const void* vertices)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Rendering::Mesh::draw()

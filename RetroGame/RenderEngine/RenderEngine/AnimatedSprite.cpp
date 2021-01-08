@@ -51,6 +51,7 @@ Rendering::AnimatedSprite::AnimatedSprite(std::vector<std::string> const& sprite
 
 
 	this->m_mesh.init(vertices, sizeof(vertices), 6);
+	this->m_mesh.attribPtr(0, 2, 0, 2);
 	this->m_shader.init(vs, fs);
 
 	for (auto& path : sprites)

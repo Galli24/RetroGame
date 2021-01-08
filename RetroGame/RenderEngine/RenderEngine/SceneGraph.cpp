@@ -27,7 +27,6 @@ void Rendering::SceneGraph::Render(float const deltaTime) const
 	for (auto& node : this->nodes)
 		node->Render(this->m_window.size);
 
-	this->m_window.BlitWindow();
 }
 
 
@@ -39,6 +38,11 @@ void Rendering::SceneGraph::Update(float const deltaTime) const
 
 	for (auto& node : this->nodes)
 		node->UpdateGraphics(deltaTime, this->m_window.size);
+}
+
+void Rendering::SceneGraph::Blit() const
+{
+	this->m_window.BlitWindow();
 }
 
 Rendering::Window& Rendering::SceneGraph::GetWindow()

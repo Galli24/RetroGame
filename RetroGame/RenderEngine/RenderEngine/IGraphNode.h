@@ -10,6 +10,7 @@
 
 #include "IRenderable.h"
 #include "IMovable.h"
+#include "IInteractibleObject.h"
 
 namespace Rendering {
 	namespace Interface {

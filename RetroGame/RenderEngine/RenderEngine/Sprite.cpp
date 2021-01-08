@@ -49,6 +49,7 @@ Rendering::Sprite::Sprite(std::string const& path, glm::vec2 const& position, gl
 
 
 	this->m_mesh.init(vertices, sizeof(vertices), 6);
+	this->m_mesh.attribPtr(0, 2, 0, 2);
 	this->m_shader.init(vs, fs);
 }
 
