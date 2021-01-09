@@ -16,7 +16,7 @@ namespace Rendering {
 	namespace Interface {
 
 		// Base class for the Rendering elements
-		class IGraphNode : public IRenderable, public IMovable
+		class IGraphNode : public IRenderable
 		{
 		public:
 			IGraphNode(glm::vec2 const& pos) : position(pos), m_id() {
@@ -32,9 +32,6 @@ namespace Rendering {
 			void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) override = 0;
 			// Rendering the node
 			void Render(glm::vec2 const& winSize) override = 0;
-
-			// Update position (patterns etc).
-			void UpdatePosition(float deltaTime, glm::vec2 const& winSize) override = 0;
 
 			glm::vec2	position;
 

@@ -150,7 +150,8 @@ xcopy $(ProjectDir)Sprites $(OutputPath)Sprites /Y /I /E</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)..\external_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>STB_IMAGE.lib;glad.lib;glm_static.lib;glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreAllDefaultLibraries>librairy</IgnoreAllDefaultLibraries>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
     <CustomBuildStep>
       <Command>xcopy $(ProjectDir)Shader $(OutputPath)Shader /Y /I /E

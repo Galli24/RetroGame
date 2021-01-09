@@ -9,6 +9,7 @@
 
 #include "IGraphNode.h"
 #include "Window.h"
+#include "IMenuItem.h"
 
 
 namespace Rendering {
@@ -40,7 +41,7 @@ namespace Rendering {
 		// Get the Window.
 		Rendering::Window &GetWindow();
 		std::vector<Interface::IGraphNode*> nodes; 
-
+		std::vector<Interface::IMenu*> menu_nodes;
 
 	private:
 		Rendering::Window m_window;

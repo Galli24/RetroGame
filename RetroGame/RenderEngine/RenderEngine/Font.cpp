@@ -3,7 +3,7 @@
 
 #include "Font.h"
 #include <exception>
-#include <xutility>
+#include <algorithm>
 
 
 namespace Rendering {
@@ -47,12 +47,12 @@ namespace Rendering {
 			"in vec2 o_texCoords;\n"
 
 			"uniform sampler2D u_texture;\n"
-			"uniform vec3 u_color;\n"
+			"uniform vec4 u_color;\n"
 
 			"out vec4 FragColor; \n"
 
 			"void main(void) {\n"
-			"  FragColor = vec4(texture(u_texture, vec2(o_texCoords.x, o_texCoords.y * -1)).x) * vec4(u_color, 1); \n"
+			"  FragColor = vec4(texture(u_texture, vec2(o_texCoords.x, o_texCoords.y * -1)).x) * u_color; \n"
 			"} \n";
 
 		const auto vs =
@@ -89,7 +89,7 @@ namespace Rendering {
 	}
 
 
-
+  
 
 
 	Font::~Font()
@@ -98,7 +98,7 @@ namespace Rendering {
 			delete elt.second;
 	}
 
-	void Font::RenderText(std::string const& text, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec3 const& color)
+	void Font::RenderText(std::string const& text, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color)
 	{
 		m_shader.use();
 		glActiveTexture(GL_TEXTURE0);
@@ -115,7 +115,7 @@ namespace Rendering {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void Font::RenderChar(unsigned char const c, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec3 const& color)
+	void Font::RenderChar(unsigned char const c, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color)
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -130,13 +130,41 @@ namespace Rendering {
 
 		ch->texture.Use();
 		m_shader.setInt("u_texture", 0);
-		m_shader.setVec2("u_position", position);
-		m_shader.setVec3("u_color", color);
+		m_shader.setVec2("u_position", { xpos, ypos });
+		m_shader.setVec4("u_color", color);
 		m_shader.setVec2("u_winSize", winSize);
 		m_shader.setVec2("u_size", ch->texture.GetSize());
 		m_shader.setVec2("u_scale", { 1, 1 });
 		this->m_mesh.draw();
 		glDisable(GL_BLEND);
+	}
+
+	glm::ivec2 Font::EvaluateSize(std::string const& str)
+	{
+		std::string::const_iterator c;
+		int x = 0;
+		int y = 0;
+		for (c = str.begin(); c != str.end(); c++)
+		{
+			auto ch = m_charTextures[*c];
+			auto size = ch->texture.GetSize();
+			x += (ch->advance >> 6);
+			y = max(y, size.y);
+		}
+		return {x, y};
+	}
+
+	float Font::EvaluateYOffset(std::string const& str)
+	{
+		std::string::const_iterator c;
+		int yneg = 0;
+		for (c = str.begin(); c != str.end(); c++)
+		{
+			auto ch = m_charTextures[*c];
+			auto size = ch->texture.GetSize();
+			yneg = max(yneg, size.y - ch->bearing.y);
+		}
+		return yneg;
 	}
 
 }

@@ -51,7 +51,7 @@ Rendering::AnimatedSprite::AnimatedSprite(std::vector<std::string> const& sprite
 
 
 	this->m_mesh.init(vertices, sizeof(vertices), 6);
-	this->m_mesh.attribPtr(0, 2, 0, 2);
+	this->m_mesh.attribPtr(0, 2, 0, 2 * sizeof(float));
 	this->m_shader.init(vs, fs);
 
 	for (auto& path : sprites)
@@ -84,19 +84,6 @@ void Rendering::AnimatedSprite::Render(glm::vec2 const& winSize)
 	glDisable(GL_BLEND);
 }
 
-void Rendering::AnimatedSprite::UpdatePosition(float deltaTime, glm::vec2 const& winSize)
-{
-	static glm::vec2 dir = glm::vec2{ 300, 300 };
-
-	if (this->position.x + this->GetActualSize().x > winSize.x || this->position.x < 0)
-		dir.x *= -1;
-
-	if (this->position.y + this->GetActualSize().y > winSize.y || this->position.y < 0)
-		dir.y *= -1;
-
-	this->position += dir * deltaTime;
-	glm::clamp(this->position, glm::vec2{0, 0}, winSize);
-}
 
 glm::vec2 Rendering::AnimatedSprite::GetActualSize() const
 {

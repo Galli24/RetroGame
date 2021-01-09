@@ -27,6 +27,9 @@ void Rendering::SceneGraph::Render(float const deltaTime) const
 	for (auto& node : this->nodes)
 		node->Render(this->m_window.size);
 
+	for (auto& node : this->menu_nodes)
+		node->Render(this->m_window.size);
+
 }
 
 
@@ -34,9 +37,9 @@ void Rendering::SceneGraph::Update(float const deltaTime) const
 {
 
 	for (auto& node : this->nodes)
-		node->UpdatePosition(deltaTime, this->m_window.size);
-
-	for (auto& node : this->nodes)
+		node->UpdateGraphics(deltaTime, this->m_window.size);
+	
+	for (auto& node : this->menu_nodes)
 		node->UpdateGraphics(deltaTime, this->m_window.size);
 }
 

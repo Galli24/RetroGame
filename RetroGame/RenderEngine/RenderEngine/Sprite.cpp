@@ -49,7 +49,7 @@ Rendering::Sprite::Sprite(std::string const& path, glm::vec2 const& position, gl
 
 
 	this->m_mesh.init(vertices, sizeof(vertices), 6);
-	this->m_mesh.attribPtr(0, 2, 0, 2);
+	this->m_mesh.attribPtr(0, 2, 0, 2 * sizeof(float));
 	this->m_shader.init(vs, fs);
 }
 
@@ -77,19 +77,6 @@ void Rendering::Sprite::Render(glm::vec2 const& winSize)
 	this->m_mesh.draw();
 
 	glDisable(GL_BLEND);
-}
-
-void Rendering::Sprite::UpdatePosition(float deltaTime, glm::vec2 const& winSize)
-{
-	static glm::vec2 dir = glm::vec2{ 300, 300 };
-
-	if (this->position.x + this->GetActualSize().x > winSize.x || this->position.x < 0)
-		dir.x *= -1;
-
-	if (this->position.y + this->GetActualSize().y > winSize.y || this->position.y < 0)
-		dir.y *= -1;
-
-	this->position += dir * deltaTime;
 }
 
 glm::vec2 Rendering::Sprite::GetActualSize() const

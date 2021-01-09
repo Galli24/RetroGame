@@ -4,29 +4,34 @@
 #include "SceneGraph.h"
 #include "AnimatedSprite.h"
 #include "Font.h"
+#include "Button.h"
+#include "IMenuItem.h"
+#include <string>
 
 int main(void)
 {
-	Rendering::SceneGraph sceneGraph({ 1920, 1080 }, "RetroGame");
+	Rendering::SceneGraph sceneGraph({ 2560, 1440 }, "RetroGame");
 
 
 
 	float lastFrame = 0;
 	float deltaTime = 0;
 	auto& win = sceneGraph.GetWindow();
-	win.clearColor = { 1, 1, 1, 1 };
-	//auto sprite = Rendering::AnimatedSprite{
-	//	{"./Sprites/Bowser.png", "./Sprites/BowserPink.png", "./Sprites/BowserBlue.png"},
-	//	0.5,
-	//	{0, 0},
-	//	{64, 96},
-	//	{5, 5}
-	//};
-	//sceneGraph.nodes.push_back(&sprite);
-	auto font = Rendering::Font("D:/Roboto.ttf", 96, 0);
+	win.clearColor = { .5, .5, .5, 1 };
+	auto sprite = Rendering::AnimatedSprite{
+		{"./Sprites/Bowser.png", "./Sprites/BowserPink.png", "./Sprites/BowserBlue.png"},
+		0.5,
+		{0, 0},
+		{64, 96},
+		{5, 5}
+	};
+	sceneGraph.nodes.push_back(&sprite);
 
+	auto font = Rendering::Font("D:/Roboto.ttf", 36, 0);
+	auto button = Rendering::Button({ win.size.x, 0 }, Rendering::Interface::IMenu::Anchor::BottomRight, "", &font, { 10, 10 });
+	button.border_color = { 0, 0, 0, 0 };
 
-	// Loop until the user closes the window
+	sceneGraph.menu_nodes.push_back(&button);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -35,9 +40,11 @@ int main(void)
 		auto currentFrame = (float)glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
+		std::stringstream ss1;
+		ss1 << std::round(1 / deltaTime) << "fps / " << std::round(deltaTime * 1000) << "ms";
+		button.text = ss1.str();
 		sceneGraph.Update(deltaTime);
 		sceneGraph.Render(deltaTime);
-		font.RenderText("abc", win.size / 2, win.size, {0.5, 0.5, 0});
 		sceneGraph.Blit();
 	}
 

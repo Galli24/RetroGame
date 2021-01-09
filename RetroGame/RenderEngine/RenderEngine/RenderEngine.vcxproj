@@ -35,6 +35,7 @@
     <ClInclude Include="IGraphNode.h" />
     <ClInclude Include="IInteractibleObject.h" />
     <ClInclude Include="IMenu.h" />
+    <ClInclude Include="IMenuItem.h" />
     <ClInclude Include="IMovable.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="Mesh.h" />

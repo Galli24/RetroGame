@@ -18,7 +18,6 @@ namespace Rendering {
 
 		void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) override;
 		void Render(glm::vec2 const& winSize) override;
-		void UpdatePosition(float deltaTime, glm::vec2 const& winSize) override;
 
 		glm::vec2 GetActualSize() const;
 

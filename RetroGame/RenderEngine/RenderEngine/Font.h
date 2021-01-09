@@ -29,18 +29,25 @@ namespace Rendering {
 			Character(const Rendering::Texture &t, const glm::ivec2 b, unsigned int a) : texture(t), bearing(b), advance(a) { }
 		};
 
+
+	public:
+		Font(std::string const& path, int fontSize, int id);
+		~Font();
+		void RenderText(std::string const& str, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color);
+		void RenderChar(unsigned char const c, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color);
+		glm::ivec2 EvaluateSize(std::string const& str);
+		float EvaluateYOffset(std::string const& str);
+
+
+		int ID;
+
+
+
 	private:
 		std::map<unsigned char, class Rendering::Font::Character*>	m_charTextures;
 		Rendering::Mesh				m_mesh;
 		Rendering::Shader			m_shader;
 
-	public:
-		Font(std::string const& path, int fontSize, int id);
-		~Font();
-		void RenderText(std::string const& str, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec3 const& color);
-		void RenderChar(unsigned char const c, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec3 const& color);
-
-		int ID;
 	};
 
 
