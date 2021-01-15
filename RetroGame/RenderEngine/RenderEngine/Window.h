@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <string>
+#include "MenuManager.h"
 
 namespace Rendering {
 
@@ -11,7 +12,7 @@ namespace Rendering {
 	class Window
 	{
 	public:
-		Window(std::string const& name, glm::ivec2 const& size);
+		Window(std::string const& name, glm::ivec2 const& size, Rendering::MenuManager *menuManager);
 
 
 		/*
@@ -20,7 +21,6 @@ namespace Rendering {
 		void	ClearWindow() const;
 		void	BlitWindow() const;
 		bool	ShouldClose() const;
-		void	ProcessInput() const;
 
 		/*
 			Callbacks
@@ -30,7 +30,7 @@ namespace Rendering {
 		void	OnScroll(double const x, double const y);
 		void	OnMouseMove(double const x, double const y);
 		void	OnMousePress(int const button, int const action);
-
+		void	OnKeyAction(int key, int scancode, int action, int mods);
 		/*
 			Properties
 		*/
@@ -41,9 +41,10 @@ namespace Rendering {
 
 
 	private:
-		GLFWwindow*		m_window;
-		std::string		m_windowName;
-		glm::vec2		m_mousePosition;
+		GLFWwindow*				m_window;
+		std::string				m_windowName;
+		glm::vec2				m_mousePosition;
+		Rendering::MenuManager	*m_menuManager;
 	};
 
 }

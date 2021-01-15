@@ -6,7 +6,7 @@ namespace Rendering {
 
 	namespace Interface {
 
-		class IMenu : public IGraphNode, IInteractibleObject
+		class IMenu : public IGraphNode, public IInteractibleObject
 		{
 		public:
 			enum class Anchor {

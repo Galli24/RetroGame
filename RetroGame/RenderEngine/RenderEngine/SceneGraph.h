@@ -26,7 +26,7 @@ namespace Rendering {
 
 	public:
 		// Defines the OpenGL windows attributes (window size and name)
-		SceneGraph(glm::ivec2 const& windowSize, std::string const& windowName, Rendering::MenuManager const& manager);
+		SceneGraph(glm::ivec2 const& windowSize, std::string const& windowName, Rendering::MenuManager *manager);
 
 		// Destroy the OpenGL context
 		~SceneGraph();
@@ -40,14 +40,14 @@ namespace Rendering {
 		void Blit() const;
 		// Get the Window.
 		Rendering::Window &GetWindow();
-		Rendering::MenuManager& GetMenuManager();
+		Rendering::MenuManager* GetMenuManager();
 
 
 		std::vector<Interface::IGraphNode*> nodes; 
 
 	private:
 		Rendering::Window m_window;
-		Rendering::MenuManager m_menuManager;
+		Rendering::MenuManager *m_menuManager;
 	};
 
 

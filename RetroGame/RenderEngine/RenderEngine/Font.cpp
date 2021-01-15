@@ -136,11 +136,11 @@ namespace Rendering {
 		glDisable(GL_BLEND);
 	}
 
-	glm::ivec2 Font::EvaluateSize(std::string const& str)
+	glm::vec2 Font::EvaluateSize(std::string const& str)
 	{
 		std::string::const_iterator c;
-		int x = 0;
-		int y = 0;
+		float x = 0;
+		float y = 0;
 		for (c = str.begin(); c != str.end(); c++)
 		{
 			auto ch = m_charTextures[*c];

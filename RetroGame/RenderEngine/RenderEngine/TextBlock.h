@@ -22,17 +22,20 @@ namespace Rendering
 		void OnLostFocus() override;
 
 		void OnScroll(double const x, double const y) override;
-		void OnMousePress(double const x, double const y) override;
-		void OnMouseRelease(double const x, double const y) override;
+		void OnMousePress(int const key, double const x, double const y) override;
+		void OnMouseRelease(int const key, double const x, double const y) override;
 		void OnMouseMove(double const x, double const y) override;
-		void OnKeyPressed(int const key) override;
-		void OnKeyRelease(int const key) override;
+		void OnKeyPressed(int const key, int const mods) override;
+		void OnKeyRelease(int const key, int const mods) override;
+
+
 		glm::vec2 GetObjectSize() const override;
 
 		glm::vec4			font_color;
 		glm::vec4			border_color;
 		glm::vec2			padding;
 		std::string			text;
+		int					border_size;
 
 	private:
 		Rendering::Font* m_font;
