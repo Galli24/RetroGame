@@ -28,7 +28,7 @@ int main(void)
 	};
 	sceneGraph.nodes.push_back(&sprite);
 
-	auto font = Rendering::Font("D:/Roboto.ttf", 36, 0);
+	auto font = Rendering::Font("./Fonts/Roboto.ttf", 36, 0);
 	auto textblock = Rendering::TextBlock({ win.size.x, 0 }, Rendering::Interface::IMenu::Anchor::BottomRight, "", &font, { 10, 10 });
 	textblock.border_color = { 0, 0, 0, 0 };
 
