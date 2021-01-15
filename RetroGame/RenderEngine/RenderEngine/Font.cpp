@@ -147,7 +147,7 @@ namespace Rendering {
 		for (c = str.begin(); c != str.end(); c++)
 		{
 			auto ch = m_charTextures[*c];
-			auto size = ch->texture.GetSize();
+			auto &size = ch->texture.GetSize();
 			x += (ch->advance >> 6);
 			y = max(y, size.y);
 		}
@@ -161,7 +161,7 @@ namespace Rendering {
 		for (c = str.begin(); c != str.end(); c++)
 		{
 			auto ch = m_charTextures[*c];
-			auto size = ch->texture.GetSize();
+			auto &size = ch->texture.GetSize();
 			yneg = max(yneg, size.y - ch->bearing.y);
 		}
 		return yneg;
