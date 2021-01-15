@@ -157,7 +157,7 @@ namespace Rendering {
 	float Font::EvaluateYOffset(std::string const& str)
 	{
 		std::string::const_iterator c;
-		int yneg = 0;
+		float yneg = 0;
 		for (c = str.begin(); c != str.end(); c++)
 		{
 			auto ch = m_charTextures[*c];
