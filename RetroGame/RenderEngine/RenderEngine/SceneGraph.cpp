@@ -3,8 +3,8 @@
 #include "SceneGraph.h"
 #include <algorithm>
 
-Rendering::SceneGraph::SceneGraph(vec2int const& windowSize, std::string const& windowName)
-	: m_window(windowName, windowSize)
+Rendering::SceneGraph::SceneGraph(glm::ivec2 const& windowSize, std::string const& windowName, Rendering::MenuManager const& manager)
+	: m_window(windowName, windowSize), m_menuManager(manager)
 {
 	if (!gladLoadGL())
 	{
@@ -27,20 +27,17 @@ void Rendering::SceneGraph::Render(float const deltaTime) const
 	for (auto& node : this->nodes)
 		node->Render(this->m_window.size);
 
-	for (auto& node : this->menu_nodes)
-		node->Render(this->m_window.size);
-
+	m_menuManager.Render(deltaTime, this->m_window.size);
 }
 
 
-void Rendering::SceneGraph::Update(float const deltaTime) const
+void Rendering::SceneGraph::Update(float const deltaTime)
 {
 
 	for (auto& node : this->nodes)
 		node->UpdateGraphics(deltaTime, this->m_window.size);
 	
-	for (auto& node : this->menu_nodes)
-		node->UpdateGraphics(deltaTime, this->m_window.size);
+	m_menuManager.Update(deltaTime, this->m_window.size);
 }
 
 void Rendering::SceneGraph::Blit() const
@@ -51,5 +48,10 @@ void Rendering::SceneGraph::Blit() const
 Rendering::Window& Rendering::SceneGraph::GetWindow()
 {
 	return this->m_window;
+}
+
+Rendering::MenuManager& Rendering::SceneGraph::GetMenuManager()
+{
+	return this->m_menuManager;
 }
 

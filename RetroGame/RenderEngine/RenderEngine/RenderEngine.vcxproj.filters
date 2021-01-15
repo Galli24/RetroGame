@@ -45,6 +45,9 @@
     <ClCompile Include="TextBlock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MenuManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneGraph.h">
@@ -93,6 +96,9 @@
       <Filter>Header Files\Interface</Filter>
     </ClInclude>
     <ClInclude Include="TextBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

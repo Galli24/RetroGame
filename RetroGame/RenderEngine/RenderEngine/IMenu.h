@@ -1,36 +1,50 @@
 #pragma once
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-
-#include "IInteractibleObject.h"
 #include "IGraphNode.h"
-
+#include "IInteractibleObject.h"
 
 namespace Rendering {
+
 	namespace Interface {
 
-		class IMenu : public IGraphNode, public IInteractibleObject
+		class IMenu : public IGraphNode, IInteractibleObject
 		{
+		public:
+			enum class Anchor {
+				TopLeft, Top, TopRight,
+				Left, Center, Right,
+				BottomLeft, Bot, BottomRight
+			};
 
 		public:
-			void	UpdateGraphics(float deltaTime, glm::vec2 const& winSize)	override = 0;
-			void	Render(glm::vec2 const& winSize)							override = 0;
-			void	UpdatePosition(float deltaTime, glm::vec2 const& winSize)	override = 0;
+			IMenu(glm::vec2 const& pos, Anchor anchor = Anchor::TopLeft) : IGraphNode(pos), m_anchor(anchor) {}
+
+			virtual void OnFocus() = 0;
+			virtual void OnLostFocus() = 0;
+			virtual glm::vec2 GetObjectSize() const = 0;
 
 
-			void	OnScroll(double const x, double const y)					override = 0;
 
-			void	OnMousePress(double const x, double const y)				override = 0;
-			void	OnMouseRelease(double const x, double const y)				override = 0;
-			void	OnMouseMove(double const x, double const y)					override = 0;
+			glm::vec2 GetActualPosition() const
+			{
+				auto pos = position;
+				auto size = GetObjectSize();
+				if (m_anchor == Anchor::BottomRight || m_anchor == Anchor::Right || m_anchor == Anchor::TopRight)
+					pos.x -= size.x;
+				else if (m_anchor == Anchor::Top || m_anchor == Anchor::Center || m_anchor == Anchor::Bot)
+					pos.x -= size.x / 2;
 
-			void	OnKeyPressed(int const key)									override = 0;
-			void	OnKeyRelease(int const key)									override = 0;
+				if (m_anchor == Anchor::TopLeft || m_anchor == Anchor::Top || m_anchor == Anchor::TopRight)
+					pos.y -= size.y;
+				else if (m_anchor == Anchor::Left || m_anchor == Anchor::Center || m_anchor == Anchor::Right)
+					pos.y -= size.y / 2;
+
+				return pos;
+			}
+
+
+		protected:
+			Anchor		m_anchor;
 		};
-
-
 	}
+
 }

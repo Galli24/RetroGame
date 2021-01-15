@@ -6,12 +6,14 @@
 #include "Font.h"
 #include "Button.h"
 #include "TextBlock.h"
-#include "IMenuItem.h"
 #include <string>
+#include "MenuManager.h"
+#include "IMenu.h"
 
 int main(void)
 {
-	Rendering::SceneGraph sceneGraph({ 2560, 1440 }, "RetroGame");
+	Rendering::MenuManager menuManager;
+	Rendering::SceneGraph sceneGraph({ 2560, 1440 }, "RetroGame", menuManager);
 
 
 
@@ -32,7 +34,7 @@ int main(void)
 	auto textblock = Rendering::TextBlock({ win.size.x, 0 }, Rendering::Interface::IMenu::Anchor::BottomRight, "", &font, { 10, 10 });
 	textblock.border_color = { 0, 0, 0, 0 };
 
-	sceneGraph.menu_nodes.push_back(&textblock);
+	sceneGraph.GetMenuManager().menu_nodes.push_back(&textblock);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

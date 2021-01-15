@@ -1,6 +1,7 @@
 #include "Window.h"
+#include <iostream>
 
-Rendering::Window::Window(std::string const& name, vec2int const& size)
+Rendering::Window::Window(std::string const& name, glm::ivec2 const& size)
 	: m_window(nullptr), m_windowName(name), size(size), m_mousePosition({0, 0}), clearColor({1, 1, 1, 1})
 {
 	if (!glfwInit())
@@ -40,11 +41,16 @@ Rendering::Window::Window(std::string const& name, vec2int const& size)
 		window->OnScroll(x, y);
 	};
 
+	auto mouseButton = [](GLFWwindow* win, int button, int action, int tamer) {
+		auto window = static_cast<Rendering::Window*>(glfwGetWindowUserPointer(win));
+		window->OnMousePress(button, action);
+	};
+
 	glfwMakeContextCurrent(this->m_window);
 	glfwSetFramebufferSizeCallback(this->m_window, resize);
 	glfwSetCursorPosCallback(this->m_window, cursorPos);
 	glfwSetScrollCallback(this->m_window, scroll);
-
+	glfwSetMouseButtonCallback(this->m_window, mouseButton);
 	glfwSetInputMode(this->m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
@@ -78,6 +84,7 @@ void Rendering::Window::OnWindowResize(int const x, int const y)
 {
 	glViewport(0, 0, x, y);
 	this->size = { x, y };
+	std::cout << "Resize: x = " << x << ", y = " << y << std::endl;
 }
 
 void Rendering::Window::OnScroll(double const x, double const y)
@@ -105,4 +112,9 @@ void Rendering::Window::OnMouseMove(double const xpos, double const ypos)
 
 	this->m_mousePosition = { xpos, ypos };
 
+}
+
+void Rendering::Window::OnMousePress(int const button, int const action)
+{
+	std::cout << "Pressed: button = " << button << ", action = " << action << std::endl;
 }

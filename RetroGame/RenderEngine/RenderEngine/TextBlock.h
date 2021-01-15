@@ -1,5 +1,5 @@
 #pragma once
-#include "IMenuItem.h"
+#include "IMenu.h"
 #include "glm/glm.hpp"
 #include <string>
 #include "Font.h"

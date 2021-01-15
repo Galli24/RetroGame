@@ -22,6 +22,7 @@
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -39,6 +40,7 @@
     <ClInclude Include="IMenuItem.h" />
     <ClInclude Include="IMovable.h" />
     <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="MenuManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="Shader.h" />

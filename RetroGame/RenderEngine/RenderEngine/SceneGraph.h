@@ -9,12 +9,12 @@
 
 #include "IGraphNode.h"
 #include "Window.h"
-#include "IMenuItem.h"
+#include "IMenu.h"
+#include "MenuManager.h"
 
 
 namespace Rendering {
 
-	using vec2int = glm::vec<2, int, glm::defaultp>;
 
 	/* 
 		Main Rendering class. 
@@ -26,7 +26,7 @@ namespace Rendering {
 
 	public:
 		// Defines the OpenGL windows attributes (window size and name)
-		SceneGraph(vec2int const& windowSize, std::string const& windowName);
+		SceneGraph(glm::ivec2 const& windowSize, std::string const& windowName, Rendering::MenuManager const& manager);
 
 		// Destroy the OpenGL context
 		~SceneGraph();
@@ -35,16 +35,19 @@ namespace Rendering {
 		void Render(float const deltaTime) const;
 
 		// Update the scene
-		void Update(float const deltaTime) const;
+		void Update(float const deltaTime);
 
 		void Blit() const;
 		// Get the Window.
 		Rendering::Window &GetWindow();
+		Rendering::MenuManager& GetMenuManager();
+
+
 		std::vector<Interface::IGraphNode*> nodes; 
-		std::vector<Interface::IMenu*> menu_nodes;
 
 	private:
 		Rendering::Window m_window;
+		Rendering::MenuManager m_menuManager;
 	};
 
 
