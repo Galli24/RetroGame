@@ -5,6 +5,7 @@
 #include "AnimatedSprite.h"
 #include "Font.h"
 #include "Button.h"
+#include "TextBlock.h"
 #include "IMenuItem.h"
 #include <string>
 
@@ -28,10 +29,10 @@ int main(void)
 	sceneGraph.nodes.push_back(&sprite);
 
 	auto font = Rendering::Font("D:/Roboto.ttf", 36, 0);
-	auto button = Rendering::Button({ win.size.x, 0 }, Rendering::Interface::IMenu::Anchor::BottomRight, "", &font, { 10, 10 });
-	button.border_color = { 0, 0, 0, 0 };
+	auto textblock = Rendering::TextBlock({ win.size.x, 0 }, Rendering::Interface::IMenu::Anchor::BottomRight, "", &font, { 10, 10 });
+	textblock.border_color = { 0, 0, 0, 0 };
 
-	sceneGraph.menu_nodes.push_back(&button);
+	sceneGraph.menu_nodes.push_back(&textblock);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -42,7 +43,7 @@ int main(void)
 		lastFrame = currentFrame;
 		std::stringstream ss1;
 		ss1 << std::round(1 / deltaTime) << "fps / " << std::round(deltaTime * 1000) << "ms";
-		button.text = ss1.str();
+		textblock.text = ss1.str();
 		sceneGraph.Update(deltaTime);
 		sceneGraph.Render(deltaTime);
 		sceneGraph.Blit();
