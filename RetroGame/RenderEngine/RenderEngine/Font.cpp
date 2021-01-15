@@ -125,9 +125,6 @@ namespace Rendering {
 		glm::ivec2 const& size = ch->texture.GetSize();
 		float ypos = position.y - (size.y - ch->bearing.y);
 
-		float w = size.x;
-		float h = size.y;
-
 		ch->texture.Use();
 		m_shader.setInt("u_texture", 0);
 		m_shader.setVec2("u_position", { xpos, ypos });

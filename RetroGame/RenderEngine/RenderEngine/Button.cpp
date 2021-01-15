@@ -64,7 +64,7 @@ void Rendering::Button::UpdateGraphics(float deltaTime, glm::vec2 const& winSize
 {
 }
 
-glm::vec2 modify_position(glm::vec2 const& position, glm::vec2 size, int vertical, int horizontal)
+static glm::vec2 modify_position(glm::vec2 const& position, glm::vec2 size, int vertical, int horizontal)
 {
 	glm::vec2 pos = position;
 
@@ -82,7 +82,7 @@ glm::vec2 modify_position(glm::vec2 const& position, glm::vec2 size, int vertica
 	return pos;
 }
 
-glm::vec2 anchored_position(glm::vec2 const& position, glm::vec2 const& size, Rendering::Interface::IMenu::Anchor anchor)
+static glm::vec2 anchored_position(glm::vec2 const& position, glm::vec2 const& size, Rendering::Interface::IMenu::Anchor anchor)
 {
 	switch (anchor) {
 	case Rendering::Interface::IMenu::Anchor::TopLeft:
@@ -114,9 +114,9 @@ glm::vec2 anchored_position(glm::vec2 const& position, glm::vec2 const& size, Re
 
 	default:
 		break;
-
 	}
 
+	return position;
 }
 
 void Rendering::Button::Render(glm::vec2 const& winSize)
