@@ -35,7 +35,7 @@ namespace Rendering {
 			glCompileShader(fragment);
 			checkCompileErrors(fragment, "FRAGMENT");
 			// if geometry shader is given, compile geometry shader
-			unsigned int geometry;
+			unsigned int geometry = 0;
 			if (geometryShader != "")
 			{
 				geometry = glCreateShader(GL_GEOMETRY_SHADER);
