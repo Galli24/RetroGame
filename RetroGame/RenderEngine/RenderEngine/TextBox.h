@@ -1,22 +1,24 @@
 #pragma once
 #include "IMenu.h"
-#include "glm/glm.hpp"
-#include <string>
+#include <glm/glm.hpp>
 #include "Font.h"
+#include <memory>
+#include "Mesh.h"
+#include "Shader.h"
 
-namespace Rendering
-{
+namespace Rendering {
 
-	class Button : public Interface::IMenu
+
+	class TextBox : public Interface::IMenu
 	{
-
 	public:
-		Button(glm::vec2 const& pos, IMenu::Anchor anchor, std::string const& str, Font *font, glm::vec2 const& padding);
 
+		TextBox(glm::vec2 const& pos, IMenu::Anchor anchor, unsigned int maxChar, Font* font, glm::vec2 const& padding, int minWidth = 150);
 
 		void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) override;
 		void Render(glm::vec2 const& winSize) override;
 
+		glm::vec2 GetObjectSize() const override;
 
 		void OnFocus() override;
 		void OnLostFocus() override;
@@ -29,24 +31,22 @@ namespace Rendering
 		void OnKeyRelease(int const key, int const mods) override;
 		void OnCharReceived(char const c) override;
 
-		glm::vec2 GetObjectSize() const override;
-
+		
 		glm::vec4			font_color;
 		glm::vec4			border_color;
 		glm::vec2			padding;
-		int					border_size;
 		std::string			text;
-
-
+		int					border_size;
+		int					min_width;
 
 	private:
+		unsigned int		m_maxChar;
 		Rendering::Font*	m_font;
 
 		Rendering::Mesh		m_mesh;
 		Rendering::Shader	m_shader;
 
 	};
-
 
 }
 

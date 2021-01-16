@@ -1,7 +1,8 @@
 #include "Window.h"
 #include <iostream>
 
-Rendering::Window::Window(std::string const& name, glm::ivec2 const& size, Rendering::MenuManager *menuManager)
+
+Rendering::Window::Window(std::string const& name, glm::ivec2 const& size, Rendering::MenuManager* menuManager)
 	: m_window(nullptr), m_windowName(name), size(size), m_mousePosition({ 0, 0 }), clearColor({ 1, 1, 1, 1 }), m_menuManager(menuManager)
 {
 	if (!glfwInit())
@@ -52,6 +53,12 @@ Rendering::Window::Window(std::string const& name, glm::ivec2 const& size, Rende
 		window->OnKeyAction(key, scancode, action, mods);
 	};
 
+	auto charAction = [](GLFWwindow* win, unsigned int codepoint)
+	{
+		auto window = static_cast<Rendering::Window*>(glfwGetWindowUserPointer(win));
+		window->OnCharAction(codepoint);
+	};
+
 	glfwMakeContextCurrent(this->m_window);
 
 	glfwSetKeyCallback(this->m_window, keyAction);
@@ -59,6 +66,7 @@ Rendering::Window::Window(std::string const& name, glm::ivec2 const& size, Rende
 	glfwSetCursorPosCallback(this->m_window, cursorPos);
 	glfwSetScrollCallback(this->m_window, scroll);
 	glfwSetMouseButtonCallback(this->m_window, mouseButton);
+	glfwSetCharCallback(this->m_window, charAction);
 	//glfwSetInputMode(this->m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
@@ -135,8 +143,16 @@ void Rendering::Window::OnKeyAction(int key, int scancode, int action, int mods)
 	if (key == GLFW_KEY_ESCAPE)
 		glfwSetWindowShouldClose(this->m_window, true);
 
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 		m_menuManager->OnKeyPressed(key, mods);
 	else if (action == GLFW_RELEASE)
 		m_menuManager->OnKeyRelease(key, mods);
+}
+
+
+
+void Rendering::Window::OnCharAction(unsigned int codepoint)
+{
+	if (codepoint < 128)
+		m_menuManager->OnCharReceived((char)codepoint);
 }

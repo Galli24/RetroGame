@@ -34,8 +34,11 @@ void Rendering::MenuManager::OnScroll(double const x, double const y)
 
 void Rendering::MenuManager::OnMousePress(int const button, double const x, double const y)
 {
-	if (m_focusedItem)
+	if (m_focusedItem) 
+	{
 		m_focusedItem->OnLostFocus();
+		m_focusedItem = nullptr;
+	}
 
 	for (auto& elt : menu_nodes)
 	{
@@ -89,5 +92,11 @@ void Rendering::MenuManager::OnKeyRelease(int const key, int mods)
 {
 	if (m_focusedItem)
 		m_focusedItem->OnKeyRelease(key, mods);
+}
+
+void Rendering::MenuManager::OnCharReceived(char const c)
+{
+	if (m_focusedItem)
+		m_focusedItem->OnCharReceived(c);
 }
 

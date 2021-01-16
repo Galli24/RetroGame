@@ -63,61 +63,6 @@ void Rendering::TextBlock::UpdateGraphics(float deltaTime, glm::vec2 const& winS
 {
 }
 
-static glm::vec2 modify_position(glm::vec2 const& position, glm::vec2 size, int vertical, int horizontal)
-{
-	glm::vec2 pos = position;
-
-	if (vertical == -1)
-		pos.y -= size.y;
-	else if (vertical == 0)
-		pos.y -= size.y / 2;
-
-
-	if (horizontal == 1)
-		pos.x -= size.x;
-	else if (horizontal == 0)
-		pos.x -= size.x / 2;
-
-	return pos;
-}
-
-static glm::vec2 anchored_position(glm::vec2 const& position, glm::vec2 const& size, Rendering::Interface::IMenu::Anchor anchor)
-{
-	switch (anchor) {
-	case Rendering::Interface::IMenu::Anchor::TopLeft:
-		return modify_position(position, size, -1, -1);
-
-	case Rendering::Interface::IMenu::Anchor::Top:
-		return modify_position(position, size, -1, 0);
-
-	case Rendering::Interface::IMenu::Anchor::TopRight:
-		return modify_position(position, size, -1, 1);
-
-	case Rendering::Interface::IMenu::Anchor::Left:
-		return modify_position(position, size, 0, -1);
-
-	case Rendering::Interface::IMenu::Anchor::Center:
-		return modify_position(position, size, 0, 0);
-
-	case Rendering::Interface::IMenu::Anchor::Right:
-		return modify_position(position, size, 0, 1);
-
-	case Rendering::Interface::IMenu::Anchor::BottomLeft:
-		return modify_position(position, size, 1, -1);
-
-	case Rendering::Interface::IMenu::Anchor::Bot:
-		return modify_position(position, size, 1, 0);
-
-	case Rendering::Interface::IMenu::Anchor::BottomRight:
-		return modify_position(position, size, 1, 1);
-
-	default:
-		break;
-	}
-
-	return position;
-}
-
 void Rendering::TextBlock::Render(glm::vec2 const& winSize)
 {
 	glEnable(GL_BLEND);
@@ -163,4 +108,6 @@ void Rendering::TextBlock::OnMouseMove(double const x, double const y)
 void Rendering::TextBlock::OnKeyPressed(int const key, int const mods) { }
 
 void Rendering::TextBlock::OnKeyRelease(int const key, int const mods) { }
+
+void Rendering::TextBlock::OnCharReceived(char const c) { }
 

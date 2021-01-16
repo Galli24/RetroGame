@@ -26,6 +26,8 @@ namespace Rendering {
 
 		void OnKeyPressed(int const key, int mods);
 		void OnKeyRelease(int const key, int mods);
+		void OnCharReceived(char const c);
+
 
 		std::vector<Interface::IMenu*> menu_nodes;
 

@@ -167,3 +167,5 @@ void Rendering::Button::OnKeyPressed(int const key, int const mods) { }
 
 void Rendering::Button::OnKeyRelease(int const key, int const mods) { }
 
+void Rendering::Button::OnCharReceived(char const c) { }
+

@@ -18,6 +18,7 @@ namespace Rendering {
 
 			virtual void	OnKeyPressed(int const key, int const mods) = 0;
 			virtual void	OnKeyRelease(int const key, int const mods) = 0;
+			virtual void	OnCharReceived(char const c) = 0;
 
 		};
 

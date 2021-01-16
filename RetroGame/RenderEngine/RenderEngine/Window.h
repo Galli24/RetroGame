@@ -31,6 +31,7 @@ namespace Rendering {
 		void	OnMouseMove(double const x, double const y);
 		void	OnMousePress(int const button, int const action);
 		void	OnKeyAction(int key, int scancode, int action, int mods);
+		void	OnCharAction(unsigned int codepoint);
 		/*
 			Properties
 		*/

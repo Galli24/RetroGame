@@ -151,6 +151,19 @@ namespace Rendering {
 		return {x, y};
 	}
 
+	glm::vec2 Font::GetCharMaxSize()
+	{
+		glm::vec2 value{ 0, 0 };
+		for (unsigned char c = 0; c < 128; c++)
+		{
+			auto ch = m_charTextures[c];
+			auto& size = ch->texture.GetSize();
+			value.x = max(value.x, size.x + ch->bearing.x);
+			value.y = max(value.y, size.y + ch->bearing.y);
+		}
+		return value;
+	}
+
 	float Font::EvaluateYOffset(std::string const& str)
 	{
 		std::string::const_iterator c;

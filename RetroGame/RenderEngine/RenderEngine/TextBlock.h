@@ -27,6 +27,7 @@ namespace Rendering
 		void OnMouseMove(double const x, double const y) override;
 		void OnKeyPressed(int const key, int const mods) override;
 		void OnKeyRelease(int const key, int const mods) override;
+		void OnCharReceived(char const c) override;
 
 
 		glm::vec2 GetObjectSize() const override;
