@@ -22,8 +22,7 @@ namespace RenderEngineInteropTesting
                 1, Vector2.Zero, new Vector2(64, 96), new Vector2(3, 3));
             var font = new Font("D:/Code/Epitech/PL/RetroGame/RetroGame/RenderEngine/RenderEngineTesting/Fonts/Roboto.ttf", 36);
             var tb = new TextBlock(new Vector2(win.Size.X, 0), "", IMenu.Anchor.BottomRight, font, Vector2.One * 10);
-            Console.WriteLine(tb.Text);
-            sc.Nodes = new List<IGraphNode>() { a };
+            sc.AddNode(a);
             mm.Nodes = new List<IMenu>() { tb };
             var stopwatch = new Stopwatch();
             stopwatch.Start();

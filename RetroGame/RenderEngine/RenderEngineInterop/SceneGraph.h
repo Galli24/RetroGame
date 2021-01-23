@@ -24,6 +24,24 @@ namespace RenderEngine {
 		void Render(float deltaTime);
 		void Update(float deltaTime);
 
+
+		void AddNode(IGraphNode^ node) {
+			this->nativeResources->nodes.push_back(node->nativeResources);
+		}
+
+		void RemoveNode(IGraphNode^ node) {
+			for (auto it = this->nativeResources->nodes.begin(); it != this->nativeResources->nodes.end(); it++)
+			{
+				auto n = *it;
+				if (n->GetID() == node->nativeResources->GetID())
+				{
+					this->nativeResources->nodes.erase(it);
+					return;
+				}
+			}
+		}
+
+
 		property Window^ Win {
 
 			Window^ get() {
@@ -41,7 +59,7 @@ namespace RenderEngine {
 				return a;
 			}
 
-			void set(List<IGraphNode^> ^value) {
+			void set(List<IGraphNode^>^ value) {
 				this->nativeResources->nodes.clear();
 				for each (auto e in value)
 					this->nativeResources->nodes.push_back(e->nativeResources);
