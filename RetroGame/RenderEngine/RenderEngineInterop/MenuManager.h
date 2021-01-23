@@ -18,6 +18,24 @@ namespace RenderEngine {
 	public:
 		MenuManager();
 
+		void AddNode(IMenu^ node) {
+			this->nativeResources->menu_nodes.push_back(node->menuResources);
+		}
+
+		void RemoveNode(IMenu^ node) {
+			for (auto it = this->nativeResources->menu_nodes.begin(); it != this->nativeResources->menu_nodes.end(); it++)
+			{
+				auto n = *it;
+				if (n->GetID() == node->menuResources->GetID())
+				{
+					this->nativeResources->menu_nodes.erase(it);
+					return;
+				}
+			}
+		}
+
+
+
 		property List<IMenu^>^ Nodes {
 
 			List<IMenu^>^ get() {
@@ -30,7 +48,7 @@ namespace RenderEngine {
 			void set(List<IMenu^>^ value) {
 				this->nativeResources->menu_nodes.clear();
 				for each (auto e in value)
-					this->nativeResources->menu_nodes.push_back(dynamic_cast<Rendering::Interface::IMenu*>(e->nativeResources));
+					this->nativeResources->menu_nodes.push_back(dynamic_cast<Rendering::Interface::IMenu*>(e->graphNodeResources));
 			}
 
 		}

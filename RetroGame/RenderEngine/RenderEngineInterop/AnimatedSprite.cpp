@@ -14,7 +14,7 @@ RenderEngine::AnimatedSprite::AnimatedSprite(IEnumerable<String^>^ sprites, floa
 	for each (auto e in sprites)
 		sp.push_back(msclr::interop::marshal_as<std::string>(e));
 
-	this->nativeResources = new Rendering::AnimatedSprite(
+	this->graphNodeResources = new Rendering::AnimatedSprite(
 		sp, frameDuration, 
 		glm::vec2{ position.X, position.Y }, 
 		glm::vec2{ size.X, size.Y }, 
@@ -28,7 +28,7 @@ RenderEngine::AnimatedSprite::AnimatedSprite(IEnumerable<String^>^ sprites, floa
 		sp.push_back(msclr::interop::marshal_as<std::string>(e));
 
 
-	this->nativeResources = new Rendering::AnimatedSprite(
+	this->graphNodeResources = new Rendering::AnimatedSprite(
 		sp, frameDuration,
 		glm::vec2{ position.X, position.Y },
 		glm::vec2{ size.X, size.Y });

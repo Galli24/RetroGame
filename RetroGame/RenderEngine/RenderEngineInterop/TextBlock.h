@@ -18,14 +18,15 @@ namespace RenderEngine {
 
 		TextBlock(Vector2^ position, String^ str, IMenu::Anchor^ anchor, Font^ font, Vector2^ padding)
 		{
-			this->nativeResources = new Rendering::TextBlock(
+			SetResources(new Rendering::TextBlock(
 				{ position->X, position->Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				msclr::interop::marshal_as<std::string>(str),
 				font->nativeResources,
 				{ padding->X, padding->Y }
-			);
-			textblockResources = dynamic_cast<Rendering::TextBlock*>(this->nativeResources);
+			));
+
+			textblockResources = dynamic_cast<Rendering::TextBlock*>(this->menuResources);
 		}
 
 
@@ -76,7 +77,7 @@ namespace RenderEngine {
 
 			void set(Vector2 value)
 			{
-				textblockResources->padding = { value.X, value.Y};
+				textblockResources->padding = { value.X, value.Y };
 			}
 
 		}

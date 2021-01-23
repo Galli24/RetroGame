@@ -26,11 +26,29 @@ namespace RenderEngine {
 
 		IMenu() {}
 
-		IMenu(Rendering::Interface::IGraphNode* resources) {
-			this->nativeResources = resources;
+		IMenu(Rendering::Interface::IMenu* resources) {
+			this->graphNodeResources = resources;
+			this->menuResources = resources;
 		}
 
 
+		!IMenu() {
+			delete graphNodeResources;
+			delete menuResources;
+		}
+
+		~IMenu() {
+			this->!IMenu();
+		}
+
+
+		Rendering::Interface::IMenu* menuResources;
+
+		void SetResources(Rendering::Interface::IMenu* res) {
+			this->graphNodeResources = res;
+			this->menuResources = res;
+
+		}
 	};
 
 }
