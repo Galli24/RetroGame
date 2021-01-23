@@ -11,13 +11,13 @@ namespace RenderEngine {
 	{
 
 
-	public:
+	internal:
 
 		Window(Rendering::Window* win) {
 			this->nativeResources = win;
 		}
 
-
+	public:
 		bool ShouldClose() {
 			return this->nativeResources->ShouldClose();
 		}
