@@ -7,6 +7,7 @@ using namespace System::Numerics;
 
 namespace RenderEngine {
 
+
 	public ref class IGraphNode
 	{
 	internal:

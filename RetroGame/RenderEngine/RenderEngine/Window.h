@@ -13,8 +13,7 @@ namespace Rendering {
 	{
 	public:
 		Window(std::string const& name, glm::ivec2 const& size, Rendering::MenuManager *menuManager);
-
-
+		~Window();
 		/*
 			Logic
 		*/

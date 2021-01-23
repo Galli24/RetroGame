@@ -38,8 +38,8 @@ int main(void)
 	auto top = Rendering::TextBlock({ win.size.x / 2, win.size.y }, Rendering::Interface::IMenu::Anchor::Top, "top", &font, { 10, 10 });
 	auto topRight = Rendering::TextBlock({ win.size.x, win.size.y }, Rendering::Interface::IMenu::Anchor::TopRight, "topRight", &font, { 10, 10 });
 	auto left = Rendering::TextBlock({ 0, win.size.y / 2 }, Rendering::Interface::IMenu::Anchor::Left, "left", &font, { 10, 10 });
-	auto center = Rendering::TextBox((win.size / 2) - glm::ivec2{100, 100}, Rendering::Interface::IMenu::Anchor::Center, -1, & font, { 10, 10 });
-	auto right = Rendering::TextBlock({ win.size.x, win.size.y / 2 }, Rendering::Interface::IMenu::Anchor::Right, "right", &font, { 10, 10 });
+	auto center = Rendering::TextBox((win.size / 2), Rendering::Interface::IMenu::Anchor::Center, -1, & font, { 10, 10 });
+	auto right = Rendering::Button({ win.size.x, win.size.y / 2 }, Rendering::Interface::IMenu::Anchor::Right, "right", &font, { 10, 10 });
 	auto bottomLeft = Rendering::TextBlock({ 0, 0 }, Rendering::Interface::IMenu::Anchor::BottomLeft, "bottomLeft", &font, { 10, 10 });
 	auto bottom = Rendering::TextBlock({ win.size.x / 2, 0 }, Rendering::Interface::IMenu::Anchor::Bot, "bottom", &font, { 10, 10 });
 

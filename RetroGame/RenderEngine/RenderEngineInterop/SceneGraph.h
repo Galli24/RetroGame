@@ -5,7 +5,8 @@
 #include "../RenderEngine/SceneGraph.h"
 #include "BaseInterop.h"
 #include "IGraphNode.h"
-
+#include "MenuManager.h"
+#include "Window.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -18,10 +19,18 @@ namespace RenderEngine {
 	public ref class SceneGraph : BaseInterop<Rendering::SceneGraph>
 	{
 	public:
-		SceneGraph(Vector2 size, String^ name);
+		SceneGraph(Vector2 size, String^ name, MenuManager^ menuManager);
 
 		void Render(float deltaTime);
 		void Update(float deltaTime);
+
+		property Window^ Win {
+
+			Window^ get() {
+				return gcnew Window(&this->nativeResources->GetWindow());
+			}
+
+		}
 
 		property List<IGraphNode^> ^Nodes {
 

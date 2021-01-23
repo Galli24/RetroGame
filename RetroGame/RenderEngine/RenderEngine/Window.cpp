@@ -72,6 +72,11 @@ Rendering::Window::Window(std::string const& name, glm::ivec2 const& size, Rende
 
 }
 
+Rendering::Window::~Window()
+{
+	glfwDestroyWindow(m_window);
+}
+
 void Rendering::Window::ClearWindow() const
 {
 	glClearColor(this->clearColor[0], this->clearColor[1], this->clearColor[2], this->clearColor[3]);
