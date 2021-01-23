@@ -31,7 +31,7 @@ int main(void)
 	};
 	sceneGraph.nodes.push_back(&sprite);
 
-	auto font = Rendering::Font("./Fonts/arial.ttf", 36, 0);
+	auto font = Rendering::Font("./Fonts/arial.ttf", 36);
 
 	auto fps_counter = Rendering::TextBlock({ win.size.x, 0 }, Rendering::Interface::IMenu::Anchor::BottomRight, "", &font, { 10, 10 });
 	auto topLeft = Rendering::TextBlock({ 0, win.size.y }, Rendering::Interface::IMenu::Anchor::TopLeft, "topLeft", &font, { 10, 10 });

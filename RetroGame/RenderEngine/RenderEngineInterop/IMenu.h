@@ -11,12 +11,25 @@ using namespace RenderEngine;
 
 namespace RenderEngine {
 
-	ref class IMenu : public IGraphNode
+
+
+	public ref class IMenu : public IGraphNode
 	{
 	public:
-		IMenu(Rendering::Interface::IMenu* resources) {
+
+		enum class Anchor
+		{
+			TopLeft, Top, TopRight,
+			Left, Center, Right,
+			BottomLeft, Bot, BottomRight
+		};
+
+		IMenu() {}
+
+		IMenu(Rendering::Interface::IGraphNode* resources) {
 			this->nativeResources = resources;
 		}
+
 
 	};
 

@@ -25,6 +25,7 @@ namespace RenderEngine {
 			this->!IGraphNode();
 		}
 
+
 		Rendering::Interface::IGraphNode* nativeResources;
 
 	public:

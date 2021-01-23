@@ -9,7 +9,7 @@ namespace Rendering {
 		class IMenu : public IGraphNode, public IInteractibleObject
 		{
 		public:
-			enum class Anchor {
+			enum class Anchor : int {
 				TopLeft, Top, TopRight,
 				Left, Center, Right,
 				BottomLeft, Bot, BottomRight

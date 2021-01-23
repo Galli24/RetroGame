@@ -3,7 +3,7 @@
 
 
 Rendering::Window::Window(std::string const& name, glm::ivec2 const& size, Rendering::MenuManager* menuManager)
-	: m_window(nullptr), m_windowName(name), size(size), m_mousePosition({ 0, 0 }), clearColor({ 1, 1, 1, 1 }), m_menuManager(menuManager)
+	: m_window(nullptr), m_windowName(name), size(size), m_mousePosition({ 0, 0 }), clearColor({ 0, 0, 0, 1 }), m_menuManager(menuManager)
 {
 	if (!glfwInit())
 		throw std::exception("Can't init GLFW");

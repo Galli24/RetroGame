@@ -8,7 +8,7 @@
 
 namespace Rendering {
 
-	Font::Font(std::string const& path, int fontSize, int id) : ID(id), m_charTextures()
+	Font::Font(std::string const& path, int fontSize) : m_charTextures()
 	{
 		FT_Library ft = nullptr;
 		if (FT_Init_FreeType(&ft))

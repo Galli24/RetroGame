@@ -84,7 +84,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\external_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>STB_IMAGE.lib;glad.lib;glm_static.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>STB_IMAGE.lib;glad.lib;glm_static.lib;glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\external_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -108,7 +108,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\external_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>STB_IMAGE.lib;glad.lib;glm_static.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>STB_IMAGE.lib;glad.lib;glm_static.lib;glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)RenderEngine\external_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="BaseInterop.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="IGraphNode.h" />
     <ClInclude Include="IMenu.h" />
     <ClInclude Include="MenuManager.h" />
