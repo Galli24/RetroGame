@@ -16,21 +16,29 @@ namespace RenderEngineInteropTesting
             var mm = new MenuManager();
             var sc = new SceneGraph(new Vector2(1920, 1080), "C# Window", mm);
             var win = sc.Win;
-            var a = new AnimatedSprite(new[] {
+            /*var a = new AnimatedSprite(new[] {
                 "C:\\Users\\jerem\\Pictures\\PixelArt\\Bowser.png",
                 "C:\\Users\\jerem\\Pictures\\PixelArt\\BowserPink.png",
                 "C:\\Users\\jerem\\Pictures\\PixelArt\\BowserBlue.png", },
-                1, Vector2.Zero, new Vector2(64, 96), new Vector2(3, 3));
+            1, Vector2.Zero, new Vector2(64, 96), new Vector2(3, 3));
             var font = new Font("D:/Code/Epitech/PL/RetroGame/RetroGame/RenderEngine/RenderEngineTesting/Fonts/Roboto.ttf", 36);
+            */
+            var a = new AnimatedSprite(new[] {
+                @"D:\Projects\Github Projects\RetroGame\RetroGame\x64\Release\Sprites\Bowser.png",
+                @"D:\Projects\Github Projects\RetroGame\RetroGame\x64\Release\Sprites\BowserPink.png",
+                @"D:\Projects\Github Projects\RetroGame\RetroGame\x64\Release\Sprites\BowserBlue.png", },
+            1, Vector2.Zero, new Vector2(64, 96), new Vector2(3, 3));
+            var font = new Font(@"D:\Projects\Github Projects\RetroGame\RetroGame\x64\Release\Fonts\Roboto.ttf", 36);
             var tb = new TextBlock(new Vector2(win.Size.X, 0), "", IMenu.Anchor.BottomRight, font, Vector2.One * 10);
             var button = new Button(win.Size / 2, "this is a button", IMenu.Anchor.Center, font, Vector2.One * 10);
-            var field = new TextBox(new Vector2(win.Size.X/2, win.Size.Y), IMenu.Anchor.Center, font, Vector2.One * 10);
+            //var field = new TextBox(new Vector2(win.Size.X / 2, 0), IMenu.Anchor.Bot, font, Vector2.One * 10);
+            var field = new TextBox(win.Size / 2, IMenu.Anchor.Center, font, Vector2.One * 10);
             button.OnMousePress += (k, x, y) => Console.WriteLine($"Tamer {k} {x} {y}");
             tb.OnScroll += (x, y) => Console.WriteLine($"Scroll {x} {y}");
             field.OnCharReceived += (c) => Console.WriteLine($"WOLA ON A RECU {c}");
             sc.AddNode(a);
             mm.AddNode(tb);
-            mm.AddNode(button);
+            //mm.AddNode(button);
             mm.AddNode(field);
             var stopwatch = new Stopwatch();
             stopwatch.Start();

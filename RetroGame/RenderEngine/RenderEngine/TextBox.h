@@ -13,7 +13,7 @@ namespace Rendering {
 	{
 	public:
 
-		TextBox(glm::vec2 const& pos, IMenu::Anchor anchor, Font* font, glm::vec2 const& padding, int maxCharDisplayed = 20, int minWidth = 500, unsigned int maxChar = -1);
+		TextBox(glm::vec2 const& pos, IMenu::Anchor anchor, Font* font, glm::vec2 const& padding, int minWidth = 500, unsigned int maxChar = -1);
 
 		void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) override;
 		void Render(glm::vec2 const& winSize) override;
@@ -38,7 +38,6 @@ namespace Rendering {
 		std::string			text;
 		int					border_size;
 		int					min_width;
-		int					max_char_displayed;
 
 	private:
 		unsigned int		m_maxChar;

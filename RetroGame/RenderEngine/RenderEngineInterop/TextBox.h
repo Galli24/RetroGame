@@ -16,8 +16,8 @@ namespace RenderEngine {
 		gcroot<RenderEngine::IMenu^> _interop;
 
 	public:
-		TextBoxWrapper(gcroot<RenderEngine::IMenu^> interop, glm::vec2 const& pos, IMenu::Anchor anchor, Rendering::Font* font, glm::vec2 const& padding, int maxCharDisplayed = 20, int minWidth = 500, unsigned int maxChar = -1)
-			: Rendering::TextBox(pos, anchor, font, padding, maxCharDisplayed, minWidth, maxChar),
+		TextBoxWrapper(gcroot<RenderEngine::IMenu^> interop, glm::vec2 const& pos, IMenu::Anchor anchor, Rendering::Font* font, glm::vec2 const& padding, int minWidth = 500, unsigned int maxChar = -1)
+			: Rendering::TextBox(pos, anchor, font, padding, minWidth, maxChar),
 			_interop(interop)
 		{}
 
@@ -79,40 +79,25 @@ namespace RenderEngine {
 		}
 
 
-		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int maxCharDisplayed) {
+		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int minWidth) {
 			SetResources(new TextBoxWrapper(this,
 				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				font->nativeResources,
 				{ padding.X, padding.Y },
-				maxCharDisplayed
-			));
-
-			textboxResources = dynamic_cast<TextBoxWrapper*>(this->menuResources);
-		}
-
-		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int maxCharDisplayed, int minWidth)
-		{
-			SetResources(new TextBoxWrapper(this,
-				{ position.X, position.Y },
-				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
-				font->nativeResources,
-				{ padding.X, padding.Y },
-				maxCharDisplayed,
 				minWidth
 			));
 
 			textboxResources = dynamic_cast<TextBoxWrapper*>(this->menuResources);
 		}
 
-		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int maxCharDisplayed, int minWidth, int maxCharsInBox)
+		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int minWidth, int maxCharsInBox)
 		{
 			SetResources(new TextBoxWrapper(this,
 				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				font->nativeResources,
 				{ padding.X, padding.Y },
-				maxCharDisplayed,
 				minWidth,
 				maxCharsInBox
 			));
@@ -194,19 +179,6 @@ namespace RenderEngine {
 			void set(int value)
 			{
 				textboxResources->min_width = value;
-			}
-
-		}
-
-		property int MaxCharDisplayed {
-
-			int get() {
-				return textboxResources->max_char_displayed;
-			}
-
-			void set(int value)
-			{
-				textboxResources->max_char_displayed = value;
 			}
 
 		}

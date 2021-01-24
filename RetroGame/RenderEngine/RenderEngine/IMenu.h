@@ -31,12 +31,12 @@ namespace Rendering {
 				if (m_anchor == Anchor::BottomRight || m_anchor == Anchor::Right || m_anchor == Anchor::TopRight)
 					pos.x -= size.x;
 				else if (m_anchor == Anchor::Top || m_anchor == Anchor::Center || m_anchor == Anchor::Bot)
-					pos.x -= size.x / 2;
+					pos.x -= std::floor(size.x / 2.f);	
 
 				if (m_anchor == Anchor::TopLeft || m_anchor == Anchor::Top || m_anchor == Anchor::TopRight)
 					pos.y -= size.y;
 				else if (m_anchor == Anchor::Left || m_anchor == Anchor::Center || m_anchor == Anchor::Right)
-					pos.y -= size.y / 2;
+					pos.y -= std::floor(size.y / 2.f);
 
 				return pos;
 			}

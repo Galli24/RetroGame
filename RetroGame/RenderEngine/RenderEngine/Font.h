@@ -36,6 +36,7 @@ namespace Rendering {
 		void RenderText(std::string const& str, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color);
 		void RenderChar(unsigned char const c, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color);
 		glm::vec2 EvaluateSize(std::string const& str);
+		glm::vec2 GetFitNumChars(std::string const& str, int const& minWidth);
 		glm::vec2 GetCharMaxSize();
 		float EvaluateYOffset(std::string const& str);
 

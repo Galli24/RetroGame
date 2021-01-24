@@ -151,6 +151,26 @@ namespace Rendering {
 		return {x, y};
 	}
 
+	glm::vec2 Font::GetFitNumChars(std::string const& str, int const& minWidth)
+	{
+		float x = 0;
+		int chars = 0;
+		for (auto c = str.crbegin(); c != str.crend(); c++)
+		{
+			auto ch = m_charTextures[*c];
+			auto& size = ch->texture.GetSize();
+
+			if (x + (ch->advance >> 6) <= minWidth)
+			{
+				x += (ch->advance >> 6);
+				chars++;
+			}
+			else
+				break;
+		}
+		return { chars, x };
+	}
+
 	glm::vec2 Font::GetCharMaxSize()
 	{
 		glm::vec2 value{ 0, 0 };
