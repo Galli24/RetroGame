@@ -20,16 +20,8 @@ void Rendering::MenuManager::Update(float const deltaTime, glm::vec2 const& winS
 
 void Rendering::MenuManager::OnScroll(double const x, double const y)
 {
-	for (auto& elt : menu_nodes)
-	{
-		auto pos = elt->GetActualPosition();
-		auto size = elt->GetObjectSize();
-		if (isInside(size, pos, x, y))
-		{
-			elt->OnScroll(x, y);
-			break;
-		}
-	}
+	if (m_focusedItem)
+		m_focusedItem->OnScroll(x, y);
 }
 
 void Rendering::MenuManager::OnMousePress(int const button, double const x, double const y)

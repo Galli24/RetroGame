@@ -133,9 +133,6 @@ void Rendering::Window::OnMouseMove(double const xpos, double const ypos)
 
 void Rendering::Window::OnMousePress(int const button, int const action)
 {
-	std::cout << "Pressed: button = " << button << ", action = " << action << std::endl;
-
-
 	if (action == GLFW_PRESS)
 		m_menuManager->OnMousePress(button, m_mousePosition.x, m_mousePosition.y);
 	else if (action == GLFW_RELEASE)

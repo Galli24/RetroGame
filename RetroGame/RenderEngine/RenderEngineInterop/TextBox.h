@@ -4,34 +4,83 @@
 #include "Font.h"
 #include "../RenderEngine/TextBox.h"
 #include "../RenderEngine/IMenu.h"
+#include "../RenderEngine/Font.h"
 #include <string>
 
 
 namespace RenderEngine {
 
+	class TextBoxWrapper : public Rendering::TextBox
+	{
+	private:
+		gcroot<RenderEngine::IMenu^> _interop;
+
+	public:
+		TextBoxWrapper(gcroot<RenderEngine::IMenu^> interop, glm::vec2 const& pos, IMenu::Anchor anchor, Rendering::Font* font, glm::vec2 const& padding, int maxCharDisplayed = 20, int minWidth = 500, unsigned int maxChar = -1)
+			: Rendering::TextBox(pos, anchor, font, padding, maxCharDisplayed, minWidth, maxChar),
+			_interop(interop)
+		{}
+
+		void OnScroll(double const x, double const y) override {
+			Rendering::TextBox::OnScroll(x, y);
+			_interop->RaiseScroll(x, y);
+		}
+
+		void OnMousePress(int const key, double const x, double const y) override {
+			Rendering::TextBox::OnMousePress(key, x, y);
+			_interop->RaiseMousePress(key, x, y);
+		}
+
+		void OnMouseRelease(int const key, double const x, double const y) override {
+			Rendering::TextBox::OnMouseRelease(key, x, y);
+			_interop->RaiseMouseRelease(key, x, y);
+		}
+
+		void OnMouseMove(double const x, double const y) override {
+			Rendering::TextBox::OnMouseMove(x, y);
+			_interop->RaiseMouseMove(x, y);
+		}
+
+		void OnKeyPressed(int const key, int const mods) override {
+			Rendering::TextBox::OnKeyPressed(key, mods);
+			_interop->RaiseKeyPressed(key, mods);
+		}
+
+		void OnKeyRelease(int const key, int const mods) override {
+			Rendering::TextBox::OnKeyRelease(key, mods);
+			_interop->RaiseKeyRelease(key, mods);
+		}
+
+		void OnCharReceived(char const c) override {
+			Rendering::TextBox::OnCharReceived(c);
+			_interop->RaiseCharReceived(c);
+		}
+
+	};
+
 	public ref class TextBox : IMenu
 	{
 	private:
-		Rendering::TextBox* textboxResources;
+		TextBoxWrapper* textboxResources;
 
 	public:
 
 
 		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding)
 		{
-			SetResources(new Rendering::TextBox(
+			SetResources(new TextBoxWrapper(this,
 				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				font->nativeResources,
 				{ padding.X, padding.Y }
 			));
 
-			textboxResources = dynamic_cast<Rendering::TextBox*>(this->menuResources);
+			textboxResources = dynamic_cast<TextBoxWrapper*>(this->menuResources);
 		}
 
 
 		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int maxCharDisplayed) {
-			SetResources(new Rendering::TextBox(
+			SetResources(new TextBoxWrapper(this,
 				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				font->nativeResources,
@@ -39,12 +88,12 @@ namespace RenderEngine {
 				maxCharDisplayed
 			));
 
-			textboxResources = dynamic_cast<Rendering::TextBox*>(this->menuResources);
+			textboxResources = dynamic_cast<TextBoxWrapper*>(this->menuResources);
 		}
 
 		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int maxCharDisplayed, int minWidth)
 		{
-			SetResources(new Rendering::TextBox(
+			SetResources(new TextBoxWrapper(this,
 				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				font->nativeResources,
@@ -53,12 +102,12 @@ namespace RenderEngine {
 				minWidth
 			));
 
-			textboxResources = dynamic_cast<Rendering::TextBox*>(this->menuResources);
+			textboxResources = dynamic_cast<TextBoxWrapper*>(this->menuResources);
 		}
 
 		TextBox(Vector2 position, IMenu::Anchor^ anchor, Font^ font, Vector2 padding, int maxCharDisplayed, int minWidth, int maxCharsInBox)
 		{
-			SetResources(new Rendering::TextBox(
+			SetResources(new TextBoxWrapper(this,
 				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				font->nativeResources,
@@ -68,7 +117,7 @@ namespace RenderEngine {
 				maxCharsInBox
 			));
 
-			textboxResources = dynamic_cast<Rendering::TextBox*>(this->menuResources);
+			textboxResources = dynamic_cast<TextBoxWrapper*>(this->menuResources);
 		}
 
 

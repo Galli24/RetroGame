@@ -9,16 +9,64 @@
 
 namespace RenderEngine {
 
+	class TextBlockWrapper : public Rendering::TextBlock
+	{
+	private:
+		gcroot<RenderEngine::IMenu^> _interop;
+
+	public:
+		TextBlockWrapper(gcroot<RenderEngine::IMenu^> interop, glm::vec2 const& pos, IMenu::Anchor anchor, std::string const& str, Rendering::Font* font, glm::vec2 const& padding)
+			: Rendering::TextBlock(pos, anchor, str, font, padding),
+			_interop(interop)
+		{}
+
+		void OnScroll(double const x, double const y) override {
+			Rendering::TextBlock::OnScroll(x, y);
+			_interop->RaiseScroll(x, y);
+		}
+
+		void OnMousePress(int const key, double const x, double const y) override {
+			Rendering::TextBlock::OnMousePress(key, x, y);
+			_interop->RaiseMousePress(key, x, y);
+		}
+
+		void OnMouseRelease(int const key, double const x, double const y) override {
+			Rendering::TextBlock::OnMouseRelease(key, x, y);
+			_interop->RaiseMouseRelease(key, x, y);
+		}
+
+		void OnMouseMove(double const x, double const y) override {
+			Rendering::TextBlock::OnMouseMove(x, y);
+			_interop->RaiseMouseMove(x, y);
+		}
+
+		void OnKeyPressed(int const key, int const mods) override {
+			Rendering::TextBlock::OnKeyPressed(key, mods);
+			_interop->RaiseKeyPressed(key, mods);
+		}
+
+		void OnKeyRelease(int const key, int const mods) override {
+			Rendering::TextBlock::OnKeyRelease(key, mods);
+			_interop->RaiseKeyRelease(key, mods);
+		}
+
+		void OnCharReceived(char const c) override {
+			Rendering::TextBlock::OnCharReceived(c);
+			_interop->RaiseCharReceived(c);
+		}
+
+	};
+
 	public ref class TextBlock : IMenu
 	{
 	private:
-		Rendering::TextBlock* textblockResources;
+		TextBlockWrapper* textblockResources;
 
 	public:
 
 		TextBlock(Vector2 position, String^ str, IMenu::Anchor^ anchor, Font^ font, Vector2 padding)
 		{
-			SetResources(new Rendering::TextBlock(
+			SetResources(new TextBlockWrapper(this,
 				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				msclr::interop::marshal_as<std::string>(str),
@@ -26,7 +74,7 @@ namespace RenderEngine {
 				{ padding.X, padding.Y }
 			));
 
-			textblockResources = dynamic_cast<Rendering::TextBlock*>(this->menuResources);
+			textblockResources = dynamic_cast<TextBlockWrapper*>(this->menuResources);
 		}
 
 
