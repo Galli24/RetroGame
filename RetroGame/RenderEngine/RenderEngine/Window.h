@@ -38,7 +38,7 @@ namespace Rendering {
 		// Ranged Value [0, 1]
 		glm::vec4		clearColor;
 		glm::ivec2		size;
-
+		void (*keyCallback)(int const, int const);
 
 	private:
 		GLFWwindow*				m_window;

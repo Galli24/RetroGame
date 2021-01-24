@@ -134,6 +134,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="TextBlock.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
     </ClCompile>
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="TextBlock.cpp" />
+    <ClCompile Include="TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />

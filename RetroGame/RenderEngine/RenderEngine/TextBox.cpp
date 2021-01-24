@@ -1,7 +1,7 @@
 #include "TextBox.h"
 
-Rendering::TextBox::TextBox(glm::vec2 const& pos, IMenu::Anchor anchor, unsigned int maxChar, Font* font, glm::vec2 const& padding, int minWidth)
-	: IMenu(pos, anchor), m_maxChar(maxChar), m_font(font), font_color(1, 1, 1, 1), border_color(1, 1, 1, 1), padding(padding), border_size(2), min_width(minWidth)
+Rendering::TextBox::TextBox(glm::vec2 const& pos, IMenu::Anchor anchor, Font* font, glm::vec2 const& padding, int maxCharDisplayed, int minWidth, unsigned int maxChar)
+	: IMenu(pos, anchor), m_maxChar(maxChar), m_font(font), font_color(1, 1, 1, 1), border_color(1, 1, 1, 1), padding(padding), border_size(2), min_width(minWidth), max_char_displayed(maxCharDisplayed)
 {
 	std::string fs =
 		"#version 330 core\n"
@@ -64,7 +64,7 @@ void Rendering::TextBox::Render(glm::vec2 const& winSize)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	auto digits = max((int)text.size() - 10, 0);
+	auto digits = max((int)text.size() - max_char_displayed, 0);
 	auto value = text.substr(digits);
 
 	auto fontOffset = glm::vec2{ 0, m_font->EvaluateYOffset(value) };
@@ -85,7 +85,7 @@ void Rendering::TextBox::Render(glm::vec2 const& winSize)
 
 glm::vec2 Rendering::TextBox::GetObjectSize() const
 {
-	auto digits = max((int)text.size() - 10, 0);
+	auto digits = max((int)text.size() - max_char_displayed, 0);
 	auto value = text.substr(digits);
 
 

@@ -13,7 +13,7 @@ namespace Rendering {
 	{
 	public:
 
-		TextBox(glm::vec2 const& pos, IMenu::Anchor anchor, unsigned int maxChar, Font* font, glm::vec2 const& padding, int minWidth = 150);
+		TextBox(glm::vec2 const& pos, IMenu::Anchor anchor, Font* font, glm::vec2 const& padding, int maxCharDisplayed = 10, int minWidth = 500, unsigned int maxChar = -1);
 
 		void UpdateGraphics(float deltaTime, glm::vec2 const& winSize) override;
 		void Render(glm::vec2 const& winSize) override;
@@ -31,17 +31,18 @@ namespace Rendering {
 		void OnKeyRelease(int const key, int const mods) override;
 		void OnCharReceived(char const c) override;
 
-		
+
 		glm::vec4			font_color;
 		glm::vec4			border_color;
 		glm::vec2			padding;
 		std::string			text;
 		int					border_size;
 		int					min_width;
+		int					max_char_displayed;
 
 	private:
 		unsigned int		m_maxChar;
-		Rendering::Font*	m_font;
+		Rendering::Font* m_font;
 
 		Rendering::Mesh		m_mesh;
 		Rendering::Shader	m_shader;

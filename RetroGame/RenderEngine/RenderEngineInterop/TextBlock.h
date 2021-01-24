@@ -16,14 +16,14 @@ namespace RenderEngine {
 
 	public:
 
-		TextBlock(Vector2^ position, String^ str, IMenu::Anchor^ anchor, Font^ font, Vector2^ padding)
+		TextBlock(Vector2 position, String^ str, IMenu::Anchor^ anchor, Font^ font, Vector2 padding)
 		{
 			SetResources(new Rendering::TextBlock(
-				{ position->X, position->Y },
+				{ position.X, position.Y },
 				static_cast<Rendering::Interface::IMenu::Anchor>((int)*anchor),
 				msclr::interop::marshal_as<std::string>(str),
 				font->nativeResources,
-				{ padding->X, padding->Y }
+				{ padding.X, padding.Y }
 			));
 
 			textblockResources = dynamic_cast<Rendering::TextBlock*>(this->menuResources);
