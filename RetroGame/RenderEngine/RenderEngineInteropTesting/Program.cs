@@ -23,10 +23,11 @@ namespace RenderEngineInteropTesting
                 1, Vector2.Zero, new Vector2(64, 96), new Vector2(3, 3));
             var font = new Font("D:/Code/Epitech/PL/RetroGame/RetroGame/RenderEngine/RenderEngineTesting/Fonts/Roboto.ttf", 36);
             var tb = new TextBlock(new Vector2(win.Size.X, 0), "", IMenu.Anchor.BottomRight, font, Vector2.One * 10);
-            var field = new TextBox(win.Size / 2, IMenu.Anchor.Center, font, Vector2.One * 10, 150);
+            var button = new Button(win.Size / 2, "this is a button", IMenu.Anchor.Center, font, Vector2.One * 10);
+            button.OnMousePress += (k, x, y) => Console.WriteLine($"Tamer {k} {x} {y}");
             sc.AddNode(a);
-            mm.AddNode(tb);
-            mm.AddNode(field);
+            //mm.AddNode(tb);
+            mm.AddNode(button);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var r = new Random();

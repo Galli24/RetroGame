@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="BaseInterop.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="IGraphNode.h" />
     <ClInclude Include="IMenu.h" />
@@ -140,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="IGraphNode.cpp" />
     <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="pch.cpp">
