@@ -6,7 +6,7 @@ namespace RetroGame
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             RenderService.Instance.Init(); // pd
             RenderService.Instance.SetFPSVisibility(true);

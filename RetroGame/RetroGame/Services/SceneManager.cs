@@ -34,7 +34,7 @@ namespace RetroGame.Services
 
         public SceneManager()
         {
-            //RenderService.Instance.Window.OnResize += (_, __) => _currentScene?.OnResize();
+            RenderService.Instance.Window.OnWindowResize += (_, __) => _currentScene?.OnResize();
         }
 
         #region Interface

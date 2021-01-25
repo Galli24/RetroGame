@@ -41,11 +41,13 @@ namespace RenderEngine {
 			}
 		}
 
-
+	private:
+		Window ^_win;
+	public:
 		property Window^ Win {
 
 			Window^ get() {
-				return gcnew Window(&this->nativeResources->GetWindow());
+				return _win;
 			}
 
 		}

@@ -1,6 +1,4 @@
 #pragma once
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 #include <vector>
@@ -26,7 +24,8 @@ namespace Rendering {
 
 	public:
 		// Defines the OpenGL windows attributes (window size and name)
-		SceneGraph(glm::ivec2 const& windowSize, std::string const& windowName, Rendering::MenuManager *manager);
+		SceneGraph(glm::ivec2 const& windowSize, std::string const& windowName, Rendering::MenuManager* manager);
+		SceneGraph(Rendering::Window *window, Rendering::MenuManager* manager);
 
 		// Destroy the OpenGL context
 		~SceneGraph();
@@ -39,14 +38,14 @@ namespace Rendering {
 
 		void Blit() const;
 		// Get the Window.
-		Rendering::Window &GetWindow();
+		Rendering::Window *GetWindow();
 		Rendering::MenuManager* GetMenuManager();
 
 
 		std::vector<Interface::IGraphNode*> nodes; 
 
 	private:
-		Rendering::Window m_window;
+		Rendering::Window *m_window;
 		Rendering::MenuManager *m_menuManager;
 	};
 

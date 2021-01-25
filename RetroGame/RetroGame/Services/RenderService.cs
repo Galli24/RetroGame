@@ -58,7 +58,7 @@ namespace RetroGame.Services
             _sceneGraph = new SceneGraph(new Vector2(1920, 1080), "RetroGame Pog", _menuManager);
             _frameStopwatch.Start();
             var fpsFont = FontManager.Instance["Roboto"];
-            _fpsCounter = new TextBlock(new Vector2(Window.Size.X, 0), "", IMenu.Anchor.BottomRight, fpsFont, Vector2.One * 10);
+            _fpsCounter = new TextBlock(new Vector2(0, 0), "", IMenu.Anchor.BottomLeft, fpsFont, Vector2.One * 10);
         }
 
         public void LoadMenu(IEnumerable<IMenu> items, bool clearScene = false)

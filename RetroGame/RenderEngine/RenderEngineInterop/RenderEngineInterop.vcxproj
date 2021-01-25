@@ -153,6 +153,7 @@
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="TextBlock.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />

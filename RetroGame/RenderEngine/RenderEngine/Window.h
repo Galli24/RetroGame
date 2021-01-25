@@ -25,12 +25,12 @@ namespace Rendering {
 			Callbacks
 		*/
 
-		void	OnWindowResize(int const x, int const y);
-		void	OnScroll(double const x, double const y);
-		void	OnMouseMove(double const x, double const y);
-		void	OnMousePress(int const button, int const action);
-		void	OnKeyAction(int key, int scancode, int action, int mods);
-		void	OnCharAction(unsigned int codepoint);
+		virtual void	OnWindowResize(int const x, int const y);
+		virtual void	OnScroll(double const x, double const y);
+		virtual void	OnMouseMove(double const x, double const y);
+		virtual void	OnMousePress(int const button, int const action);
+		virtual void	OnKeyAction(int key, int scancode, int action, int mods);
+		virtual void	OnCharAction(unsigned int codepoint);
 		/*
 			Properties
 		*/
@@ -38,7 +38,6 @@ namespace Rendering {
 		// Ranged Value [0, 1]
 		glm::vec4		clearColor;
 		glm::ivec2		size;
-		void (*keyCallback)(int const, int const);
 
 	private:
 		GLFWwindow*				m_window;
