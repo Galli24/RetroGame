@@ -8,9 +8,6 @@ namespace RetroGame
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
-
             RenderService.Instance.Init(); // pd
             RenderService.Instance.SetFPSVisibility(true);
             var s1 = new Scene1();
