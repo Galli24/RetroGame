@@ -66,17 +66,20 @@ namespace AuthServer.Services
 
         public User Create(User user, string password)
         {
+            if (string.IsNullOrWhiteSpace(user.Email))
+                throw new RegisterException("Email can't be empty");
+
             if (string.IsNullOrWhiteSpace(user.Username))
                 throw new RegisterException("Username can't be empty");
-
-            if (_users.Find(duplicateUser => duplicateUser.Username == user.Username).FirstOrDefault() != null)
-                throw new RegisterException("Username already used");
 
             if (string.IsNullOrWhiteSpace(password))
                 throw new RegisterException("Password can't be empty");
 
-            if (string.IsNullOrWhiteSpace(user.Email))
-                throw new RegisterException("Email can't be empty");
+            if (_users.Find(duplicateUser => duplicateUser.Email == user.Email).FirstOrDefault() != null)
+                throw new RegisterException("Email already used");
+
+            if (_users.Find(duplicateUser => duplicateUser.Username == user.Username).FirstOrDefault() != null)
+                throw new RegisterException("Username already used");
 
             user.PasswordHash = _passwordHasher.HashPassword(user, password);
 
