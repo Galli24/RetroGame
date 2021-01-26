@@ -26,7 +26,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderEngineInteropTesting"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerTesting", "Network\ServerTesting\ServerTesting.csproj", "{38D6BC23-C169-4AB1-9913-DF64563ABCCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroGame", "RetroGame\RetroGame.csproj", "{EDCD6876-55BA-462E-8E49-62C2074CC367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroGame", "RetroGame\RetroGame.csproj", "{EDCD6876-55BA-462E-8E49-62C2074CC367}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A448986D-CB52-4E44-8D0B-B19C20E1A31C} = {A448986D-CB52-4E44-8D0B-B19C20E1A31C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +72,7 @@ Global
 		{EDCD6876-55BA-462E-8E49-62C2074CC367}.Debug|x64.ActiveCfg = Debug|x64
 		{EDCD6876-55BA-462E-8E49-62C2074CC367}.Debug|x64.Build.0 = Debug|x64
 		{EDCD6876-55BA-462E-8E49-62C2074CC367}.Release|x64.ActiveCfg = Release|x64
+		{EDCD6876-55BA-462E-8E49-62C2074CC367}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
