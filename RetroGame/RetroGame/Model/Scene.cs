@@ -29,6 +29,11 @@ namespace RetroGame.Model
             RenderService.Instance.LoadMenu(Menu, RequireClearOnLoad);
         }
 
+        protected void Reload()
+        {
+            RenderService.Instance.LoadMenu(Menu, true);
+        }
+
         public abstract void BuildScene();
         public void OnResize() => Enter();
         public void Exit()
