@@ -31,7 +31,7 @@ namespace RetroGame.Scenes
             var headerYPosition = (sc.Window.Size.Y / 2) + .4f * sc.Window.Size.Y;
             float playerYPosition(int i) => (sc.Window.Size.Y * .75f) - i * 70;
             string readyButtonText() => LobbyManager.Instance.IsReady ? "Not ready" : "Ready";
-            Vector4 playerReadyColor(int index) => LobbyManager.Instance.PlayerList.ElementAt(index).Value ? new Vector4(.8f, .8f, .8f, 1) : new Vector4(.25f, .25f, .25f, 1);
+            Vector4 playerReadyColor(int index) => LobbyManager.Instance.PlayerList.ElementAt(index).Value.IsReady ? new Vector4(.8f, .8f, .8f, 1) : new Vector4(.25f, .25f, .25f, 1);
 
 
             var title = new TextBlock(new Vector2(sc.Window.Size.X / 2, headerYPosition),
@@ -62,7 +62,11 @@ namespace RetroGame.Scenes
             };
 
 
-            _menu = _players.Concat(new List<IMenu> { title, leaveBt, readyBt }).ToList();
+            _menu = _players.Concat(new List<IMenu> {
+                title,
+                leaveBt,
+                LobbyManager.Instance.AllPlayersReady() && LobbyManager.Instance.IsHost ? startButton : readyBt
+            }).ToList();
         }
 
     }

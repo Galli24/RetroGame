@@ -1,7 +1,9 @@
 ﻿using LibNetworking.Messages.Server;
+using RetroGame.Model;
 using RetroGame.Scenes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace RetroGame.Services
@@ -28,13 +30,18 @@ namespace RetroGame.Services
         public string LobbyName { get; private set; }
         public bool HasPassword { get; private set; }
         public ushort MaxSlots { get; private set; }
-        public Dictionary<String, bool> PlayerList { get; private set; } = new Dictionary<string, bool>();
+        public Dictionary<string, Player> PlayerList { get; private set; } = new Dictionary<string, Player>();
 
-        public bool IsHost { get; private set; }
+        public bool IsHost
+        {
+            get => PlayerList[UserManager.Instance.Username].IsHost;
+            private set => PlayerList[UserManager.Instance.Username].IsHost = value;
+        }
+
         public bool IsReady
         {
-            get => PlayerList[UserManager.Instance.Username];
-            private set => PlayerList[UserManager.Instance.Username] = value;
+            get => PlayerList[UserManager.Instance.Username].IsReady;
+            private set => PlayerList[UserManager.Instance.Username].IsReady = value;
         }
 
         #endregion
@@ -57,13 +64,15 @@ namespace RetroGame.Services
             MaxSlots = maxSlots;
 
             PlayerList.Clear();
-            PlayerList.Add(UserManager.Instance.Username, false);
+            AddPlayer(UserManager.Instance.Username);
             if (playerList != null)
             {
                 foreach (var player in playerList.Where(p => p != UserManager.Instance.Username))
-                    PlayerList.Add(player, false);
+                    AddPlayer(player);
             }
         }
+
+        private void AddPlayer(string name) => PlayerList.Add(name, new Player(name, false, false));
 
         public void LeaveLobby()
         {
@@ -72,21 +81,19 @@ namespace RetroGame.Services
             HasPassword = false;
             MaxSlots = 0;
             PlayerList.Clear();
-            IsHost = false;
-            IsReady = false;
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyMenuScene()));
         }
 
         public void OnPlayerJoin(string playerName)
         {
-            PlayerList.Add(playerName, false);
+            AddPlayer(playerName);
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 
         public void OnPlayerReady(string playerName, bool readyState)
         {
             if (PlayerList.ContainsKey(playerName))
-                PlayerList[playerName] = readyState;
+                PlayerList[playerName].IsReady = readyState;
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 
@@ -96,7 +103,7 @@ namespace RetroGame.Services
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 
-        public bool AllPlayersReady() => PlayerList.All(elt => elt.Value);
+        public bool AllPlayersReady() => PlayerList.All(elt => elt.Value.IsReady);
 
         public void ToggleReady()
         {
