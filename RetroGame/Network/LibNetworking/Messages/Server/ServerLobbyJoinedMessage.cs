@@ -15,9 +15,9 @@ namespace LibNetworking.Messages.Server
         public string Name { get; private set; }
         [ProtoMember(4)]
         public bool HasPassword { get; private set; }
-        [ProtoMember(4)]
-        public ushort MaxSlots { get; private set; }
         [ProtoMember(5)]
+        public ushort MaxSlots { get; private set; }
+        [ProtoMember(6)]
         public List<string> PlayerList { get; private set; }
 
         public ServerLobbyJoinedMessage()
