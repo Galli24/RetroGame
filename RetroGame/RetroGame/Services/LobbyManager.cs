@@ -97,9 +97,10 @@ namespace RetroGame.Services
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 
-        public void OnPlayerLeft(string playerName)
+        public void OnPlayerLeft(string playerName, string newHost)
         {
             PlayerList.Remove(playerName);
+            PlayerList[newHost].IsHost = true;
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 

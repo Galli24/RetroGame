@@ -81,7 +81,7 @@ namespace RetroGame.Networking.Handlers
         private static void OnLobbyPlayerLeft(ServerLobbyPlayerLeftMessage message)
         {
             Trace.WriteLine("Player left: " + message.PlayerName);
-            LobbyManager.Instance.OnPlayerLeft(message.PlayerName);
+            LobbyManager.Instance.OnPlayerLeft(message.PlayerName, message.NewHost);
         }
     }
 }
