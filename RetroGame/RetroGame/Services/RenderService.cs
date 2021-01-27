@@ -12,12 +12,15 @@ namespace RetroGame.Services
 {
     class RenderService
     {
+        #region Declaration
 
         public enum ActionTime
         {
             BeforeFrame,
             AfterFrame
         }
+
+        #endregion
 
         #region Properties
 
@@ -72,6 +75,11 @@ namespace RetroGame.Services
             _frameStopwatch.Start();
             var fpsFont = FontManager.Instance["Roboto"];
             _fpsCounter = new TextBlock(new Vector2(0, 0), "", IMenu.Anchor.BottomLeft, fpsFont, Vector2.One * 10);
+            Window.OnKeyAction += (key, _) =>
+            {
+                if (key == 294)
+                    SceneManager.Instance.LoadScene(SceneManager.Instance.CurrentScene);
+            };
         }
 
         public void LoadMenu(IEnumerable<IMenu> items, bool clearScene = false)
