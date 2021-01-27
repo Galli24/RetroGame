@@ -41,6 +41,12 @@ namespace GameServer.Handlers
 
         private static void OnLobbyCreate(SocketState client, ClientLobbyCreateMessage message)
         {
+            if (string.IsNullOrEmpty(message.Name))
+            {
+                new ServerLobbyCreatedMessage(client.Socket, false, "Lobby name should not be empty", string.Empty, false, 0).Send();
+                return;
+            }
+
             var lobby = GlobalManager.Instance.LobbyManager.CreateLobby(message.Name, message.HasPassword, message.Password, message.Slots, client);
 
             if (lobby == null)
