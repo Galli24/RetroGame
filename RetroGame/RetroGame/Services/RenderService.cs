@@ -23,7 +23,7 @@ namespace RetroGame.Services
 
         public Window Window => _sceneGraph?.Win;
 
-        private ConcurrentBag<Tuple<ActionTime, Action>> _actions = new ConcurrentBag<Tuple<ActionTime, Action>>();
+        private ConcurrentDictionary<Action, ActionTime> _actions = new ConcurrentDictionary<Action, ActionTime>();
 
 
         #endregion
@@ -64,8 +64,11 @@ namespace RetroGame.Services
         public void Init()
         {
             _menuManager = new MenuManager();
-            //_sceneGraph = new SceneGraph(new Vector2(1920, 1080), "RetroGame Pog", _menuManager);
+#if DEBUG
             _sceneGraph = new SceneGraph(new Vector2(1280, 720), "RetroGame Pog", _menuManager);
+#else
+            _sceneGraph = new SceneGraph(new Vector2(1920, 1080), "RetroGame Pog", _menuManager);
+#endif
             _frameStopwatch.Start();
             var fpsFont = FontManager.Instance["Roboto"];
             _fpsCounter = new TextBlock(new Vector2(0, 0), "", IMenu.Anchor.BottomLeft, fpsFont, Vector2.One * 10);
@@ -79,7 +82,6 @@ namespace RetroGame.Services
 
             if (_showFPS)
                 AddRenderItem(_fpsCounter);
-
         }
 
         public void ClearEntireScene()
@@ -107,23 +109,25 @@ namespace RetroGame.Services
                 _sceneGraph.RemoveNode(item);
         }
 
-        public void DoInRenderThread(Action action, ActionTime actionTime)
+        public void DoInRenderThread(Action action, ActionTime actionTime = ActionTime.BeforeFrame)
         {
-            _actions.Add(new Tuple<ActionTime, Action>(actionTime, action));
+            _actions.TryAdd(action, actionTime);
         }
 
         public bool RenderFrame()
         {
-            var preAction = _actions.Where(elt => elt.Item1 == ActionTime.BeforeFrame);
-            var postAction = _actions.Where(elt => elt.Item1 == ActionTime.AfterFrame);
-            _actions.Clear();
-
-            foreach (var action in preAction)
-                action.Item2.Invoke();
-
             var shouldRender = !Window.ShouldClose();
             if (!shouldRender)
                 return false;
+
+            var preAction = _actions.Where(elt => elt.Value == ActionTime.BeforeFrame);
+            var postAction = _actions.Where(elt => elt.Value == ActionTime.AfterFrame);
+
+            foreach (var action in preAction)
+            {
+                action.Key.Invoke();
+                _actions.TryRemove(action);
+            }
 
             var elapsed = (float)_frameStopwatch.Elapsed.TotalSeconds;
             _frameStopwatch.Restart();
@@ -132,9 +136,11 @@ namespace RetroGame.Services
             _sceneGraph.Update(elapsed);
             _sceneGraph.Render(elapsed);
 
-
             foreach (var action in postAction)
-                action.Item2.Invoke();
+            {
+                action.Key.Invoke();
+                _actions.TryRemove(action);
+            }
 
             return true;
         }
@@ -145,7 +151,7 @@ namespace RetroGame.Services
             _showFPS = value;
         }
 
-        #endregion
+#endregion
 
 
 

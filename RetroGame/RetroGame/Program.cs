@@ -1,7 +1,5 @@
-﻿using RetroGame.Model;
-using RetroGame.Scenes;
+﻿using RetroGame.Scenes;
 using RetroGame.Services;
-using System;
 
 namespace RetroGame
 {

@@ -19,10 +19,6 @@ namespace RetroGame.Model
         public event EventHandler OnEnter;
         public event EventHandler OnExit;
 
-        public Scene()
-        {
-        }
-
         public void Enter()
         {
             BuildScene();

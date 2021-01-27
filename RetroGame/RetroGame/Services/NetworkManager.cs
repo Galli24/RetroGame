@@ -1,8 +1,8 @@
 ﻿using LibNetworking.Messages.Client;
-using LibNetworking.Messages.Server;
 using Newtonsoft.Json.Linq;
 using RetroGame.Networking;
-using RetroGame.Scenes;
+using RetroGame.Networking.Handlers;
+using RetroGame.Utils;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
@@ -38,6 +38,8 @@ namespace RetroGame.Services
             }
         }
 
+        private ServerMessageHandler _serverMessageHandler;
+
         private static readonly HttpClient _client = new HttpClient();
 
         private readonly string _authServerURI;
@@ -49,29 +51,12 @@ namespace RetroGame.Services
         private NetworkManager()
         {
             _tcpClient = new TCPClient("127.0.0.1", 27015);
-            _tcpClient.OnServerMessage += OnServerMessage;
+            _serverMessageHandler = new ServerMessageHandler(_tcpClient);
 
-            _authServerURI = "https://localhost:5001/api/v1/";
+            _authServerURI = "https://localhost:3001/api/v1/";
         }
 
-        private void OnServerMessage(ServerMessage message)
-        {
-            switch (message.ServerMessageType)
-            {
-                case ServerMessageType.CONNECTED:
-                    var connectMessage = (ServerConnectedMessage)message;
-                    if (connectMessage.Authorized)
-                    {
-                        UserManager.Instance.Authorized = true;
-                        SceneManager.Instance.LoadScene(new LobbyFinderScene());
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        #region Register logic
+        #region Connect logic
 
         public async Task<string> Register(string email, string username, string password)
         {
@@ -112,15 +97,11 @@ namespace RetroGame.Services
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.InnerException);
+                Trace.WriteLine(ex.Message);
                 Trace.WriteLine(ex.StackTrace);
                 return "Unable to reach the server";
             }
         }
-
-        #endregion
-
-        #region Connect logic
 
         public async Task<string> Connect(string username, string password)
         {
@@ -156,7 +137,7 @@ namespace RetroGame.Services
                     UserManager.Instance.Username = username;
 
                     _tcpClient.Connect();
-                    _tcpClient.SendClientMessage(new ClientConnectMessage(token, id, username));
+                    new ClientConnectMessage(token, id, username).Send();
 
                     return "Connected";
                 }
@@ -172,10 +153,24 @@ namespace RetroGame.Services
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.InnerException);
+                Trace.WriteLine(ex.Message);
                 Trace.WriteLine(ex.StackTrace);
                 return "Unable to reach the server";
             }
+        }
+
+        #endregion
+
+        #region Lobby logic
+
+        public void CreateLobby(string name, string password)
+        {
+            Task.Run(() => new ClientLobbyCreateMessage(name, password).Send());
+        }
+
+        public void JoinLobby(string name, string password)
+        {
+            Task.Run(() => new ClientLobbyJoinMessage(name, password).Send());
         }
 
         #endregion

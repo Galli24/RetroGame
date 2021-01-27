@@ -87,7 +87,6 @@ namespace RetroGame.Scenes
                         _menu.Remove(registerBlock);
                         _menu.Add(registerButton);
                         _menu.Add(backButton);
-                        registerButton.Text = "Register";
                         errorBlock.Text = result;
                         Reload();
                     }

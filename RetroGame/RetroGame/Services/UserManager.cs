@@ -26,5 +26,12 @@
         #endregion
 
         public UserManager() { }
+
+        public void Logout()
+        {
+            Id = string.Empty;
+            Username = string.Empty;
+            Authorized = false;
+        }
     }
 }

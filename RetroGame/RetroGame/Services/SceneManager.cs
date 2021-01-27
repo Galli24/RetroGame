@@ -29,6 +29,13 @@ namespace RetroGame.Services
         #region Members
 
         private Scene _currentScene;
+        public Scene CurrentScene
+        {
+            get
+            {
+                return _currentScene;
+            }
+        }
 
         #endregion
 
