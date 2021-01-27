@@ -1,4 +1,5 @@
 ﻿using LibNetworking.Messages.Server;
+using RetroGame.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,8 @@ namespace RetroGame.Services
             MaxSlots = 0;
             PlayerList = null;
             IsHost = false;
+
+            RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyMenuScene()));
         }
 
         public void OnPlayerJoin(string playerName)
