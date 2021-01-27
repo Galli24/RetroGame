@@ -67,6 +67,12 @@ namespace GameServer.Lobbies
 
         public void PlayerJoin(SocketState newPlayer)
         {
+            if (Players.Count >= Slots)
+            {
+                new ServerLobbyJoinedMessage(newPlayer.Socket, false, "Lobby is full", string.Empty, false, 0, new List<string>()).Send();
+                return;
+            }
+
             foreach (var player in Players.Values)
             {
                 new ServerLobbyPlayerJoinedMessage(player.State.Socket, newPlayer.Username).Send();
