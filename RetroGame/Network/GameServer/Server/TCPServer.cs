@@ -108,8 +108,10 @@ namespace GameServer.Server
                     CloseSocketState(state);
                 }
             }
-            catch
-            { 
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
                 CloseSocketState(state);
             }
         }
