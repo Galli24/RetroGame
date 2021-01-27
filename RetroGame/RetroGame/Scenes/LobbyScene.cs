@@ -32,14 +32,14 @@ namespace RetroGame.Scenes
             float playerYPosition(int i) => (sc.Window.Size.Y * .75f) - i * 70;
             string readyButtonText() => LobbyManager.Instance.IsReady ? "Not ready" : "Ready";
             Vector4 playerReadyColor(int index) => LobbyManager.Instance.PlayerList.ElementAt(index).Value.IsReady ? new Vector4(.8f, .8f, .8f, 1) : new Vector4(.25f, .25f, .25f, 1);
-
+            string playerName(int index) => LobbyManager.Instance.PlayerList.ElementAt(index).Value.IsHost ? "* " + LobbyManager.Instance.PlayerList.ElementAt(index).Key : LobbyManager.Instance.PlayerList.ElementAt(index).Key;
 
             var title = new TextBlock(new Vector2(sc.Window.Size.X / 2, headerYPosition),
                 LobbyManager.Instance.LobbyName,
                 IMenu.Anchor.Center, FontManager.Instance["Roboto", 100], Vector2.One * 10);
 
             _players = Enumerable.Range(0, LobbyManager.Instance.PlayerList.Count).Select(index =>
-                new TextBlock(new Vector2(30, playerYPosition(index)), LobbyManager.Instance.PlayerList.ElementAt(index).Key, IMenu.Anchor.Left, FontManager.Instance["Roboto"], Vector2.One * 10)
+                new TextBlock(new Vector2(30, playerYPosition(index)), playerName(index), IMenu.Anchor.Left, FontManager.Instance["Roboto"], Vector2.One * 10)
             ).ToArray();
 
             for (int i = 0; i < _players.Length; i++)

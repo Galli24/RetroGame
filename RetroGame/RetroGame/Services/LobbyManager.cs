@@ -55,6 +55,7 @@ namespace RetroGame.Services
         public void OnLobbyJoined(ServerLobbyJoinedMessage message)
         {
             LobbyJoined(message.Name, message.HasPassword, message.MaxSlots, message.PlayerList);
+            PlayerList[message.PlayerList[0]].IsHost = true;
         }
 
         private void LobbyJoined(string name, bool hasPassword, ushort maxSlots, List<string> playerList = null)
