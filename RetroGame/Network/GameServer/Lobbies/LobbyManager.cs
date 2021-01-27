@@ -15,7 +15,7 @@ namespace GameServer.Lobbies
 
         public Lobby CreateLobby(string name, bool hasPassword, string password, ushort slots, SocketState host)
         {
-            if (!_lobbies.ContainsKey(name))
+            if (!string.IsNullOrEmpty(name) && !_lobbies.ContainsKey(name))
             {
                 _lobbies.Add(name, new Lobby(name, hasPassword, password, slots, host));
                 return _lobbies[name];
@@ -25,7 +25,7 @@ namespace GameServer.Lobbies
 
         public Lobby GetLobbyFromName(string name)
         {
-            if (_lobbies.ContainsKey(name))
+            if (!string.IsNullOrEmpty(name) && _lobbies.ContainsKey(name))
                 return _lobbies[name];
             return null;
         }
