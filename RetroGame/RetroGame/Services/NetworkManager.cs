@@ -61,10 +61,7 @@ namespace RetroGame.Services
 
         #region Connect logic
 
-        public async Task<string> Register(string email, string username, string password)
-        {
-            return await Task.Run(() => RegisterAsync(email, username, password));
-        }
+        public async Task<string> Register(string email, string username, string password) => await Task.Run(() => RegisterAsync(email, username, password));
 
         private async Task<string> RegisterAsync(string email, string username, string password)
         {
@@ -106,10 +103,7 @@ namespace RetroGame.Services
             }
         }
 
-        public async Task<string> Connect(string username, string password)
-        {
-            return await Task.Run(() => ConnectAsync(username, password));
-        }
+        public async Task<string> Connect(string username, string password) => await Task.Run(() => ConnectAsync(username, password));
 
         private async Task<string> ConnectAsync(string username, string password)
         {
@@ -166,20 +160,13 @@ namespace RetroGame.Services
 
         #region Lobby logic
 
-        public void CreateLobby(string name, string password)
-        {
-            Task.Run(() => new ClientLobbyCreateMessage(name, password).Send());
-        }
+        public void CreateLobby(string name, string password) => Task.Run(() => new ClientLobbyCreateMessage(name, password).Send());
 
-        public void JoinLobby(string name, string password)
-        {
-            Task.Run(() => new ClientLobbyJoinMessage(name, password).Send());
-        }
+        public void JoinLobby(string name, string password) => Task.Run(() => new ClientLobbyJoinMessage(name, password).Send());
 
-        public void LeaveLobby()
-        {
-            Task.Run(() => new ClientLobbyLeaveMessage().Send());
-        }
+        public void LeaveLobby() => Task.Run(() => new ClientLobbyLeaveMessage().Send());
+
+        public void SendReady(bool isReady) => Task.Run(() => new ClientLobbyReadyMessage(isReady).Send());
 
         #endregion
     }

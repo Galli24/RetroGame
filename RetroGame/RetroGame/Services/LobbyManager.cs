@@ -31,6 +31,11 @@ namespace RetroGame.Services
         public Dictionary<String, bool> PlayerList { get; private set; } = new Dictionary<string, bool>();
 
         public bool IsHost { get; private set; }
+        public bool IsReady
+        {
+            get => PlayerList[UserManager.Instance.Username];
+            private set => PlayerList[UserManager.Instance.Username] = value;
+        }
 
         #endregion
 
@@ -68,7 +73,7 @@ namespace RetroGame.Services
             MaxSlots = 0;
             PlayerList.Clear();
             IsHost = false;
-
+            IsReady = false;
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyMenuScene()));
         }
 
@@ -92,5 +97,12 @@ namespace RetroGame.Services
         }
 
         public bool AllPlayersReady() => PlayerList.All(elt => elt.Value);
+
+        public void ToggleReady()
+        {
+            IsReady = !IsReady;
+            NetworkManager.Instance.SendReady(IsReady);
+            RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
+        }
     }
 }

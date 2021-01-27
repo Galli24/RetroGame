@@ -23,7 +23,6 @@ namespace RetroGame.Scenes
 
         private TextBlock[] _players = new TextBlock[0];
 
-        private bool _isReady = false;
 
         public override void BuildScene()
         {
@@ -31,7 +30,7 @@ namespace RetroGame.Scenes
 
             var headerYPosition = (sc.Window.Size.Y / 2) + .4f * sc.Window.Size.Y;
             float playerYPosition(int i) => (sc.Window.Size.Y * .75f) - i * 70;
-            string readyButtonText() => _isReady ? "Not ready" : "Ready";
+            string readyButtonText() => LobbyManager.Instance.IsReady ? "Not ready" : "Ready";
             Vector4 playerReadyColor(int index) => LobbyManager.Instance.PlayerList.ElementAt(index).Value ? new Vector4(.8f, .8f, .8f, 1) : new Vector4(.25f, .25f, .25f, 1);
 
 
@@ -53,18 +52,11 @@ namespace RetroGame.Scenes
 
             var readyBt = new Button(new Vector2(sc.Window.Size.X - 30, 30), readyButtonText(), IMenu.Anchor.BottomRight, FontManager.Instance["Roboto", 50], Vector2.Zero);
             readyBt.Padding = new Vector2((sc.Window.Size.X / 4 - readyBt.EvaluatedSize.X / 2) - 30, 10);
-            readyBt.OnMousePress += (_, __, ___) =>
-            {
-                _isReady = !_isReady;
-                readyBt.Text = readyButtonText();
-                readyBt.Padding = new Vector2((sc.Window.Size.X / 4 - readyBt.EvaluatedSize.X / 2) - 30, 10);
-                _players[0].BorderColor = _isReady ? new Vector4(.8f, .8f, .8f, 1) : new Vector4(.25f, .25f, .25f, 1);
-                Trace.WriteLine("MANU CIAO");
-            };
+            readyBt.OnMousePress += (_, __, ___) => LobbyManager.Instance.ToggleReady();
 
             var startButton = new Button(new Vector2(sc.Window.Size.X - 30, 30), "Start Game", IMenu.Anchor.BottomRight, FontManager.Instance["Roboto", 50], Vector2.Zero);
-            readyBt.Padding = new Vector2((sc.Window.Size.X / 4 - readyBt.EvaluatedSize.X / 2) - 30, 10);
-            readyBt.OnMousePress += (_, __, ___) =>
+            startButton.Padding = new Vector2((sc.Window.Size.X / 4 - startButton.EvaluatedSize.X / 2) - 30, 10);
+            startButton.OnMousePress += (_, __, ___) =>
             {
                 Trace.WriteLine("Start");
             };
