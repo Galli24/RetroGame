@@ -50,7 +50,7 @@ namespace RetroGame.Networking.Handlers
                 }
             } else
             {
-                // TODO: LobbyManager
+                LobbyManager.Instance.OnLobbyCreated(message);
                 RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyScene()));
             }
         }
@@ -67,7 +67,7 @@ namespace RetroGame.Networking.Handlers
             }
             else
             {
-                // TODO: LobbyManager
+                LobbyManager.Instance.OnLobbyJoined(message);
                 RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyScene()));
             }
         }
@@ -75,16 +75,19 @@ namespace RetroGame.Networking.Handlers
         private static void OnLobbyPlayerJoined(ServerLobbyPlayerJoinedMessage message)
         {
             Trace.WriteLine("Player joined: " + message.PlayerName);
+            LobbyManager.Instance.OnPlayerJoin(message.PlayerName);
         }
 
         private static void OnLobbyPlayerReady(ServerLobbyPlayerReadyMessage message)
         {
             Trace.WriteLine("Player ready: " + message.PlayerName + " " + message.Ready);
+            LobbyManager.Instance.OnPlayerReady(message.PlayerName, message.Ready);
         }
 
         private static void OnLobbyPlayerLeft(ServerLobbyPlayerLeftMessage message)
         {
             Trace.WriteLine("Player left: " + message.PlayerName);
+            LobbyManager.Instance.OnPlayerLeft(message.PlayerName);
         }
     }
 }

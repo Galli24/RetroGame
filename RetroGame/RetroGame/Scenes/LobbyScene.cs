@@ -17,14 +17,12 @@ namespace RetroGame.Scenes
 
         public LobbyScene() : base() { }
 
-        private string _error = "";
-
         public override void BuildScene()
         {
             var sc = RenderService.Instance;
 
             var title = new TextBlock(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) + .4f * sc.Window.Size.Y),
-                "Success woooooo",
+                LobbyManager.Instance.LobbyName,
                 IMenu.Anchor.Center, FontManager.Instance["Roboto", 100], Vector2.One * 10);
 
             _menu = new List<IMenu> { title };

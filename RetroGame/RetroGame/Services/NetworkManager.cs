@@ -173,6 +173,11 @@ namespace RetroGame.Services
             Task.Run(() => new ClientLobbyJoinMessage(name, password).Send());
         }
 
+        public void LeaveLobby()
+        {
+            Task.Run(() => new ClientLobbyLeaveMessage().Send());
+        }
+
         #endregion
     }
 }
