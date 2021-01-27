@@ -13,6 +13,7 @@ namespace AuthServer
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseUrls("https://*:3001;http://*:3000")
                 .Build();
     }
 }
