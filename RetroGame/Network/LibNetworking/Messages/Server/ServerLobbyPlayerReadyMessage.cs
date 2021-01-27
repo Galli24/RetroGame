@@ -12,10 +12,10 @@ namespace LibNetworking.Messages.Server
         public bool Ready { get; private set; }
 
         public ServerLobbyPlayerReadyMessage()
-            : base(null, ServerMessageType.LOBBY_PLAYER_READY) { }
+            : base(null, ServerMessageType.LOBBY_PLAYER_READY, MessageTarget.LOBBY) { }
 
         public ServerLobbyPlayerReadyMessage(Socket destination, string playerName, bool ready)
-            : base(destination, ServerMessageType.LOBBY_PLAYER_READY)
+            : base(destination, ServerMessageType.LOBBY_PLAYER_READY, MessageTarget.LOBBY)
         {
             PlayerName = playerName;
             Ready = ready;

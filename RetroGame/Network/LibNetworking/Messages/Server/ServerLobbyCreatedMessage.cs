@@ -18,10 +18,10 @@ namespace LibNetworking.Messages.Server
         public ushort MaxSlots { get; private set; }
 
         public ServerLobbyCreatedMessage()
-            : base (null, ServerMessageType.LOBBY_CREATED) { }
+            : base (null, ServerMessageType.LOBBY_CREATED, MessageTarget.LOBBY) { }
 
         public ServerLobbyCreatedMessage(Socket destination, bool hasJoined, string reason, string name, bool hasPassword, ushort maxSlots)
-            : base(destination, ServerMessageType.LOBBY_CREATED)
+            : base(destination, ServerMessageType.LOBBY_CREATED, MessageTarget.LOBBY)
         {
             HasJoined = hasJoined;
             Reason = reason;

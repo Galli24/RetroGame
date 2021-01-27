@@ -12,10 +12,10 @@ namespace LibNetworking.Messages.Server
         public string Reason { get; private set; }
 
         public ServerLobbyStartedMessage()
-            : base (null, ServerMessageType.LOBBY_STARTED) { }
+            : base (null, ServerMessageType.LOBBY_STARTED, MessageTarget.LOBBY) { }
 
         public ServerLobbyStartedMessage(Socket destination, bool hasStarted, string reason = "")
-            : base(destination, ServerMessageType.LOBBY_STARTED)
+            : base(destination, ServerMessageType.LOBBY_STARTED, MessageTarget.LOBBY)
         {
             HasStarted = hasStarted;
             Reason = reason;

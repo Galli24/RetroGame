@@ -10,10 +10,10 @@ namespace LibNetworking.Messages.Server
         public string PlayerName { get; private set; }
 
         public ServerLobbyPlayerLeftMessage()
-            : base (null, ServerMessageType.LOBBY_PLAYER_LEFT) { }
+            : base (null, ServerMessageType.LOBBY_PLAYER_LEFT, MessageTarget.LOBBY) { }
 
         public ServerLobbyPlayerLeftMessage(Socket destination, string playerName)
-            : base(destination, ServerMessageType.LOBBY_PLAYER_LEFT)
+            : base(destination, ServerMessageType.LOBBY_PLAYER_LEFT, MessageTarget.LOBBY)
         {
             PlayerName = playerName;
         }

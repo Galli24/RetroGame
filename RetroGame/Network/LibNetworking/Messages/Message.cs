@@ -13,6 +13,14 @@ namespace LibNetworking.Messages
         CLIENT
     }
 
+    public enum MessageTarget
+    {
+        UNDEFINED,
+        CONNECT,
+        LOBBY,
+        GAME,
+    }
+
     [ProtoContract(SkipConstructor = true)]
     [ProtoInclude(1, typeof(ClientMessage))]
     [ProtoInclude(2, typeof(ServerMessage))]

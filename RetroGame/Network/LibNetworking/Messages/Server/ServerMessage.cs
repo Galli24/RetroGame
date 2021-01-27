@@ -8,6 +8,7 @@ namespace LibNetworking.Messages.Server
         UNDEFINED,
         // Connect
         CONNECTED,
+        NOT_AUTHENTICATED,
         // Lobby
         LOBBY_CREATED,
         LOBBY_JOINED,
@@ -19,14 +20,15 @@ namespace LibNetworking.Messages.Server
 
     [ProtoContract(SkipConstructor = true)]
     // Connect
-    [ProtoInclude(2, typeof(ServerConnectedMessage))]
+    [ProtoInclude(3, typeof(ServerConnectedMessage))]
+    [ProtoInclude(4, typeof(ServerNotAuthenticatedMessage))]
     // Lobby
-    [ProtoInclude(3, typeof(ServerLobbyCreatedMessage))]
-    [ProtoInclude(4, typeof(ServerLobbyJoinedMessage))]
-    [ProtoInclude(5, typeof(ServerLobbyStartedMessage))]
-    [ProtoInclude(6, typeof(ServerLobbyPlayerJoinedMessage))]
-    [ProtoInclude(7, typeof(ServerLobbyPlayerReadyMessage))]
-    [ProtoInclude(8, typeof(ServerLobbyPlayerLeftMessage))]
+    [ProtoInclude(5, typeof(ServerLobbyCreatedMessage))]
+    [ProtoInclude(6, typeof(ServerLobbyJoinedMessage))]
+    [ProtoInclude(7, typeof(ServerLobbyStartedMessage))]
+    [ProtoInclude(8, typeof(ServerLobbyPlayerJoinedMessage))]
+    [ProtoInclude(9, typeof(ServerLobbyPlayerReadyMessage))]
+    [ProtoInclude(10, typeof(ServerLobbyPlayerLeftMessage))]
     public abstract class ServerMessage : Message
     {
         [ProtoIgnore]
@@ -34,12 +36,15 @@ namespace LibNetworking.Messages.Server
 
         [ProtoMember(1)]
         public ServerMessageType ServerMessageType { get; private set; }
+        [ProtoMember(2)]
+        public MessageTarget MessageTarget { get; private set; }
 
-        protected ServerMessage(Socket destination, ServerMessageType serverMessageType)
+        protected ServerMessage(Socket destination, ServerMessageType serverMessageType, MessageTarget messageTarget)
             : base(MessageType.SERVER)
         {
             Destination = destination;
             ServerMessageType = serverMessageType;
+            MessageTarget = messageTarget;
         }
     }
 }

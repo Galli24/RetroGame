@@ -15,14 +15,6 @@ namespace LibNetworking.Messages.Client
         LOBBY_LEAVE
     }
 
-    public enum MessageTarget
-    {
-        UNDEFINED,
-        CONNECT,
-        LOBBY,
-        GAME,
-    }
-
     [ProtoContract(SkipConstructor = true)]
     // Connect
     [ProtoInclude(3, typeof(ClientConnectMessage))]

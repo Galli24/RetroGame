@@ -12,10 +12,10 @@ namespace LibNetworking.Messages.Server
         public string Reason { get; private set; }
 
         public ServerConnectedMessage()
-            : base (null, ServerMessageType.CONNECTED) { }
+            : base (null, ServerMessageType.CONNECTED, MessageTarget.CONNECT) { }
 
         public ServerConnectedMessage(Socket destination, bool authorized, string reason)
-            : base(destination, ServerMessageType.CONNECTED)
+            : base(destination, ServerMessageType.CONNECTED, MessageTarget.CONNECT)
         {
             Authorized = authorized;
             Reason = reason;

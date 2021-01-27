@@ -21,14 +21,14 @@ namespace LibNetworking.Messages.Server
         public List<string> PlayerList { get; private set; }
 
         public ServerLobbyJoinedMessage()
-            : base (null, ServerMessageType.LOBBY_JOINED) { }
+            : base (null, ServerMessageType.LOBBY_JOINED, MessageTarget.LOBBY) { }
 
         public ServerLobbyJoinedMessage(
             Socket destination, bool hasJoined,
             string reason, string name,
             bool hasPassword, ushort maxSlots,
             List<string> playerList)
-            : base(destination, ServerMessageType.LOBBY_JOINED)
+            : base(destination, ServerMessageType.LOBBY_JOINED, MessageTarget.LOBBY)
         {
             HasJoined = hasJoined;
             Reason = reason;
