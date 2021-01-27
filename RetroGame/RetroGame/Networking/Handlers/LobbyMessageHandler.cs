@@ -28,9 +28,11 @@ namespace RetroGame.Networking.Handlers
                     break;
                 case ServerMessageType.LOBBY_PLAYER_READY:
                     Trace.WriteLine("Response LOBBY_PLAYER_READY");
+                    OnLobbyPlayerReady(message as ServerLobbyPlayerReadyMessage);
                     break;
                 case ServerMessageType.LOBBY_PLAYER_LEFT:
                     Trace.WriteLine("Response LOBBY_PLAYER_LEFT");
+                    OnLobbyPlayerLeft(message as ServerLobbyPlayerLeftMessage);
                     break;
                 default:
                     return;
@@ -72,7 +74,17 @@ namespace RetroGame.Networking.Handlers
 
         private static void OnLobbyPlayerJoined(ServerLobbyPlayerJoinedMessage message)
         {
-            Trace.WriteLine(message.PlayerName);
+            Trace.WriteLine("Player joined: " + message.PlayerName);
+        }
+
+        private static void OnLobbyPlayerReady(ServerLobbyPlayerReadyMessage message)
+        {
+            Trace.WriteLine("Player ready: " + message.PlayerName + " " + message.Ready);
+        }
+
+        private static void OnLobbyPlayerLeft(ServerLobbyPlayerLeftMessage message)
+        {
+            Trace.WriteLine("Player left: " + message.PlayerName);
         }
     }
 }
