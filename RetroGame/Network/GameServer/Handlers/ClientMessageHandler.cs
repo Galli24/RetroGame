@@ -1,5 +1,8 @@
 ﻿using GameServer.Server;
+using GameServer.Utils;
+using LibNetworking.Messages;
 using LibNetworking.Messages.Client;
+using LibNetworking.Messages.Server;
 
 namespace GameServer.Handlers
 {
@@ -27,12 +30,15 @@ namespace GameServer.Handlers
                 case MessageTarget.LOBBY:
                     if (client.IsAuthenticated)
                         LobbyMessageHandler.OnLobbyMessage(client, message);
+                    else
+                        new ServerNotAuthenticatedMessage(client.Socket).Send();
                     break;
                 case MessageTarget.GAME:
                     if (client.IsAuthenticated)
                     {
                         // TODO: Game messages & handler
-                    }
+                    } else
+                        new ServerNotAuthenticatedMessage(client.Socket).Send();
                     break;
                 default:
                     break;
