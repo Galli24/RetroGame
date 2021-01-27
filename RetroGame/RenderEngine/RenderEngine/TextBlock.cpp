@@ -57,6 +57,7 @@ Rendering::TextBlock::TextBlock(glm::vec2 const& pos, IMenu::Anchor anchor, std:
 	m_shader.init(vs, fs);
 
 	m_fontOffset = glm::vec2{ 0, m_font->EvaluateYOffset("[") };
+	m_fontMaxCharSize = m_font->GetCharMaxSize();
 
 	ReevaluateSize();
 }
@@ -71,20 +72,20 @@ void Rendering::TextBlock::Render(glm::vec2 const& winSize)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	m_shader.use();
-	m_shader.setVec2("u_position", GetActualPosition() - m_fontOffset);
+	m_shader.setVec2("u_position", GetActualPosition());
 	m_shader.setVec2("u_winSize", winSize);
-	m_shader.setVec2("u_size", GetObjectSize() + m_fontOffset);
+	m_shader.setVec2("u_size", GetObjectSize() - m_fontOffset);
 	m_shader.setVec4("u_color", border_color);
 	m_shader.setInt("u_borderSize", border_size);
 	m_mesh.draw();
 	glDisable(GL_BLEND);
 
-	m_font->RenderText(text, GetActualPosition() + padding, winSize, font_color);
+	m_font->RenderText(text, GetActualPosition() + padding + m_fontOffset, winSize, font_color);
 }
 
 glm::vec2 Rendering::TextBlock::GetObjectSize() const
 {
-	return m_evaluatedSize + padding * 2.0f;
+	return { m_evaluatedSize.x + padding.x * 2.0f, m_fontMaxCharSize.y };
 }
 
 void Rendering::TextBlock::ReevaluateSize()

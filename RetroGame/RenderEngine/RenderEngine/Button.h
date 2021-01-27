@@ -47,6 +47,7 @@ namespace Rendering
 		Rendering::Shader	m_shader;
 
 		glm::vec2			m_fontOffset;
+		glm::vec2			m_fontMaxCharSize;
 
 	};
 
