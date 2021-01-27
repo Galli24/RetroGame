@@ -1,6 +1,7 @@
 ﻿using LibNetworking.Messages.Server;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RetroGame.Services
 {
@@ -95,5 +96,7 @@ namespace RetroGame.Services
 
             PlayerList.Remove(playerName);
         }
+
+        public bool AllPlayersReady() => PlayerList?.All(elt => elt.Value) ?? false;
     }
 }
