@@ -19,7 +19,7 @@ namespace GameServer.Handlers
             {
                 case ClientMessageType.CONNECT:
                     Console.WriteLine("Request CONNECT");
-                    OnConnect(client, (ClientConnectMessage)message);
+                    OnConnect(client, message as ClientConnectMessage);
                     break;
                 default:
                     return;

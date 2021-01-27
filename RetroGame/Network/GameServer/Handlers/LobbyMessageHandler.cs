@@ -16,15 +16,15 @@ namespace GameServer.Handlers
             {
                 case ClientMessageType.LOBBY_CREATE:
                     Console.WriteLine("Request LOBBY_CREATE");
-                    OnLobbyCreate(client, (ClientLobbyCreateMessage)message);
+                    OnLobbyCreate(client, message as ClientLobbyCreateMessage);
                     break;
                 case ClientMessageType.LOBBY_JOIN:
                     Console.WriteLine("Request LOBBY_JOIN");
-                    OnLobbyJoin(client, (ClientLobbyJoinMessage)message);
+                    OnLobbyJoin(client, message as ClientLobbyJoinMessage);
                     break;
                 case ClientMessageType.LOBBY_READY:
                     Console.WriteLine("Request LOBBY_READY");
-                    OnLobbyReady(client, (ClientLobbyReadyMessage)message);
+                    OnLobbyReady(client, message as ClientLobbyReadyMessage);
                     break;
                 case ClientMessageType.LOBBY_START:
                     Console.WriteLine("Request LOBBY_START");
@@ -50,7 +50,7 @@ namespace GameServer.Handlers
             var lobby = GlobalManager.Instance.LobbyManager.CreateLobby(message.Name, message.HasPassword, message.Password, message.Slots, client);
 
             if (lobby == null)
-                new ServerLobbyCreatedMessage(client.Socket, false, "Already exists", string.Empty, false, 0).Send();
+                new ServerLobbyCreatedMessage(client.Socket, false, "Lobby already exists", string.Empty, false, 0).Send();
             else
                 new ServerLobbyCreatedMessage(client.Socket, true, string.Empty, lobby.Name, lobby.HasPassword, lobby.Slots).Send();
         }
@@ -59,10 +59,10 @@ namespace GameServer.Handlers
         {
             var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromName(message.Name);
             if (lobby == null)
-                new ServerLobbyJoinedMessage(client.Socket, false, "Does not exist", string.Empty, false, 0, new List<string>()).Send();
+                new ServerLobbyJoinedMessage(client.Socket, false, "Lobby does not exist", string.Empty, false, 0, new List<string>()).Send();
             else
             {
-                if (lobby.HasPassword && message.Password == lobby.Password)
+                if ((lobby.HasPassword && message.Password == lobby.Password) || !lobby.HasPassword)
                     lobby.PlayerJoin(client);
                 else
                     new ServerLobbyJoinedMessage(client.Socket, false, "Wrong password", string.Empty, false, 0, new List<string>()).Send();
