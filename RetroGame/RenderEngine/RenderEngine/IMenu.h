@@ -21,7 +21,7 @@ namespace Rendering {
 			virtual void OnFocus() = 0;
 			virtual void OnLostFocus() = 0;
 			virtual glm::vec2 GetObjectSize() const = 0;
-
+			virtual void ReevaluateSize() = 0;
 
 
 			glm::vec2 GetActualPosition() const
@@ -44,6 +44,8 @@ namespace Rendering {
 
 		protected:
 			Anchor		m_anchor;
+			glm::vec2	m_evaluatedSize = { 0, 0 };
+
 		};
 	}
 

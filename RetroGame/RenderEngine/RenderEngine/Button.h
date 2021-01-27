@@ -30,6 +30,7 @@ namespace Rendering
 		void OnCharReceived(char const c) override;
 
 		glm::vec2 GetObjectSize() const override;
+		void ReevaluateSize() override;
 
 		glm::vec4			font_color;
 		glm::vec4			border_color;
@@ -44,6 +45,8 @@ namespace Rendering
 
 		Rendering::Mesh		m_mesh;
 		Rendering::Shader	m_shader;
+
+		glm::vec2			m_fontOffset;
 
 	};
 

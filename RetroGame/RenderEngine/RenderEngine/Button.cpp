@@ -56,6 +56,9 @@ Rendering::Button::Button(glm::vec2 const& pos, IMenu::Anchor anchor, std::strin
 	m_mesh.attribPtr(0, 2, 0, 2 * sizeof(float));
 	m_shader.init(vs, fs);
 
+	m_fontOffset = glm::vec2{ 0, m_font->EvaluateYOffset("[") };
+
+	ReevaluateSize();
 }
 
 
@@ -122,11 +125,10 @@ void Rendering::Button::Render(glm::vec2 const& winSize)
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	auto fontOffset = glm::vec2{ 0, m_font->EvaluateYOffset(text) };
 	m_shader.use();
-	m_shader.setVec2("u_position", GetActualPosition() - fontOffset);
+	m_shader.setVec2("u_position", GetActualPosition() - m_fontOffset);
 	m_shader.setVec2("u_winSize", winSize);
-	m_shader.setVec2("u_size", GetObjectSize() + fontOffset);
+	m_shader.setVec2("u_size", GetObjectSize() + m_fontOffset);
 	m_shader.setVec4("u_color", border_color);
 	m_shader.setInt("u_borderSize", border_size);
 	m_mesh.draw();
@@ -137,9 +139,13 @@ void Rendering::Button::Render(glm::vec2 const& winSize)
 
 glm::vec2 Rendering::Button::GetObjectSize() const
 {
-	return m_font->EvaluateSize(text) + padding * 2.0f;
+	return m_evaluatedSize + padding * 2.0f;
 }
 
+void Rendering::Button::ReevaluateSize()
+{
+	m_evaluatedSize = m_font->EvaluateSize(text);
+}
 
 void Rendering::Button::OnFocus() { }
 
@@ -158,14 +164,10 @@ void Rendering::Button::OnMouseRelease(int const key, double const x, double con
 
 }
 
-void Rendering::Button::OnMouseMove(double const x, double const y)
-{
-
-}
+void Rendering::Button::OnMouseMove(double const x, double const y) { }
 
 void Rendering::Button::OnKeyPressed(int const key, int const mods) { }
 
 void Rendering::Button::OnKeyRelease(int const key, int const mods) { }
 
 void Rendering::Button::OnCharReceived(char const c) { }
-

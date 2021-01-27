@@ -93,6 +93,7 @@ namespace RenderEngine {
 			void set(String^ value) {
 				std::string str = msclr::interop::marshal_as<std::string>(value);
 				buttonResources->text = str;
+				buttonResources->ReevaluateSize();
 			}
 		}
 

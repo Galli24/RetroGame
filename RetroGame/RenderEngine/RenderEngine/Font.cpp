@@ -98,7 +98,7 @@ namespace Rendering {
 			delete elt.second;
 	}
 
-	void Font::RenderText(std::string const& text, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color)
+	void Font::RenderText(std::string text, glm::vec2 const& position, glm::ivec2 const& winSize, glm::vec4 const& color)
 	{
 		m_shader.use();
 		glActiveTexture(GL_TEXTURE0);

@@ -88,6 +88,7 @@ namespace RenderEngine {
 			void set(String^ value) {
 				std::string str = msclr::interop::marshal_as<std::string>(value);
 				textblockResources->text = str;
+				textblockResources->ReevaluateSize();
 			}
 		}
 
