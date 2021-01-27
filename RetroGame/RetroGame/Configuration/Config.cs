@@ -1,42 +1,42 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace GameServer.Configuration
+namespace RetroGame.Configuration
 {
     class Config
     {
-        public readonly string IP;
-        public readonly ushort Port;
-        public readonly string AuthServerURI;
-        public readonly string DatabaseURI;
+        public readonly string AuthServerURL;
+        public readonly string GameServerIP;
+        public readonly ushort GameServerPort;
+
 
         private static readonly string _directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RetroGame");
-        private static readonly string _configFileName = "gameserver.config";
+        private static readonly string _configFileName = "retrogame.config";
         private static readonly string _configFilePath = Path.Combine(_directoryPath, _configFileName);
 
-        public Config(string ip, ushort port,
-            string authServerUri, string databaseUri)
+        public Config(string authServerURL, string gameServerIP, ushort gameServerPort)
         {
-            IP = ip;
-            Port = port;
-            AuthServerURI = authServerUri;
-            DatabaseURI = databaseUri;
+            AuthServerURL = authServerURL;
+            GameServerIP = gameServerIP;
+            GameServerPort = gameServerPort;
         }
 
         public static Config Parse()
         {
             if (File.Exists(_configFileName))
-            {
                 return ParseFile(_configFileName);
-            }
             else
             {
                 if (!Directory.Exists(_directoryPath))
                     Directory.CreateDirectory(_directoryPath);
 
-                CreateFile(_configFilePath, Encoding.UTF8.GetBytes(Properties.Resources.gameserver));
+                CreateFile(_configFilePath, Encoding.UTF8.GetBytes(Properties.Resources.retrogame));
                 return ParseFile(_configFilePath);
             }
         }

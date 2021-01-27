@@ -1,5 +1,6 @@
 ﻿using LibNetworking.Messages.Client;
 using Newtonsoft.Json.Linq;
+using RetroGame.Configuration;
 using RetroGame.Networking;
 using RetroGame.Networking.Handlers;
 using RetroGame.Utils;
@@ -50,10 +51,12 @@ namespace RetroGame.Services
 
         private NetworkManager()
         {
-            _tcpClient = new TCPClient("176.164.108.185", 27015);
+            var conf = Config.Parse();
+
+            _tcpClient = new TCPClient(conf.GameServerIP, conf.GameServerPort);
             _serverMessageHandler = new ServerMessageHandler(_tcpClient);
 
-            _authServerURI = "http://176.164.108.185:3000/api/v1/";
+            _authServerURI = conf.AuthServerURL;
         }
 
         #region Connect logic

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GameServer.Properties {
+namespace RetroGame.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace GameServer.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GameServer.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RetroGame.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,16 +62,15 @@ namespace GameServer.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;ip&quot;: &quot;0.0.0.0&quot;,
-        ///  &quot;port&quot;: 27015,
-        ///  &quot;authServerUri&quot;: &quot;https://localhost:3001&quot;,
-        ///  &quot;databaseUri&quot;: &quot;mongodb://localhost:27017&quot;
+        ///  &quot;AuthServerURL&quot;: &quot;http://localhost:3000/api/v1/&quot;,
+        ///  &quot;GameServerIP&quot;: &quot;127.0.0.1&quot;,
+        ///  &quot;GameServerPort&quot;: 27015
         ///}
         ///.
         /// </summary>
-        internal static string gameserver {
+        internal static string retrogame {
             get {
-                return ResourceManager.GetString("gameserver", resourceCulture);
+                return ResourceManager.GetString("retrogame", resourceCulture);
             }
         }
     }
