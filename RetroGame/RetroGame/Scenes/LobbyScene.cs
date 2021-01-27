@@ -40,7 +40,7 @@ namespace RetroGame.Scenes
                 IMenu.Anchor.Center, FontManager.Instance["Roboto", 100], Vector2.One * 10);
 
             _players = Enumerable.Range(0, LobbyManager.Instance.PlayerList.Count).Select(index =>
-                new TextBlock(new Vector2(30, playerYPosition(index)), $"Player {index}", IMenu.Anchor.Left, FontManager.Instance["Roboto"], Vector2.One * 10)
+                new TextBlock(new Vector2(30, playerYPosition(index)), LobbyManager.Instance.PlayerList.ElementAt(index).Key, IMenu.Anchor.Left, FontManager.Instance["Roboto"], Vector2.One * 10)
             ).ToArray();
 
             for (int i = 0; i < _players.Length; i++)
