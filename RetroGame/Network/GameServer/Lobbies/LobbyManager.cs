@@ -40,5 +40,10 @@ namespace GameServer.Lobbies
         {
             return _lobbies.Values.FirstOrDefault(lobby => lobby.Players.ContainsKey(username));
         }
+
+        public Lobby GetLobbyFromState(SocketState state)
+        {
+            return _lobbies.Values.FirstOrDefault(lobby => lobby.Players.Values.Any(player => player.State == state));
+        }
     }
 }

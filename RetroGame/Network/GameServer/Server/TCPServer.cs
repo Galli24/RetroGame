@@ -132,7 +132,7 @@ namespace GameServer.Server
 
         internal static void CloseSocketState(SocketState state)
         {
-            var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromUsername(state.Username);
+            var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromState(state);
             if (lobby != null)
                 lobby.PlayerLeave(state);
 
