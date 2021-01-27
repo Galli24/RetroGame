@@ -1,5 +1,6 @@
 ﻿using RenderEngine;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,9 +13,17 @@ namespace RetroGame.Services
     class RenderService
     {
 
+        public enum ActionTime
+        {
+            BeforeFrame,
+            AfterFrame
+        }
+
         #region Properties
 
         public Window Window => _sceneGraph?.Win;
+
+        private ConcurrentBag<Tuple<ActionTime, Action>> _actions = new ConcurrentBag<Tuple<ActionTime, Action>>();
 
 
         #endregion
@@ -98,8 +107,20 @@ namespace RetroGame.Services
                 _sceneGraph.RemoveNode(item);
         }
 
+        public void DoInRenderThread(Action action, ActionTime actionTime)
+        {
+            _actions.Add(new Tuple<ActionTime, Action>(actionTime, action));
+        }
+
         public bool RenderFrame()
         {
+            var preAction = _actions.Where(elt => elt.Item1 == ActionTime.BeforeFrame);
+            var postAction = _actions.Where(elt => elt.Item1 == ActionTime.AfterFrame);
+            _actions.Clear();
+
+            foreach (var action in preAction)
+                action.Item2.Invoke();
+
             var shouldRender = !Window.ShouldClose();
             if (!shouldRender)
                 return false;
@@ -110,6 +131,11 @@ namespace RetroGame.Services
 
             _sceneGraph.Update(elapsed);
             _sceneGraph.Render(elapsed);
+
+
+            foreach (var action in postAction)
+                action.Item2.Invoke();
+
             return true;
         }
 
