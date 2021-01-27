@@ -130,10 +130,14 @@ namespace GameServer.Server
             client.Send(serializedResponse);
         }
 
-        internal static void CloseSocketState(SocketState ci)
+        internal static void CloseSocketState(SocketState state)
         {
-            ci.Socket.Close();
-            ci.IsSocketDisposed = true;
+            var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromUsername(state.Username);
+            if (lobby != null)
+                lobby.PlayerLeave(state);
+
+            state.Socket.Close();
+            state.IsSocketDisposed = true;
         }
 
 
