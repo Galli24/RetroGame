@@ -80,6 +80,9 @@ namespace GameServer.Lobbies
             Players.Remove(leftPlayer.Username);
             foreach (var player in Players.Values)
                 new ServerLobbyPlayerLeftMessage(player.State.Socket, leftPlayer.Username).Send();
+
+            if (Players.Count == 0)
+                GlobalManager.Instance.LobbyManager.RemoveLobby(Name);
         }
 
         public void PlayerReady(SocketState readyPlayer, bool isReady)

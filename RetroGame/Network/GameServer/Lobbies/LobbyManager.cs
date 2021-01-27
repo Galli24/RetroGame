@@ -23,6 +23,12 @@ namespace GameServer.Lobbies
             return null;
         }
 
+        public void RemoveLobby(string name)
+        {
+            if (!string.IsNullOrEmpty(name) && _lobbies.ContainsKey(name))
+                _lobbies.Remove(name);
+        }
+
         public Lobby GetLobbyFromName(string name)
         {
             if (!string.IsNullOrEmpty(name) && _lobbies.ContainsKey(name))
