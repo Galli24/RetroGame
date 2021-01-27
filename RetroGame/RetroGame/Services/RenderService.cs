@@ -74,11 +74,11 @@ namespace RetroGame.Services
 #endif
             _frameStopwatch.Start();
             var fpsFont = FontManager.Instance["Roboto"];
-            _fpsCounter = new TextBlock(new Vector2(0, 0), "", IMenu.Anchor.BottomLeft, fpsFont, Vector2.One * 10);
+            _fpsCounter = new TextBlock(new Vector2(0, Window.Size.Y), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
             Window.OnKeyAction += (key, _) =>
             {
                 if (key == 294)
-                    SceneManager.Instance.LoadScene(SceneManager.Instance.CurrentScene);
+                    SceneManager.Instance.ReloadCurrentScene();
             };
         }
 

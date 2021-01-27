@@ -43,11 +43,8 @@ namespace RetroGame.Networking.Handlers
         {
             if (!message.HasJoined)
             {
-                if (SceneManager.Instance.CurrentScene is LobbyHostScene)
-                {
-                    var scene = SceneManager.Instance.CurrentScene as LobbyHostScene;
+                if (SceneManager.Instance.CurrentScene is LobbyHostScene scene)
                     RenderService.Instance.DoInRenderThread(() => scene.OnCreateFailed(message.Reason));
-                }
             } else
             {
                 LobbyManager.Instance.OnLobbyCreated(message);
@@ -59,11 +56,8 @@ namespace RetroGame.Networking.Handlers
         {
             if (!message.HasJoined)
             {
-                if (SceneManager.Instance.CurrentScene is LobbyJoinScene)
-                {
-                    var scene = SceneManager.Instance.CurrentScene as LobbyJoinScene;
+                if (SceneManager.Instance.CurrentScene is LobbyJoinScene scene)
                     RenderService.Instance.DoInRenderThread(() => scene.OnJoinFailed(message.Reason));
-                }
             }
             else
             {

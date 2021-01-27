@@ -53,6 +53,11 @@ namespace RetroGame.Services
             _currentScene?.Enter();
         }
 
+        public void ReloadCurrentScene()
+        {
+            LoadScene(CurrentScene);
+        }
+
         #endregion
 
     }

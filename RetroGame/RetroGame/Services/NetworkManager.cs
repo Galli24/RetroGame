@@ -50,10 +50,10 @@ namespace RetroGame.Services
 
         private NetworkManager()
         {
-            _tcpClient = new TCPClient("127.0.0.1", 27015);
+            _tcpClient = new TCPClient("176.164.108.185", 27015);
             _serverMessageHandler = new ServerMessageHandler(_tcpClient);
 
-            _authServerURI = "https://localhost:3001/api/v1/";
+            _authServerURI = "http://176.164.108.185:3000/api/v1/";
         }
 
         #region Connect logic

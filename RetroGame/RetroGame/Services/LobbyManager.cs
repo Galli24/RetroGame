@@ -28,7 +28,7 @@ namespace RetroGame.Services
         public string LobbyName { get; private set; }
         public bool HasPassword { get; private set; }
         public ushort MaxSlots { get; private set; }
-        public Dictionary<String, bool> PlayerList { get; private set; }
+        public Dictionary<String, bool> PlayerList { get; private set; } = new Dictionary<string, bool>();
 
         public bool IsHost { get; private set; }
 
@@ -50,26 +50,23 @@ namespace RetroGame.Services
             LobbyName = name;
             HasPassword = hasPassword;
             MaxSlots = maxSlots;
-            
-            PlayerList = new Dictionary<string, bool>();
+
+            PlayerList.Clear();
             PlayerList.Add(UserManager.Instance.Username, false);
             if (playerList != null)
             {
-                foreach (var player in playerList)
+                foreach (var player in playerList.Where(p => p != UserManager.Instance.Username))
                     PlayerList.Add(player, false);
             }
         }
 
         public void LeaveLobby()
         {
-            if (PlayerList == null)
-                return;
-
             NetworkManager.Instance.LeaveLobby();
             LobbyName = string.Empty;
             HasPassword = false;
             MaxSlots = 0;
-            PlayerList = null;
+            PlayerList.Clear();
             IsHost = false;
 
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyMenuScene()));
@@ -77,29 +74,23 @@ namespace RetroGame.Services
 
         public void OnPlayerJoin(string playerName)
         {
-            if (PlayerList == null)
-                return;
-
             PlayerList.Add(playerName, false);
+            RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 
         public void OnPlayerReady(string playerName, bool readyState)
         {
-            if (PlayerList == null)
-                return;
-
             if (PlayerList.ContainsKey(playerName))
                 PlayerList[playerName] = readyState;
+            RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 
         public void OnPlayerLeft(string playerName)
         {
-            if (PlayerList == null)
-                return;
-
             PlayerList.Remove(playerName);
+            RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
 
-        public bool AllPlayersReady() => PlayerList?.All(elt => elt.Value) ?? false;
+        public bool AllPlayersReady() => PlayerList.All(elt => elt.Value);
     }
 }

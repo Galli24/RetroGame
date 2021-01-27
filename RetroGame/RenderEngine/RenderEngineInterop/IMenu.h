@@ -60,6 +60,13 @@ namespace RenderEngine {
 
 		Rendering::Interface::IMenu* menuResources;
 
+		property Vector2 EvaluatedSize {
+			Vector2 get() {
+				return Vector2(this->menuResources->evaluated_size.x, this->menuResources->evaluated_size.y);
+			}
+		}
+
+
 	internal:
 		void SetResources(Rendering::Interface::IMenu* res) {
 			this->graphNodeResources = res;

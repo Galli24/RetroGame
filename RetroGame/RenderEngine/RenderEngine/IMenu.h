@@ -42,9 +42,10 @@ namespace Rendering {
 			}
 
 
+			glm::vec2	evaluated_size = { 0, 0 };
+
 		protected:
 			Anchor		m_anchor;
-			glm::vec2	m_evaluatedSize = { 0, 0 };
 
 		};
 	}

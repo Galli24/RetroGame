@@ -85,12 +85,12 @@ void Rendering::TextBlock::Render(glm::vec2 const& winSize)
 
 glm::vec2 Rendering::TextBlock::GetObjectSize() const
 {
-	return { m_evaluatedSize.x + padding.x * 2.0f, m_fontMaxCharSize.y };
+	return { evaluated_size.x + padding.x * 2.0f, m_fontMaxCharSize.y };
 }
 
 void Rendering::TextBlock::ReevaluateSize()
 {
-	m_evaluatedSize = m_font->EvaluateSize(text);
+	evaluated_size = m_font->EvaluateSize(text);
 }
 
 void Rendering::TextBlock::OnFocus() { }

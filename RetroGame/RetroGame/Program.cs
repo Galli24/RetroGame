@@ -7,9 +7,13 @@ namespace RetroGame
     {
         static void Main()
         {
-            RenderService.Instance.Init(); 
+            RenderService.Instance.Init();
+#if DEBUG
             RenderService.Instance.SetFPSVisibility(true);
+#endif
+
             var loginScene = new LoginScene();
+            var lobbyScene = new LobbyScene();
             SceneManager.Instance.LoadScene(loginScene);
 
             while (RenderService.Instance.RenderFrame())
