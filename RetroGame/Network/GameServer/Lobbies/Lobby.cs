@@ -3,6 +3,7 @@ using GameServer.Server;
 using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -67,28 +68,39 @@ namespace GameServer.Lobbies
 
         public void PlayerJoin(SocketState newPlayer)
         {
-            if (Players.Count >= Slots)
+            if (Players.Count >= Slots || Players.ContainsKey(newPlayer.Username))
             {
                 new ServerLobbyJoinedMessage(newPlayer.Socket, false, "Lobby is full", string.Empty, false, 0, new List<string>()).Send();
                 return;
             }
+
+            new ServerLobbyJoinedMessage(newPlayer.Socket, true, string.Empty, Name, HasPassword, Slots, Players.Keys.ToList()).Send();
 
             foreach (var player in Players.Values)
             {
                 new ServerLobbyPlayerJoinedMessage(player.State.Socket, newPlayer.Username).Send();
                 new ServerLobbyPlayerReadyMessage(newPlayer.Socket, player.State.Username, player.IsReady).Send();
             }
+
             Players.Add(newPlayer.Username, new Player(newPlayer, false));
-            new ServerLobbyJoinedMessage(newPlayer.Socket, true, string.Empty, Name, HasPassword, Slots, Players.Keys.ToList()).Send();
         }
         public void PlayerLeave(SocketState leftPlayer)
         {
+            var leftPlayerIsHost = Players[leftPlayer.Username].IsHost;
             Players.Remove(leftPlayer.Username);
-            foreach (var player in Players.Values)
-                new ServerLobbyPlayerLeftMessage(player.State.Socket, leftPlayer.Username).Send();
 
             if (Players.Count == 0)
+            {
                 GlobalManager.Instance.LobbyManager.RemoveLobby(Name);
+                return;
+            }
+
+            if (leftPlayerIsHost)
+                Players.ElementAt(0).Value.IsHost = true;
+
+            foreach (var player in Players.Values)
+                new ServerLobbyPlayerLeftMessage(player.State.Socket, leftPlayer.Username, Players.ElementAt(0).Key).Send();
+
         }
 
         public void PlayerReady(SocketState readyPlayer, bool isReady)
