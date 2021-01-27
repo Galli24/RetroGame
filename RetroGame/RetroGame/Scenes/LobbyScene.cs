@@ -49,10 +49,7 @@ namespace RetroGame.Scenes
 
             var leaveBt = new Button(new Vector2(30, 30), "Leave", IMenu.Anchor.BottomLeft, FontManager.Instance["Roboto", 50], Vector2.Zero);
             leaveBt.Padding = new Vector2((sc.Window.Size.X / 4 - leaveBt.EvaluatedSize.X / 2) - 30, 10);
-            leaveBt.OnMousePress += (_, __, ___) =>
-            {
-                Trace.Write("CIAO");
-            };
+            leaveBt.OnMousePress += (_, __, ___) => LobbyManager.Instance.LeaveLobby();
 
             var readyBt = new Button(new Vector2(sc.Window.Size.X - 30, 30), readyButtonText(), IMenu.Anchor.BottomRight, FontManager.Instance["Roboto", 50], Vector2.Zero);
             readyBt.Padding = new Vector2((sc.Window.Size.X / 4 - readyBt.EvaluatedSize.X / 2) - 30, 10);
