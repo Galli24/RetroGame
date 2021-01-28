@@ -15,6 +15,7 @@ namespace RetroGame.Scenes
         private List<IMenu> _menu;
         public override IEnumerable<IMenu> Menu => _menu;
 
+        public override IEnumerable<IGraphNode> Sprites => Array.Empty<IGraphNode>();
         public override bool RequireClearOnLoad => true;
 
         public override bool RequireClearOnExit => true;

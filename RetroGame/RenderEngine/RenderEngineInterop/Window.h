@@ -19,14 +19,16 @@ namespace RenderEngine {
 	internal:
 		Window(String^ name, Vector2 size, MenuManager^ menuManager);
 		void RaiseResizeEvent(int const x, int const y);
-		void RaiseKeyActionEvent(int const key, int const mods);
+		void RaiseKeyActionEvent(int const key, int const mods, bool pressed);
 
 
 
 	public:
 
-		delegate void OnKeyActionDelegate(int const key, int const mods);
-		event OnKeyActionDelegate^ OnKeyAction;
+		delegate void OnKeyPressedDelegate(int const key, int const mods);
+		event OnKeyPressedDelegate^ OnKeyPressed;
+		delegate void OnKeyReleaseDelegate(int const key, int const mods);
+		event OnKeyReleaseDelegate^ OnKeyRelease;
 
 		delegate void WindowResizeDelegate(int const x, int const y);
 		event WindowResizeDelegate^ OnWindowResize;

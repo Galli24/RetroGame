@@ -28,7 +28,7 @@ namespace RetroGame.Services
 
         private ConcurrentDictionary<Action, ActionTime> _actions = new ConcurrentDictionary<Action, ActionTime>();
 
-
+        public float FrameTime { get; private set; }
         #endregion
 
         #region Singleton
@@ -75,7 +75,7 @@ namespace RetroGame.Services
             _frameStopwatch.Start();
             var fpsFont = FontManager.Instance["Roboto"];
             _fpsCounter = new TextBlock(new Vector2(0, Window.Size.Y), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
-            Window.OnKeyAction += (key, _) =>
+            Window.OnKeyPressed += (key, _) =>
             {
                 if (key == 294)
                     SceneManager.Instance.ReloadCurrentScene();
@@ -91,6 +91,16 @@ namespace RetroGame.Services
             if (_showFPS)
                 AddRenderItem(_fpsCounter);
         }
+
+        public void LoadNodes(IEnumerable<IGraphNode> nodes, bool clearScene = false)
+        {
+            _sceneGraph.Nodes = new List<IGraphNode>(nodes);
+
+            if (_showFPS)
+                AddRenderItem(_fpsCounter);
+
+        }
+
 
         public void ClearEntireScene()
         {
@@ -140,7 +150,7 @@ namespace RetroGame.Services
             var elapsed = (float)_frameStopwatch.Elapsed.TotalSeconds;
             _frameStopwatch.Restart();
             _fpsCounter.Text = $"{Math.Round(1 / elapsed)}fps - {Math.Round(elapsed * 1000)}ms";
-
+            FrameTime = elapsed;
             _sceneGraph.Update(elapsed);
             _sceneGraph.Render(elapsed);
 

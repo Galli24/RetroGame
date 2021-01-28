@@ -22,9 +22,12 @@ void RenderEngine::Window::RaiseResizeEvent(int const x, int const y)
 	OnWindowResize(x, y);
 }
 
-void RenderEngine::Window::RaiseKeyActionEvent(int const key, int const mods)
+void RenderEngine::Window::RaiseKeyActionEvent(int const key, int const mods, bool pressed)
 {
-	OnKeyAction(key, mods);
+	if (pressed)
+		OnKeyPressed(key, mods);
+	else
+		OnKeyRelease(key, mods);
 }
 
 bool RenderEngine::Window::ShouldClose()
@@ -53,5 +56,5 @@ void RenderEngine::WindowWrapper::OnWindowResize(int const x, int const y)
 void RenderEngine::WindowWrapper::OnKeyAction(int key, int scancode, int action, int mods)
 {
 	Rendering::Window::OnKeyAction(key, scancode, action, mods);
-	_managed->RaiseKeyActionEvent(key, mods);
+	_managed->RaiseKeyActionEvent(key, mods, action != 0);
 }

@@ -1,6 +1,7 @@
 ﻿using RenderEngine;
 using RetroGame.Model;
 using RetroGame.Services;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -14,6 +15,7 @@ namespace RetroGame.Scenes
         public override bool RequireClearOnLoad => true;
 
         public override bool RequireClearOnExit => true;
+        public override IEnumerable<IGraphNode> Sprites => Array.Empty<IGraphNode>();
 
         private readonly RegisterScene _registerScene;
 

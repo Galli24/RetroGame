@@ -1,4 +1,5 @@
 ﻿using RetroGame.Model;
+using RetroGame.Scenes;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -23,17 +24,22 @@ namespace RetroGame.Services
 
         #region Members
 
+        public Dictionary<string, Player> Players = new Dictionary<string, Player>();
+
         #endregion
 
         public void StartGame()
         {
-            // TODO: init stuff then start
-            // RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new GameScene()));
+            Players.Clear();
+            foreach (var p in LobbyManager.Instance.PlayerList)
+                Players.Add(p.Key, p.Value);
+
+             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new GameScene()));
         }
 
         public void OnPlayerPositionUpdate(string player, Vector2 position)
         {
-            // TODO
+            Players[player].Position = position;
         }
     }
 }

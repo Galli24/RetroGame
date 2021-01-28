@@ -18,7 +18,9 @@ namespace RetroGame
 
             while (RenderService.Instance.RenderFrame())
             {
-                // TODO: Le jeu
+                if (!(SceneManager.Instance.CurrentScene is GameScene scene))
+                    continue;
+                scene.Update(RenderService.Instance.FrameTime);
             }
         }
     }
