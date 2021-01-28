@@ -168,6 +168,8 @@ namespace RetroGame.Services
 
         public void SendReady(bool isReady) => Task.Run(() => new ClientLobbyReadyMessage(isReady).Send());
 
+        public void StartGame() => Task.Run(() => new ClientLobbyStartMessage().Send());
+
         #endregion
     }
 }

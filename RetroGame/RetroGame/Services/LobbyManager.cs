@@ -118,9 +118,14 @@ namespace RetroGame.Services
 
         public void StartGame()
         {
-            // TODO: Send packet
+            NetworkManager.Instance.StartGame();
             IsStarting = true;
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
+        }
+
+        public void OnLobbyStarted()
+        {
+            GameManager.Instance.StartGame();
         }
     }
 }

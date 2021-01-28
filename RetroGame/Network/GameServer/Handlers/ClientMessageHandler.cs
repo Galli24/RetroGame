@@ -35,9 +35,8 @@ namespace GameServer.Handlers
                     break;
                 case MessageTarget.GAME:
                     if (client.IsAuthenticated)
-                    {
-                        // TODO: Game messages & handler
-                    } else
+                        GameMessageHandler.OnGameMessage(client, message);
+                    else
                         new ServerNotAuthenticatedMessage(client.Socket).Send();
                     break;
                 default:

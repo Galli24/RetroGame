@@ -21,6 +21,7 @@ namespace RetroGame.Networking.Handlers
                     break;
                 case ServerMessageType.LOBBY_STARTED:
                     Trace.WriteLine("Response LOBBY_STARTED");
+                    OnLobbyStarted(message as ServerLobbyStartedMessage);
                     break;
                 case ServerMessageType.LOBBY_PLAYER_JOINED:
                     Trace.WriteLine("Response LOBBY_PLAYER_JOINED");
@@ -63,6 +64,18 @@ namespace RetroGame.Networking.Handlers
             {
                 LobbyManager.Instance.OnLobbyJoined(message);
                 RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyScene()));
+            }
+        }
+
+        private static void OnLobbyStarted(ServerLobbyStartedMessage message)
+        {
+            if (!message.HasStarted)
+            {
+                //if (SceneManager.Instance.CurrentScene is LobbyScene scene)
+                //    RenderService.Instance.DoInRenderThread(() => scene.OnStartFailed(message.Reason));
+            } else
+            {
+                LobbyManager.Instance.OnLobbyStarted();
             }
         }
 

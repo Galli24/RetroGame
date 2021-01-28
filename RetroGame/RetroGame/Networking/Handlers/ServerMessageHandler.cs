@@ -1,6 +1,5 @@
 ﻿using LibNetworking.Messages;
 using LibNetworking.Messages.Server;
-using RetroGame.Services;
 
 namespace RetroGame.Networking.Handlers
 {
@@ -29,7 +28,7 @@ namespace RetroGame.Networking.Handlers
                     LobbyMessageHandler.OnLobbyMessage(message);
                     break;
                 case MessageTarget.GAME:
-                    // TODO: Game messages & handler
+                    GameMessageHandler.OnGameMessage(message);
                     break;
                 default:
                     break;

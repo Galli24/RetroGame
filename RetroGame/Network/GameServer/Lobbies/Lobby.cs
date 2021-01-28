@@ -31,7 +31,7 @@ namespace GameServer.Lobbies
                 { host.Username, new Player(host, true) }
             };
 
-            _gameManager = new GameManager();
+            _gameManager = new GameManager(this);
         }
 
         public void StartGame(SocketState state)
@@ -60,10 +60,10 @@ namespace GameServer.Lobbies
             return true;
         }
 
-        public void EnqueueGameMessage(ClientMessage message)
+        public void EnqueueGameMessage(SocketState client, ClientMessage message)
         {
             if (_gameManager.Started)
-                _gameManager.EnqueueMessage(message);
+                _gameManager.EnqueueMessage(client, message);
         }
 
         public void PlayerJoin(SocketState newPlayer)
