@@ -48,25 +48,23 @@ namespace RetroGame.Scenes
 
             var leaveBt = new Button(new Vector2(30, 30), "Leave", IMenu.Anchor.BottomLeft, FontManager.Instance["Roboto", 50], Vector2.Zero);
             leaveBt.Padding = new Vector2((sc.Window.Size.X / 4 - leaveBt.EvaluatedSize.X / 2) - 30, 10);
-            leaveBt.OnMousePress += (_, __, ___) => LobbyManager.Instance.LeaveLobby();
+            if (!LobbyManager.Instance.IsStarting)
+                leaveBt.OnMousePress += (_, __, ___) => LobbyManager.Instance.LeaveLobby();
 
             var readyBt = new Button(new Vector2(sc.Window.Size.X - 30, 30), readyButtonText(), IMenu.Anchor.BottomRight, FontManager.Instance["Roboto", 50], Vector2.Zero);
             readyBt.Padding = new Vector2((sc.Window.Size.X / 4 - readyBt.EvaluatedSize.X / 2) - 30, 10);
             readyBt.OnMousePress += (_, __, ___) => LobbyManager.Instance.ToggleReady();
 
-            var startButton = new Button(new Vector2(sc.Window.Size.X - 30, 30), "Start Game", IMenu.Anchor.BottomRight, FontManager.Instance["Roboto", 50], Vector2.Zero);
+            var startButton = new Button(new Vector2(sc.Window.Size.X - 30, 30), LobbyManager.Instance.IsStarting ? "Starting..." : "Start Game", IMenu.Anchor.BottomRight, FontManager.Instance["Roboto", 50], Vector2.Zero);
             startButton.Padding = new Vector2((sc.Window.Size.X / 4 - startButton.EvaluatedSize.X / 2) - 30, 10);
-            startButton.OnMousePress += (_, __, ___) =>
-            {
-                Trace.WriteLine("Start");
-            };
+            if (!LobbyManager.Instance.IsStarting)
+                startButton.OnMousePress += (_, __, ___) => LobbyManager.Instance.StartGame();
 
 
-            _menu = _players.Concat(new List<IMenu> {
-                title,
-                leaveBt,
-                LobbyManager.Instance.AllPlayersReady() && LobbyManager.Instance.IsHost ? startButton : readyBt
-            }).ToList();
+            var list = new List<IMenu> { title, leaveBt };
+            list.Add(LobbyManager.Instance.AllPlayersReady() && LobbyManager.Instance.IsHost ? startButton : readyBt);
+
+            _menu = _players.Concat(list).ToList();
         }
 
     }

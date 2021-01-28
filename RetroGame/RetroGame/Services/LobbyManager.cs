@@ -31,6 +31,8 @@ namespace RetroGame.Services
         public bool HasPassword { get; private set; }
         public ushort MaxSlots { get; private set; }
         public Dictionary<string, Player> PlayerList { get; private set; } = new Dictionary<string, Player>();
+        public bool IsStarting { get; private set; }
+        
 
         public bool IsHost
         {
@@ -111,6 +113,13 @@ namespace RetroGame.Services
         {
             IsReady = !IsReady;
             NetworkManager.Instance.SendReady(IsReady);
+            RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
+        }
+
+        public void StartGame()
+        {
+            // TODO: Send packet
+            IsStarting = true;
             RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.ReloadCurrentScene());
         }
     }
