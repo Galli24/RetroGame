@@ -7,6 +7,7 @@ using RetroGame.Utils;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace RetroGame.Services
@@ -169,6 +170,12 @@ namespace RetroGame.Services
         public void SendReady(bool isReady) => Task.Run(() => new ClientLobbyReadyMessage(isReady).Send());
 
         public void StartGame() => Task.Run(() => new ClientLobbyStartMessage().Send());
+
+        #endregion
+
+        #region Game logic
+
+        public void SendPlayerPosition(Vector2 position) => Task.Run(() => new ClientGamePlayerPositionMessage(position).Send());
 
         #endregion
     }

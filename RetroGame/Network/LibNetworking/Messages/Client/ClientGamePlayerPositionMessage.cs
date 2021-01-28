@@ -7,7 +7,12 @@ namespace LibNetworking.Messages.Client
     public sealed class ClientGamePlayerPositionMessage : ClientMessage
     {
         [ProtoMember(1)]
-        public Vector2 Position { get; private set; }
+        private readonly float _x;
+        [ProtoMember(2)]
+        private readonly float _y;
+
+        [ProtoIgnore]
+        public Vector2 Position => new Vector2(_x, _y);
 
         public ClientGamePlayerPositionMessage()
             : base(ClientMessageType.GAME_PLAYER_POSITION, MessageTarget.GAME) { }
@@ -15,7 +20,8 @@ namespace LibNetworking.Messages.Client
         public ClientGamePlayerPositionMessage(Vector2 position)
             : base(ClientMessageType.GAME_PLAYER_POSITION, MessageTarget.GAME)
         {
-            Position = position;
+            _x = position.X;
+            _y = position.Y;
         }
     }
 }

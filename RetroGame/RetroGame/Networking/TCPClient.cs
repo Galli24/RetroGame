@@ -81,7 +81,9 @@ namespace RetroGame.Networking
         {
             if (_socket != null)
             {
-                Trace.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {_socket.RemoteEndPoint}");
+                //Trace.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {_socket.RemoteEndPoint}");
+                if (message.MessageTarget != MessageTarget.GAME)
+                    Trace.WriteLine($"Request {message.ClientMessageType}");
 
                 var serializedMessage = Message.SerializeToBytes(message);
                 var sizeBytes = BitConverter.GetBytes(serializedMessage.Length);

@@ -91,15 +91,21 @@ namespace RetroGame.Scenes
 
                 }
             }
-            _players[UserManager.Instance.Username].Position += p * dt * speed;
+            //_players[UserManager.Instance.Username].Position += p * dt * speed;
+            if (p != Vector2.Zero)
+            {
+                var position = GameManager.Instance.Players[UserManager.Instance.Username].Position += p * dt * speed;
+                NetworkManager.Instance.SendPlayerPosition(position);
+                GameManager.Instance.OnPlayerPositionUpdate(UserManager.Instance.Username, position);
+            }
         }
 
         public void Update(float deltaTime)
         {
             HandleKeys(deltaTime);
 
-            //foreach (var p in _players)
-            //    p.Value.Position = GameManager.Instance.Players[p.Key].Position;
+            foreach (var p in _players)
+                p.Value.Position = GameManager.Instance.Players[p.Key].Position;
         }
     }
 }
