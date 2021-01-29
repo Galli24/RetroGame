@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Net.Sockets;
 
-namespace GameServer.Server
+namespace LibNetworking.Models
 {
     public class SocketState
     {

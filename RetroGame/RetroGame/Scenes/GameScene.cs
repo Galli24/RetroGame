@@ -96,7 +96,6 @@ namespace RetroGame.Scenes
             {
                 var position = GameManager.Instance.Players[UserManager.Instance.Username].Position += p * dt * speed;
                 NetworkManager.Instance.SendPlayerPosition(position);
-                GameManager.Instance.OnPlayerPositionUpdate(UserManager.Instance.Username, position);
             }
         }
 

@@ -2,6 +2,7 @@
 using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
+using LibNetworking.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;

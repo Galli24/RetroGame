@@ -1,6 +1,7 @@
 ﻿using LibNetworking.Messages;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
+using LibNetworking.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -17,14 +18,6 @@ namespace RetroGame.Networking
         private readonly IPAddress _serverIP;
         private readonly ushort _serverPort;
         private Socket _socket;
-
-        private class SocketState
-        {
-            public Socket Socket;
-            public byte[] SizeBuffer;
-            public byte[] Buffer;
-            public MemoryStream Data;
-        }
 
         #endregion
 

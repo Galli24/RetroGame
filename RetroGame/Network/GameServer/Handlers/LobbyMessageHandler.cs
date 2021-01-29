@@ -1,7 +1,7 @@
-﻿using GameServer.Server;
-using GameServer.Utils;
+﻿using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
+using LibNetworking.Models;
 using System;
 using System.Collections.Generic;
 

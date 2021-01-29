@@ -1,4 +1,4 @@
-﻿using RetroGame.Model;
+﻿using LibNetworking.Models;
 using RetroGame.Scenes;
 using System.Collections.Generic;
 using System.Numerics;
@@ -37,9 +37,9 @@ namespace RetroGame.Services
              RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new GameScene()));
         }
 
-        public void OnPlayerPositionUpdate(string player, Vector2 position)
+        public void OnPlayerUpdate(Player player)
         {
-            Players[player].Position = position;
+            Players[player.Name] = player;
         }
     }
 }

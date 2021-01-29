@@ -1,5 +1,5 @@
 ﻿using LibNetworking.Messages.Server;
-using RetroGame.Model;
+using LibNetworking.Models;
 using RetroGame.Scenes;
 using System;
 using System.Collections.Generic;

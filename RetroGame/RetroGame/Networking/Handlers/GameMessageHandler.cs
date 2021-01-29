@@ -11,18 +11,18 @@ namespace RetroGame.Networking.Handlers
         {
             switch (message.ServerMessageType)
             {
-                case ServerMessageType.GAME_PLAYER_POSITION:
-                    Trace.WriteLine("Response GAME_PLAYER_POSITION");
-                    OnGamePlayerPosition(message as ServerGamePlayerPositionMessage);
+                case ServerMessageType.GAME_PLAYER_UPDATE:
+                    //Trace.WriteLine("Response GAME_PLAYER_POSITION");
+                    OnGamePlayerUpdate(message as ServerGamePlayerUpdateMessage);
                     break;
                 default:
                     return;
             }
         }
 
-        private static void OnGamePlayerPosition(ServerGamePlayerPositionMessage message)
+        private static void OnGamePlayerUpdate(ServerGamePlayerUpdateMessage message)
         {
-            GameManager.Instance.OnPlayerPositionUpdate(message.PlayerName, message.Position);
+            GameManager.Instance.OnPlayerUpdate(message.Player);
         }
     }
 }

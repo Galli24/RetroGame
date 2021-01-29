@@ -1,6 +1,7 @@
 ﻿using LibNetworking.Messages;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
+using LibNetworking.Models;
 using System;
 using System.IO;
 using System.Net;
@@ -119,7 +120,8 @@ namespace GameServer.Server
         public static void SendServerMessage(Socket client, ServerMessage message)
         {
             // Console.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {client.RemoteEndPoint}");
-            Console.WriteLine($"Response {message.ServerMessageType}");
+            if (message.MessageTarget != MessageTarget.GAME)
+                Console.WriteLine($"Response {message.ServerMessageType}");
 
             var serializedResponse = Message.SerializeToBytes(message);
             var sizeBytes = BitConverter.GetBytes(serializedResponse.Length);

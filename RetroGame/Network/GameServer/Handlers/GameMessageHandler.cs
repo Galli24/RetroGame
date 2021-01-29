@@ -1,5 +1,5 @@
-﻿using GameServer.Server;
-using LibNetworking.Messages.Client;
+﻿using LibNetworking.Messages.Client;
+using LibNetworking.Models;
 using System;
 
 namespace GameServer.Handlers
@@ -11,7 +11,7 @@ namespace GameServer.Handlers
             switch (message.ClientMessageType)
             {
                 case ClientMessageType.GAME_PLAYER_POSITION:
-                    Console.WriteLine("Request GAME_PLAYER_POSITION");
+                    //Console.WriteLine("Request GAME_PLAYER_POSITION");
                     OnGamePlayerPosition(client, message as ClientGamePlayerPositionMessage);
                     break;
                 default:

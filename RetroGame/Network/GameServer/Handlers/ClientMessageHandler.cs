@@ -1,8 +1,8 @@
-﻿using GameServer.Server;
-using GameServer.Utils;
+﻿using GameServer.Utils;
 using LibNetworking.Messages;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
+using LibNetworking.Models;
 
 namespace GameServer.Handlers
 {

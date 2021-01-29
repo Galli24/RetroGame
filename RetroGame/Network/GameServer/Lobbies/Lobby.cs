@@ -1,5 +1,5 @@
 ﻿using GameServer.Game;
-using GameServer.Server;
+using LibNetworking.Models;
 using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
@@ -31,7 +31,7 @@ namespace GameServer.Lobbies
                 { host.Username, new Player(host, true) }
             };
 
-            _gameManager = new GameManager(this);
+            _gameManager = new GameManager();
         }
 
         public void StartGame(SocketState state)
@@ -48,7 +48,7 @@ namespace GameServer.Lobbies
 
                 foreach (var player in Players.Values)
                     new ServerLobbyStartedMessage(player.State.Socket, true).Send();
-                _gameManager.Start();
+                _gameManager.Start(Players);
             }
         }
 

@@ -1,18 +1,14 @@
-﻿using GameServer.Lobbies;
-using GameServer.Server;
-using GameServer.Utils;
+﻿using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
+using LibNetworking.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameServer.Game
 {
-    // TODO
     class GameManager
     {
 
@@ -37,27 +33,27 @@ namespace GameServer.Game
 
         #region Members
 
-        private Lobby _gameLobby;
-
-        private readonly TimeSpan _targetElsapsedTime = TimeSpan.FromTicks(166667); // 60 ticks (1 per 16.67ms)
+        private readonly TimeSpan _targetElsapsedTime = TimeSpan.FromMilliseconds(15.625); // 64 ticks
         readonly GameClock _clock;
         public bool Started { get; private set; }
         private bool _isRunning;
 
+        private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
+
         #endregion
 
-        public GameManager(Lobby gameLobby)
+        public GameManager()
         {
             _messages = new ConcurrentQueue<ClientGameMessage>();
             _responses = new Queue<ServerMessage>();
             _clock = new GameClock();
-            _gameLobby = gameLobby;
         }
 
-        public void Start()
+        public void Start(Dictionary<string, Player> players)
         {
-            foreach (var player in _gameLobby.Players.Values)
-                player.Position = Vector2.Zero;
+
+            foreach (var player in players)
+                _players.Add(player.Key, new Player(player.Value.State));
 
             Started = true;
             _clock.Restart();
@@ -65,7 +61,7 @@ namespace GameServer.Game
             Task.Run(() => GameLoop());
         }
 
-        private void GameLoop()
+        private async void GameLoop()
         {
             while (_isRunning)
             {
@@ -83,12 +79,16 @@ namespace GameServer.Game
 
                     // TODO: Do game simulation
 
+                    // Send player position packets for the current tick
+                    SendPlayerData();
+
                     // Send packets for the current tick
                     HandleResponses();
+
                 }
 
                 // Reduce CPU cycles
-                Thread.Sleep(1);
+                await Task.Delay(1);
             }
         }
 
@@ -121,12 +121,8 @@ namespace GameServer.Game
             var client = playerPositionMessage.Client;
             var message = playerPositionMessage.Message as ClientGamePlayerPositionMessage;
 
-            _gameLobby.Players[client.Username].Position = message.Position;
-            foreach (var player in _gameLobby.Players.Values)
-            {
-                if (player.State.Username != client.Username)
-                    EnqueueResponse(new ServerGamePlayerPositionMessage(player.State.Socket, client.Username, message.Position));
-            }
+            if (_players.ContainsKey(client.Username))
+                _players[client.Username].Position = message.Position;
         }
 
         #endregion
@@ -140,6 +136,23 @@ namespace GameServer.Game
                 var dequeued = _responses.TryDequeue(out ServerMessage serverMessage);
                 if (!dequeued) continue;
                 serverMessage.Send();
+            }
+        }
+
+        private void SendPlayerData()
+        {
+            // Player positions
+            foreach (var player in _players.Values)
+            {
+                if (player.IsDirty)
+                {
+                    foreach (var receivingPlayer in _players.Values)
+                    {
+                        if (receivingPlayer.State.Username != player.State.Username)
+                            EnqueueResponse(new ServerGamePlayerUpdateMessage(receivingPlayer.State.Socket, player));
+                    }
+                    player.IsDirty = false;
+                }
             }
         }
 
