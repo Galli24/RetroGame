@@ -42,12 +42,10 @@ namespace GameServer.Lobbies
             {
                 if (!AllPlayersReady())
                 {
-                    new ServerLobbyStartedMessage(state.Socket, false, "Not all players are ready").Send();
+                    new ServerLobbyStartedMessage(state.Socket, false, reason: "Not all players are ready").Send();
                     return;
                 }
 
-                foreach (var player in Players.Values)
-                    new ServerLobbyStartedMessage(player.State.Socket, true).Send();
                 _gameManager.Start(Players);
             }
         }

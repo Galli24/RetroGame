@@ -45,13 +45,13 @@ namespace LibNetworking.Messages
         public static Message DeserializeFromStream(MemoryStream zipStream)
         {
             using var rawStream = new MemoryStream(zipStream.GetBuffer());
-            return Serializer.DeserializeWithLengthPrefix<Message>(rawStream, PrefixStyle.Base128);
+            return Serializer.Deserialize<Message>(rawStream);
         }
 
         public static byte[] SerializeToBytes(Message message)
         {
             using var rawStream = new MemoryStream();
-            Serializer.SerializeWithLengthPrefix(rawStream, message, PrefixStyle.Base128);
+            Serializer.Serialize(rawStream, message);
             return rawStream.ToArray();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using LibNetworking.Messages.Client;
+using LibNetworking.Models;
 using Newtonsoft.Json.Linq;
 using RetroGame.Configuration;
 using RetroGame.Networking;
@@ -175,7 +176,7 @@ namespace RetroGame.Services
 
         #region Game logic
 
-        public void SendPlayerPosition(Vector2 position) => Task.Run(() => new ClientGamePlayerPositionMessage(position).Send());
+        public void SendPlayerKeyState(Player.Actions action, bool state) => Task.Run(() => new ClientGamePlayerKeyStateMessage(action, state).Send());
 
         #endregion
     }

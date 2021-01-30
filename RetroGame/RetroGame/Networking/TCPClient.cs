@@ -5,6 +5,7 @@ using LibNetworking.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
@@ -80,11 +81,9 @@ namespace RetroGame.Networking
 
                 var serializedMessage = Message.SerializeToBytes(message);
                 var sizeBytes = BitConverter.GetBytes(serializedMessage.Length);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(sizeBytes);
+                var bytesToSend = sizeBytes.Concat(serializedMessage).ToArray();
 
-                _socket.Send(sizeBytes);
-                _socket.Send(serializedMessage);
+                _socket.Send(bytesToSend);
             }
         }
 
@@ -118,11 +117,8 @@ namespace RetroGame.Networking
                 int readBytes = socket.EndReceive(result);
                 if (readBytes == 4)
                 {
-                    if (BitConverter.IsLittleEndian)
-                        Array.Reverse(state.SizeBuffer);
-
                     var packetSize = BitConverter.ToInt32(state.SizeBuffer);
-                    state.Buffer = new byte[packetSize + 1];
+                    state.Buffer = new byte[packetSize];
                     socket.BeginReceive(state.Buffer, 0, packetSize, SocketFlags.None, new AsyncCallback(OnReceivePacket), state);
                 }
                 else

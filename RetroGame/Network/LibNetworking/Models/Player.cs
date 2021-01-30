@@ -1,4 +1,5 @@
 ﻿using ProtoBuf;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace LibNetworking.Models
@@ -6,6 +7,25 @@ namespace LibNetworking.Models
     [ProtoContract(SkipConstructor = true)]
     public class Player
     {
+        #region Action handling
+
+        public enum Actions
+        {
+            MOVE_LEFT,
+            MOVE_UP,
+            MOVE_RIGHT,
+            MOVE_DOWN,
+            BOOST
+        }
+
+        [ProtoIgnore]
+        public readonly Dictionary<Actions, bool> ActionStates = new Dictionary<Actions, bool>();
+
+        [ProtoIgnore]
+        public const float SPEED = 100;
+
+        #endregion
+
         #region Members
 
         [ProtoIgnore]
@@ -30,6 +50,9 @@ namespace LibNetworking.Models
         private float _x;
         [ProtoMember(3)]
         private float _y;
+
+        [ProtoIgnore]
+        public Vector2 LastRenderedPosition;
 
         [ProtoIgnore]
         public Vector2 Position

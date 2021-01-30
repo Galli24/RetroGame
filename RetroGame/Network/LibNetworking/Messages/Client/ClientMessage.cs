@@ -14,7 +14,7 @@ namespace LibNetworking.Messages.Client
         LOBBY_START,
         LOBBY_LEAVE,
         // Game
-        GAME_PLAYER_POSITION
+        GAME_PLAYER_KEY_STATE
     }
 
     [ProtoContract(SkipConstructor = true)]
@@ -27,7 +27,7 @@ namespace LibNetworking.Messages.Client
     [ProtoInclude(7, typeof(ClientLobbyStartMessage))]
     [ProtoInclude(8, typeof(ClientLobbyLeaveMessage))]
     // Game
-    [ProtoInclude(9, typeof(ClientGamePlayerPositionMessage))]
+    [ProtoInclude(9, typeof(ClientGamePlayerKeyStateMessage))]
 
     public abstract class ClientMessage : Message
     {

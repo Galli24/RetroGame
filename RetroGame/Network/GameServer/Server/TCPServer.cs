@@ -4,6 +4,7 @@ using LibNetworking.Messages.Server;
 using LibNetworking.Models;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
@@ -68,11 +69,8 @@ namespace GameServer.Server
                 int readBytes = state.Socket.EndReceive(result);
                 if (readBytes == 4)
                 {
-                    if (BitConverter.IsLittleEndian)
-                        Array.Reverse(state.SizeBuffer);
-
                     var packetSize = BitConverter.ToInt32(state.SizeBuffer);
-                    state.Buffer = new byte[packetSize + 1];
+                    state.Buffer = new byte[packetSize];
                     state.Socket.BeginReceive(state.Buffer, 0, packetSize, SocketFlags.None, new AsyncCallback(OnReceivePacket), state);
                 }
                 else
@@ -125,11 +123,9 @@ namespace GameServer.Server
 
             var serializedResponse = Message.SerializeToBytes(message);
             var sizeBytes = BitConverter.GetBytes(serializedResponse.Length);
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(sizeBytes);
+            var bytesToSend = sizeBytes.Concat(serializedResponse).ToArray();
 
-            client.Send(sizeBytes);
-            client.Send(serializedResponse);
+            client.Send(bytesToSend);
         }
 
         internal static void CloseSocketState(SocketState state)

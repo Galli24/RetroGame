@@ -18,10 +18,13 @@ namespace RetroGame
 
             while (RenderService.Instance.RenderFrame())
             {
-                if (!(SceneManager.Instance.CurrentScene is GameScene scene))
+                if (SceneManager.Instance.CurrentScene is not GameScene scene)
                     continue;
                 scene.Update(RenderService.Instance.FrameTime);
             }
+
+            if (SceneManager.Instance.CurrentScene is GameScene gameScene)
+                gameScene.Stop();
         }
     }
 }

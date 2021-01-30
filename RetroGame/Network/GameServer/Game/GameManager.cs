@@ -5,7 +5,11 @@ using LibNetworking.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace GameServer.Game
 {
@@ -33,10 +37,13 @@ namespace GameServer.Game
 
         #region Members
 
-        private readonly TimeSpan _targetElsapsedTime = TimeSpan.FromMilliseconds(15.625); // 64 ticks
-        readonly GameClock _clock;
+        const float TICK_RATE = 64;
+        private readonly TimeSpan _targetElsapsedTime = TimeSpan.FromSeconds(1 / TICK_RATE); // 64 ticks
+        private readonly TimeSpan _syncSnapshotInterval = TimeSpan.FromSeconds(2);
+        private Timer _gameLoopTimer;
+        private Timer _syncSnapshotTimer;
+
         public bool Started { get; private set; }
-        private bool _isRunning;
 
         private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
 
@@ -46,7 +53,14 @@ namespace GameServer.Game
         {
             _messages = new ConcurrentQueue<ClientGameMessage>();
             _responses = new Queue<ServerMessage>();
-            _clock = new GameClock();
+
+            _gameLoopTimer = new Timer();
+            _gameLoopTimer.Elapsed += (_, __) => GameLoop();
+            _gameLoopTimer.Interval = _targetElsapsedTime.TotalSeconds;
+
+            _syncSnapshotTimer = new Timer();
+            _syncSnapshotTimer.Elapsed += (_, __) => SendSyncSnapshot();
+            _syncSnapshotTimer.Interval = _syncSnapshotInterval.TotalSeconds;
         }
 
         public void Start(Dictionary<string, Player> players)
@@ -56,39 +70,62 @@ namespace GameServer.Game
                 _players.Add(player.Key, new Player(player.Value.State));
 
             Started = true;
-            _clock.Restart();
-            _isRunning = true;
-            Task.Run(() => GameLoop());
+
+            foreach (var player in _players.Values)
+                new ServerLobbyStartedMessage(player.State.Socket, true, TICK_RATE).Send();
+
+            _gameLoopTimer.Start();
+            _syncSnapshotTimer.Start();
         }
 
-        private async void GameLoop()
+        private void GameLoop()
         {
-            while (_isRunning)
+            // Handle packets received since last tick(s)
+            HandleMessages();
+
+            // Player inputs
+            HandlePlayerActions((float)_targetElsapsedTime.TotalSeconds);
+
+            // TODO: Do game simulation
+
+            // Send player position packets for the current tick
+            SendPlayerData();
+
+            // Send packets for the current tick
+            HandleResponses();
+        }
+
+        private void HandlePlayerActions(float deltaTime)
+        {
+            foreach (var player in _players.Values)
             {
-                // Check how many ticks have passed
-                _clock.Step();
-                long ratio = _clock.Elapsed.Ticks / _targetElsapsedTime.Ticks;
-
-                // Do logic if ticks have passed
-                while (ratio > 0)
+                var p = Vector2.Zero;
+                var speed = Player.SPEED;
+                foreach (var action in player.ActionStates.Where(action => action.Value))
                 {
-                    ratio -= 1;
+                    switch (action.Key)
+                    {
+                        case Player.Actions.MOVE_LEFT:
+                            p.X -= 1;
+                            break;
+                        case Player.Actions.MOVE_RIGHT:
+                            p.X += 1;
+                            break;
+                        case Player.Actions.MOVE_DOWN:
+                            p.Y -= 1;
+                            break;
+                        case Player.Actions.MOVE_UP:
+                            p.Y += 1;
+                            break;
+                        case Player.Actions.BOOST:
+                            speed = 1000;
+                            break;
 
-                    // Handle packets received since last tick(s)
-                    HandleMessages();
-
-                    // TODO: Do game simulation
-
-                    // Send player position packets for the current tick
-                    SendPlayerData();
-
-                    // Send packets for the current tick
-                    HandleResponses();
-
+                    }
                 }
 
-                // Reduce CPU cycles
-                await Task.Delay(1);
+                if (p != Vector2.Zero)
+                    player.Position += p * deltaTime * speed;
             }
         }
 
@@ -105,8 +142,8 @@ namespace GameServer.Game
 
                 switch (message.Message.ClientMessageType)
                 {
-                    case ClientMessageType.GAME_PLAYER_POSITION:
-                        HandleGamePlayerPosition(message);
+                    case ClientMessageType.GAME_PLAYER_KEY_STATE:
+                        HandleGamePlayerKeyState(message);
                         break;
                     default:
                         break;
@@ -116,13 +153,13 @@ namespace GameServer.Game
 
         #region Message handlers
 
-        private void HandleGamePlayerPosition(ClientGameMessage playerPositionMessage)
+        private void HandleGamePlayerKeyState(ClientGameMessage playerPositionMessage)
         {
             var client = playerPositionMessage.Client;
-            var message = playerPositionMessage.Message as ClientGamePlayerPositionMessage;
+            var message = playerPositionMessage.Message as ClientGamePlayerKeyStateMessage;
 
             if (_players.ContainsKey(client.Username))
-                _players[client.Username].Position = message.Position;
+                _players[client.Username].ActionStates[message.KeyAction] = message.State;
         }
 
         #endregion
@@ -148,12 +185,21 @@ namespace GameServer.Game
                 {
                     foreach (var receivingPlayer in _players.Values)
                     {
-                        if (receivingPlayer.State.Username != player.State.Username)
+                        if (receivingPlayer.Name != player.Name)
                             EnqueueResponse(new ServerGamePlayerUpdateMessage(receivingPlayer.State.Socket, player));
                     }
+
                     player.IsDirty = false;
                 }
             }
+        }
+
+        private void SendSyncSnapshot()
+        {
+            var playerList = _players.Values.ToArray();
+
+            foreach (var player in _players.Values)
+                 EnqueueResponse(new ServerGameSyncSnapshotMessage(player.State.Socket, playerList));
         }
 
         #endregion

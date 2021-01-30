@@ -10,16 +10,16 @@ namespace GameServer.Handlers
         {
             switch (message.ClientMessageType)
             {
-                case ClientMessageType.GAME_PLAYER_POSITION:
+                case ClientMessageType.GAME_PLAYER_KEY_STATE:
                     //Console.WriteLine("Request GAME_PLAYER_POSITION");
-                    OnGamePlayerPosition(client, message as ClientGamePlayerPositionMessage);
+                    OnGamePlayerKeyState(client, message as ClientGamePlayerKeyStateMessage);
                     break;
                 default:
                     return;
             }
         }
 
-        private static void OnGamePlayerPosition(SocketState client, ClientGamePlayerPositionMessage message)
+        private static void OnGamePlayerKeyState(SocketState client, ClientGamePlayerKeyStateMessage message)
         {
             var lobby = GlobalManager.Instance.LobbyManager.GetLobbyFromUsername(client.Username);
 

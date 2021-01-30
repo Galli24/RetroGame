@@ -18,6 +18,7 @@ namespace LibNetworking.Messages.Server
         LOBBY_PLAYER_LEFT,
         // Game
         GAME_PLAYER_UPDATE,
+        GAME_SYNC_SNAPSHOT
     }
 
     [ProtoContract(SkipConstructor = true)]
@@ -33,6 +34,7 @@ namespace LibNetworking.Messages.Server
     [ProtoInclude(10, typeof(ServerLobbyPlayerLeftMessage))]
     // Game
     [ProtoInclude(11, typeof(ServerGamePlayerUpdateMessage))]
+    [ProtoInclude(12, typeof(ServerGameSyncSnapshotMessage))]
 
     public abstract class ServerMessage : Message
     {

@@ -75,7 +75,7 @@ namespace RetroGame.Networking.Handlers
                 //    RenderService.Instance.DoInRenderThread(() => scene.OnStartFailed(message.Reason));
             } else
             {
-                LobbyManager.Instance.OnLobbyStarted();
+                GameManager.Instance.StartGame(message.TickRate);
             }
         }
 
