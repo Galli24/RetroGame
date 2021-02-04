@@ -89,6 +89,8 @@ namespace GameServer.Lobbies
 
             if (Players.Count == 0)
             {
+                if (_gameManager.Started)
+                    _gameManager.Stop();
                 GlobalManager.Instance.LobbyManager.RemoveLobby(Name);
                 return;
             }
@@ -96,9 +98,10 @@ namespace GameServer.Lobbies
             if (leftPlayerIsHost)
                 Players.ElementAt(0).Value.IsHost = true;
 
+            _gameManager.PlayerLeft(leftPlayer.Username);
+
             foreach (var player in Players.Values)
                 new ServerLobbyPlayerLeftMessage(player.State.Socket, leftPlayer.Username, Players.ElementAt(0).Key).Send();
-
         }
 
         public void PlayerReady(SocketState readyPlayer, bool isReady)

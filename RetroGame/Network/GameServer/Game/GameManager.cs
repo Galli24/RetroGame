@@ -70,6 +70,11 @@ namespace GameServer.Game
             _gameLoopTimer.Start();
         }
 
+        public void Stop()
+        {
+            _gameLoopTimer.Stop();
+        }
+
         private void GameLoop()
         {
             // Handle packets received since last tick(s)
@@ -120,15 +125,21 @@ namespace GameServer.Game
             }
         }
 
+        public void PlayerLeft(string player)
+        {
+            if (_players.Keys.Contains(player))
+                _players.Remove(player);
+        }
+
         #region Netcode logic
 
         public void EnqueueMessage(SocketState client, ClientMessage message, long tick)
         {
             if (_currentTick >= tick)
             {
-                new ServerGameSyncClockMessage(client.Socket, _currentTick + (_currentTick - tick + 5)).Send();
+                new ServerGameSyncClockMessage(client.Socket, _currentTick + (_currentTick - tick + 20)).Send();
                 return;
-            } else if (tick >= _currentTick + 20)
+            } else if (tick >= _currentTick + 50)
             {
                 new ServerGameSyncClockMessage(client.Socket, (_currentTick + tick) / 2).Send();
                 return;
