@@ -53,11 +53,16 @@ namespace RetroGame.Services
         private SceneGraph _sceneGraph;
 
 
-        #region FPS
+        #region Debug info
 
         private readonly Stopwatch _frameStopwatch = new Stopwatch();
         private TextBlock _fpsCounter;
         private bool _showFPS;
+        private TextBlock _pingCounter;
+        private TextBlock _serverTickCounter;
+        private TextBlock _clientTickCounter;
+        private TextBlock _positionDifference;
+
         #endregion
 
         #endregion
@@ -75,6 +80,10 @@ namespace RetroGame.Services
             _frameStopwatch.Start();
             var fpsFont = FontManager.Instance["Roboto"];
             _fpsCounter = new TextBlock(new Vector2(0, Window.Size.Y), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
+            _pingCounter = new TextBlock(new Vector2(0, Window.Size.Y - 30), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
+            _serverTickCounter = new TextBlock(new Vector2(0, Window.Size.Y - 60), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
+            _clientTickCounter = new TextBlock(new Vector2(0, Window.Size.Y - 90), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
+            _positionDifference = new TextBlock(new Vector2(0, Window.Size.Y - 120), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
             Window.OnKeyPressed += (key, _) =>
             {
                 if (key == 294)
@@ -89,7 +98,13 @@ namespace RetroGame.Services
                 _sceneGraph.Nodes = new List<IGraphNode>();
 
             if (_showFPS)
+            {
                 AddRenderItem(_fpsCounter);
+                AddRenderItem(_pingCounter);
+                AddRenderItem(_serverTickCounter);
+                AddRenderItem(_clientTickCounter);
+                AddRenderItem(_positionDifference);
+            }
         }
 
         public void LoadNodes(IEnumerable<IGraphNode> nodes, bool clearScene = false)
@@ -97,7 +112,13 @@ namespace RetroGame.Services
             _sceneGraph.Nodes = new List<IGraphNode>(nodes);
 
             if (_showFPS)
+            {
                 AddRenderItem(_fpsCounter);
+                AddRenderItem(_pingCounter);
+                AddRenderItem(_serverTickCounter);
+                AddRenderItem(_clientTickCounter);
+                AddRenderItem(_positionDifference);
+            }
 
         }
 
@@ -108,7 +129,13 @@ namespace RetroGame.Services
             _menuManager.Nodes = new List<IMenu>();
 
             if (_showFPS)
+            {
                 AddRenderItem(_fpsCounter);
+                AddRenderItem(_pingCounter);
+                AddRenderItem(_serverTickCounter);
+                AddRenderItem(_clientTickCounter);
+                AddRenderItem(_positionDifference);
+            }
         }
 
         public void AddRenderItem(IGraphNode item)
@@ -149,7 +176,11 @@ namespace RetroGame.Services
 
             var elapsed = (float)_frameStopwatch.Elapsed.TotalSeconds;
             _frameStopwatch.Restart();
-            _fpsCounter.Text = $"{Math.Round(1 / elapsed)}fps - {Math.Round(elapsed * 1000)}ms";
+            _fpsCounter.Text = $"{Math.Round(1 / elapsed)}FPS";
+            _pingCounter.Text = $"Ping: {NetworkManager.Instance.Ping}ms";
+            _serverTickCounter.Text = $"Server tick: {GameManager.Instance.CurrentServerTick}";
+            _clientTickCounter.Text = $"Client tick: {GameManager.Instance.CurrentClientTick}";
+            _positionDifference.Text = $"Position difference: {GameManager.Instance.PositionDifference}";
             FrameTime = elapsed;
             _sceneGraph.Update(elapsed);
             _sceneGraph.Render(elapsed);
@@ -166,6 +197,10 @@ namespace RetroGame.Services
         public void SetFPSVisibility(bool value)
         {
             AddRenderItem(_fpsCounter);
+            AddRenderItem(_pingCounter);
+            AddRenderItem(_serverTickCounter);
+            AddRenderItem(_clientTickCounter);
+            AddRenderItem(_positionDifference);
             _showFPS = value;
         }
 

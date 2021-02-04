@@ -117,15 +117,22 @@ namespace GameServer.Server
 
         public static void SendServerMessage(Socket client, ServerMessage message)
         {
-            // Console.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {client.RemoteEndPoint}");
-            if (message.MessageTarget != MessageTarget.GAME)
-                Console.WriteLine($"Response {message.ServerMessageType}");
+            try
+            {
+                // Console.WriteLine($"Sending a packet with a size of {Message.SerializeToBytes(message).Length} bytes to {client.RemoteEndPoint}");
+                if (message.MessageTarget != MessageTarget.GAME)
+                    Console.WriteLine($"Response {message.ServerMessageType}");
 
-            var serializedResponse = Message.SerializeToBytes(message);
-            var sizeBytes = BitConverter.GetBytes(serializedResponse.Length);
-            var bytesToSend = sizeBytes.Concat(serializedResponse).ToArray();
+                var serializedResponse = Message.SerializeToBytes(message);
+                var sizeBytes = BitConverter.GetBytes(serializedResponse.Length);
+                var bytesToSend = sizeBytes.Concat(serializedResponse).ToArray();
 
-            client.Send(bytesToSend);
+                client.Send(bytesToSend);
+            } catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
 
         internal static void CloseSocketState(SocketState state)

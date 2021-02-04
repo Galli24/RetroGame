@@ -58,10 +58,10 @@ namespace GameServer.Lobbies
             return true;
         }
 
-        public void EnqueueGameMessage(SocketState client, ClientMessage message)
+        public void EnqueueGameMessage(SocketState client, ClientMessage message, long tick)
         {
             if (_gameManager.Started)
-                _gameManager.EnqueueMessage(client, message);
+                _gameManager.EnqueueMessage(client, message, tick);
         }
 
         public void PlayerJoin(SocketState newPlayer)

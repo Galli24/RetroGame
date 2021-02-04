@@ -19,10 +19,10 @@ namespace LibNetworking.Models
         }
 
         [ProtoIgnore]
-        public readonly Dictionary<Actions, bool> ActionStates = new Dictionary<Actions, bool>();
+        public Dictionary<Actions, bool> ActionStates = new Dictionary<Actions, bool>();
 
         [ProtoIgnore]
-        public const float SPEED = 100;
+        public const float SPEED = 200;
 
         #endregion
 
@@ -30,14 +30,6 @@ namespace LibNetworking.Models
 
         [ProtoIgnore]
         public readonly SocketState State;
-        [ProtoIgnore]
-        private bool _isDirty;
-        [ProtoIgnore]
-        public bool IsDirty
-        {
-            get => _isDirty;
-            set => _isDirty = value;
-        }
 
         [ProtoMember(1)]
         public string Name { get; private set; }
@@ -52,8 +44,11 @@ namespace LibNetworking.Models
         private float _y;
 
         [ProtoIgnore]
+        public float LerpElapsed;
+        [ProtoIgnore]
+        public float LerpDuration = 0.5f;
+        [ProtoIgnore]
         public Vector2 LastRenderedPosition;
-
         [ProtoIgnore]
         public Vector2 Position
         {
@@ -62,7 +57,6 @@ namespace LibNetworking.Models
             {
                 _x = value.X;
                 _y = value.Y;
-                _isDirty = true;
             }
         }
 
@@ -100,5 +94,15 @@ namespace LibNetworking.Models
         }
 
         #endregion
+
+        public Player CloneForBuffer()
+        {
+            var clonedPlayer = new Player();
+
+            clonedPlayer.ActionStates = ActionStates;
+            clonedPlayer.Position = Position;
+
+            return clonedPlayer;
+        }
     }
 }

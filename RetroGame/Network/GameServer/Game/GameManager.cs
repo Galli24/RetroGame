@@ -5,10 +5,8 @@ using LibNetworking.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace GameServer.Game
@@ -30,18 +28,17 @@ namespace GameServer.Game
             }
         }
 
-        private readonly ConcurrentQueue<ClientGameMessage> _messages;
-        private readonly Queue<ServerMessage> _responses;
+        private readonly ConcurrentDictionary<long, Queue<ClientGameMessage>> _messages;
 
         #endregion
 
         #region Members
 
-        const float TICK_RATE = 64;
-        private readonly TimeSpan _targetElsapsedTime = TimeSpan.FromSeconds(1 / TICK_RATE); // 64 ticks
-        private readonly TimeSpan _syncSnapshotInterval = TimeSpan.FromSeconds(2);
+        const float PHYSICS_TICK_RATE = 66;
+        const float SNAPSHOT_TICK_RATE_DIVIDE = 3;
+        private readonly TimeSpan _physicsInterval = TimeSpan.FromSeconds(1 / PHYSICS_TICK_RATE);
         private Timer _gameLoopTimer;
-        private Timer _syncSnapshotTimer;
+        private long _currentTick;
 
         public bool Started { get; private set; }
 
@@ -51,16 +48,11 @@ namespace GameServer.Game
 
         public GameManager()
         {
-            _messages = new ConcurrentQueue<ClientGameMessage>();
-            _responses = new Queue<ServerMessage>();
+            _messages = new ConcurrentDictionary<long, Queue<ClientGameMessage>>();
 
             _gameLoopTimer = new Timer();
             _gameLoopTimer.Elapsed += (_, __) => GameLoop();
-            _gameLoopTimer.Interval = _targetElsapsedTime.TotalSeconds;
-
-            _syncSnapshotTimer = new Timer();
-            _syncSnapshotTimer.Elapsed += (_, __) => SendSyncSnapshot();
-            _syncSnapshotTimer.Interval = _syncSnapshotInterval.TotalSeconds;
+            _gameLoopTimer.Interval = _physicsInterval.TotalMilliseconds;
         }
 
         public void Start(Dictionary<string, Player> players)
@@ -72,27 +64,26 @@ namespace GameServer.Game
             Started = true;
 
             foreach (var player in _players.Values)
-                new ServerLobbyStartedMessage(player.State.Socket, true, TICK_RATE).Send();
+                new ServerLobbyStartedMessage(player.State.Socket, true, PHYSICS_TICK_RATE).Send();
 
+            _currentTick = 0;
             _gameLoopTimer.Start();
-            _syncSnapshotTimer.Start();
         }
 
         private void GameLoop()
         {
             // Handle packets received since last tick(s)
-            HandleMessages();
+            HandleMessages(_currentTick);
 
             // Player inputs
-            HandlePlayerActions((float)_targetElsapsedTime.TotalSeconds);
+            HandlePlayerActions((float)_physicsInterval.TotalSeconds);
 
-            // TODO: Do game simulation
+            // TODO: Physics
 
-            // Send player position packets for the current tick
-            SendPlayerData();
+            if (_currentTick % SNAPSHOT_TICK_RATE_DIVIDE == 0)
+                SendSnapshot();
 
-            // Send packets for the current tick
-            HandleResponses();
+            _currentTick++;
         }
 
         private void HandlePlayerActions(float deltaTime)
@@ -131,22 +122,45 @@ namespace GameServer.Game
 
         #region Netcode logic
 
-        public void EnqueueMessage(SocketState client, ClientMessage message) => _messages.Enqueue(new ClientGameMessage(client, message));
-
-        private void HandleMessages()
+        public void EnqueueMessage(SocketState client, ClientMessage message, long tick)
         {
-            while (!_messages.IsEmpty)
+            if (_currentTick >= tick)
             {
-                var dequeued = _messages.TryDequeue(out ClientGameMessage message);
-                if (!dequeued) continue;
+                new ServerGameSyncClockMessage(client.Socket, _currentTick + (_currentTick - tick + 5)).Send();
+                return;
+            } else if (tick >= _currentTick + 20)
+            {
+                new ServerGameSyncClockMessage(client.Socket, (_currentTick + tick) / 2).Send();
+                return;
+            }
 
-                switch (message.Message.ClientMessageType)
+            if (_messages.ContainsKey(tick))
+                _messages[tick].Enqueue(new ClientGameMessage(client, message));
+            else
+            {
+                _messages.TryAdd(tick, new Queue<ClientGameMessage>());
+                _messages[tick].Enqueue(new ClientGameMessage(client, message));
+            }
+        }
+
+        private void HandleMessages(long tick)
+        {
+            if (_messages.ContainsKey(tick))
+            {
+                if (!_messages.TryRemove(tick, out Queue<ClientGameMessage> tickQueue))
+                    return;
+
+                while (tickQueue.Count > 0)
                 {
-                    case ClientMessageType.GAME_PLAYER_KEY_STATE:
-                        HandleGamePlayerKeyState(message);
-                        break;
-                    default:
-                        break;
+                    var dequeued = tickQueue.Dequeue();
+                    switch (dequeued.Message.ClientMessageType)
+                    {
+                        case ClientMessageType.GAME_PLAYER_ACTION_STATES:
+                            HandleGamePlayerKeyState(dequeued);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -156,50 +170,20 @@ namespace GameServer.Game
         private void HandleGamePlayerKeyState(ClientGameMessage playerPositionMessage)
         {
             var client = playerPositionMessage.Client;
-            var message = playerPositionMessage.Message as ClientGamePlayerKeyStateMessage;
+            var message = playerPositionMessage.Message as ClientGamePlayerActionStatesMessage;
 
             if (_players.ContainsKey(client.Username))
-                _players[client.Username].ActionStates[message.KeyAction] = message.State;
+                _players[client.Username].ActionStates = message.ActionStates;
         }
 
         #endregion
 
-        private void EnqueueResponse(ServerMessage message) => _responses.Enqueue(message);
-
-        private void HandleResponses()
-        {
-            while (_responses.Count > 0)
-            {
-                var dequeued = _responses.TryDequeue(out ServerMessage serverMessage);
-                if (!dequeued) continue;
-                serverMessage.Send();
-            }
-        }
-
-        private void SendPlayerData()
-        {
-            // Player positions
-            foreach (var player in _players.Values)
-            {
-                if (player.IsDirty)
-                {
-                    foreach (var receivingPlayer in _players.Values)
-                    {
-                        if (receivingPlayer.Name != player.Name)
-                            EnqueueResponse(new ServerGamePlayerUpdateMessage(receivingPlayer.State.Socket, player));
-                    }
-
-                    player.IsDirty = false;
-                }
-            }
-        }
-
-        private void SendSyncSnapshot()
+        private void SendSnapshot()
         {
             var playerList = _players.Values.ToArray();
 
             foreach (var player in _players.Values)
-                 EnqueueResponse(new ServerGameSyncSnapshotMessage(player.State.Socket, playerList));
+                new ServerGameSyncSnapshotMessage(player.State.Socket, _currentTick, playerList).Send();
         }
 
         #endregion

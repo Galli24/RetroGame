@@ -1,10 +1,11 @@
-﻿using LibNetworking.Models;
+﻿using LibNetworking.Messages.Server;
+using LibNetworking.Models;
 using RenderEngine;
 using RetroGame.Model;
 using RetroGame.Services;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Timers;
@@ -32,9 +33,7 @@ namespace RetroGame.Scenes
 
         public Dictionary<string, AnimatedSprite> _players = new Dictionary<string, AnimatedSprite>();
 
-        private Dictionary<Keys, bool> _keyStates = new Dictionary<Keys, bool>();
-
-        private Dictionary<string, float> _lerpValues = new Dictionary<string, float>();
+        private Dictionary<Player.Actions, bool> _actionStates;
 
         private Window _win = RenderService.Instance.Window;
 
@@ -44,26 +43,22 @@ namespace RetroGame.Scenes
 
         public GameScene()
         {
+            _actionStates = Enum.GetValues(typeof(Player.Actions))
+                .Cast<Player.Actions>()
+                .ToDictionary(key => key, state => false);
+
             _win.OnKeyPressed += (k, m) => OnKeyAction(k, m, true);
             _win.OnKeyRelease += (k, m) => OnKeyAction(k, m, false);
 
-            GameManager.Instance.OnPlayerUpdated += OnPlayerUpdated;
-
             _fixedLoopTimer = new Timer();
             _fixedLoopTimer.Elapsed += (_, __) => FixedUpdate();
-            _fixedLoopTimer.Interval = GameManager.Instance.TickRateDeltaTime;
+            _fixedLoopTimer.Interval = GameManager.Instance.TickRateDeltaTime * 1000;
             _fixedLoopTimer.Start();
         }
 
         public void Stop()
         {
             _fixedLoopTimer.Stop();
-        }
-
-        private void OnPlayerUpdated(object sender, EventArgs e)
-        {
-            var player = sender as Player;
-            _lerpValues[player.Name] = 0;
         }
 
         private void OnKeyAction(int key, int mods, bool pressed)
@@ -75,9 +70,8 @@ namespace RetroGame.Scenes
                 case (int)Keys.Down:
                 case (int)Keys.Up:
                 case (int)Keys.Boost:
-                    if (!_keyStates.ContainsKey((Keys)key) || _keyStates[(Keys)key] != pressed)
-                        NetworkManager.Instance.SendPlayerKeyState(ConvertKeyToAction((Keys)key), pressed);
-                    _keyStates[(Keys)key] = pressed;
+                    Player.Actions action = ConvertKeyToAction((Keys)key);
+                    _actionStates[action] = pressed;
                     break;
             }
         }
@@ -105,7 +99,12 @@ namespace RetroGame.Scenes
         {
             _players.Clear();
             foreach (var p in GameManager.Instance.Players)
-                _players.Add(p.Key, new AnimatedSprite(new[] { @"C:\Users\jerem\Pictures\connor.png" }, 1000, Vector2.Zero, new Vector2(100)));
+            {
+                if (p.Key == "server difference")
+                    _players.Add(p.Key, new AnimatedSprite(new[] { @"C:\Users\jerem\Pictures\mlg_connor.png" }, 1000, Vector2.Zero, new Vector2(100)));
+                else
+                    _players.Add(p.Key, new AnimatedSprite(new[] { @"C:\Users\jerem\Pictures\connor.png" }, 1000, Vector2.Zero, new Vector2(100)));
+            }
 
             _fixedUpdates = new TextBlock(RenderService.Instance.Window.Size, "", IMenu.Anchor.TopRight, FontManager.Instance["Roboto"], Vector2.One * 10);
             _menu = new List<IMenu>() { _fixedUpdates };
@@ -113,55 +112,72 @@ namespace RetroGame.Scenes
 
         private void HandleKeys(float dt)
         {
-            var p = new Vector2(0);
+            var p = Vector2.Zero;
             var speed = Player.SPEED;
-            foreach (var elt in _keyStates.Where(elt => elt.Value))
+
+            // Make sure to use the same inputs that are sent
+            var actionStates = _actionStates.ToDictionary(kv => kv.Key, kv => kv.Value);
+            GameManager.Instance.Players[UserManager.Instance.Username].ActionStates = actionStates;
+            NetworkManager.Instance.SendPlayerActionStates(GameManager.Instance.CurrentClientTick, actionStates);
+
+            foreach (var elt in actionStates.Where(elt => elt.Value))
             {
                 switch (elt.Key)
                 {
-                    case Keys.Left:
+                    case Player.Actions.MOVE_LEFT:
                         p.X -= 1;
                         break;
-                    case Keys.Right:
+                    case Player.Actions.MOVE_RIGHT:
                         p.X += 1;
                         break;
-                    case Keys.Down:
+                    case Player.Actions.MOVE_DOWN:
                         p.Y -= 1;
                         break;
-                    case Keys.Up:
+                    case Player.Actions.MOVE_UP:
                         p.Y += 1;
                         break;
-                    case Keys.Boost:
+                    case Player.Actions.BOOST:
                         speed = 1000;
                         break;
                 }
             }
 
-            if (p != Vector2.Zero)
-                GameManager.Instance.Players[UserManager.Instance.Username].Position += p * dt * speed;
+            GameManager.Instance.Players[UserManager.Instance.Username].Position += p * dt * speed;
+            if (_players.ContainsKey(UserManager.Instance.Username))
+                _players[UserManager.Instance.Username].Position = GameManager.Instance.Players[UserManager.Instance.Username].Position;
         }
 
         public void Update(float deltaTime)
         {
-            _players[UserManager.Instance.Username].Position = GameManager.Instance.Players[UserManager.Instance.Username].Position;
-
-            foreach (var lv in _lerpValues.Keys)
-                _lerpValues[lv] += deltaTime / GameManager.Instance.TickRateDeltaTime;
-
-            foreach (var p in _players)
-            {
-                if (p.Key != UserManager.Instance.Username)
-                    p.Value.Position = Vector2.Lerp(
-                        GameManager.Instance.Players[p.Key].LastRenderedPosition,
-                        GameManager.Instance.Players[p.Key].Position,
-                        Math.Clamp(_lerpValues[p.Key], 0, 1));
-            }
+            //_players[UserManager.Instance.Username].Position = GameManager.Instance.Players[UserManager.Instance.Username].Position;
         }
 
         private void FixedUpdate()
         {
             var fixedDeltaTime = GameManager.Instance.TickRateDeltaTime;
             HandleKeys(fixedDeltaTime);
+
+            foreach (var p in _players)
+            {
+                if (p.Key != UserManager.Instance.Username && GameManager.Instance.Players.ContainsKey(p.Key))
+                {
+                    if (GameManager.Instance.Players[p.Key].LerpElapsed < GameManager.Instance.Players[p.Key].LerpDuration)
+                    {
+                        p.Value.Position = Vector2.Lerp(
+                            GameManager.Instance.Players[p.Key].LastRenderedPosition,
+                            GameManager.Instance.Players[p.Key].Position,
+                            GameManager.Instance.Players[p.Key].LerpElapsed / GameManager.Instance.Players[p.Key].LerpDuration);
+                        GameManager.Instance.Players[p.Key].LerpElapsed += fixedDeltaTime;
+                    }
+                    else
+                    {
+                        p.Value.Position = GameManager.Instance.Players[p.Key].Position;
+                    }
+                }
+            }
+
+            GameManager.Instance.PlayerBufferedHistory[GameManager.Instance.CurrentClientTick] = GameManager.Instance.Players[UserManager.Instance.Username].CloneForBuffer();
+            GameManager.Instance.CurrentClientTick++;
         }
     }
 }

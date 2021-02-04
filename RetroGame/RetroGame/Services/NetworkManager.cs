@@ -6,6 +6,7 @@ using RetroGame.Networking;
 using RetroGame.Networking.Handlers;
 using RetroGame.Utils;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Numerics;
@@ -48,6 +49,8 @@ namespace RetroGame.Services
         private readonly string _authServerURI;
         private readonly string _authEndpoint = "users/authenticate";
         private readonly string _registerEndpoint = "users/register";
+
+        public float Ping;
 
         #endregion
 
@@ -176,7 +179,7 @@ namespace RetroGame.Services
 
         #region Game logic
 
-        public void SendPlayerKeyState(Player.Actions action, bool state) => Task.Run(() => new ClientGamePlayerKeyStateMessage(action, state).Send());
+        public void SendPlayerActionStates(long tick, Dictionary<Player.Actions, bool> actionStates) => Task.Run(() => new ClientGamePlayerActionStatesMessage(tick, actionStates).Send());
 
         #endregion
     }

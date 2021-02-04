@@ -1,5 +1,6 @@
 ﻿using LibNetworking.Messages.Server;
 using RetroGame.Services;
+using System.Diagnostics;
 
 namespace RetroGame.Networking.Handlers
 {
@@ -9,9 +10,9 @@ namespace RetroGame.Networking.Handlers
         {
             switch (message.ServerMessageType)
             {
-                case ServerMessageType.GAME_PLAYER_UPDATE:
-                    //Trace.WriteLine("Response GAME_PLAYER_POSITION");
-                    GameManager.Instance.OnPlayerUpdate((message as ServerGamePlayerUpdateMessage).Player);
+                case ServerMessageType.GAME_SYNC_CLOCK:
+                    Trace.WriteLine($"Response GAME_SYNC_CLOCK: {(message as ServerGameSyncClockMessage).RequestedClock}");
+                    GameManager.Instance.OnSyncClock((message as ServerGameSyncClockMessage).RequestedClock);
                     break;
                 case ServerMessageType.GAME_SYNC_SNAPSHOT:
                     GameManager.Instance.OnSyncSnapshot(message as ServerGameSyncSnapshotMessage);
