@@ -46,7 +46,8 @@ namespace RetroGame.Networking.Handlers
             {
                 if (SceneManager.Instance.CurrentScene is LobbyHostScene scene)
                     RenderService.Instance.DoInRenderThread(() => scene.OnCreateFailed(message.Reason));
-            } else
+            }
+            else
             {
                 LobbyManager.Instance.OnLobbyCreated(message);
                 RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyScene()));
@@ -73,7 +74,8 @@ namespace RetroGame.Networking.Handlers
             {
                 //if (SceneManager.Instance.CurrentScene is LobbyScene scene)
                 //    RenderService.Instance.DoInRenderThread(() => scene.OnStartFailed(message.Reason));
-            } else
+            }
+            else
             {
                 GameManager.Instance.StartGame(message.TickRate);
             }

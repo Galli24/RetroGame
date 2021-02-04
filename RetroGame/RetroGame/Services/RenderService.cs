@@ -61,7 +61,7 @@ namespace RetroGame.Services
         private TextBlock _pingCounter;
         private TextBlock _serverTickCounter;
         private TextBlock _clientTickCounter;
-        private TextBlock _positionDifference;
+        private TextBlock _tickDiffCounter;
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace RetroGame.Services
             _pingCounter = new TextBlock(new Vector2(0, Window.Size.Y - 30), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
             _serverTickCounter = new TextBlock(new Vector2(0, Window.Size.Y - 60), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
             _clientTickCounter = new TextBlock(new Vector2(0, Window.Size.Y - 90), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
-            _positionDifference = new TextBlock(new Vector2(0, Window.Size.Y - 120), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
+            _tickDiffCounter = new TextBlock(new Vector2(0, Window.Size.Y - 120), "", IMenu.Anchor.TopLeft, fpsFont, Vector2.One * 10);
             Window.OnKeyPressed += (key, _) =>
             {
                 if (key == 294)
@@ -103,7 +103,7 @@ namespace RetroGame.Services
                 AddRenderItem(_pingCounter);
                 AddRenderItem(_serverTickCounter);
                 AddRenderItem(_clientTickCounter);
-                AddRenderItem(_positionDifference);
+                AddRenderItem(_tickDiffCounter);
             }
         }
 
@@ -117,7 +117,7 @@ namespace RetroGame.Services
                 AddRenderItem(_pingCounter);
                 AddRenderItem(_serverTickCounter);
                 AddRenderItem(_clientTickCounter);
-                AddRenderItem(_positionDifference);
+                AddRenderItem(_tickDiffCounter);
             }
 
         }
@@ -134,7 +134,7 @@ namespace RetroGame.Services
                 AddRenderItem(_pingCounter);
                 AddRenderItem(_serverTickCounter);
                 AddRenderItem(_clientTickCounter);
-                AddRenderItem(_positionDifference);
+                AddRenderItem(_tickDiffCounter);
             }
         }
 
@@ -180,7 +180,7 @@ namespace RetroGame.Services
             _pingCounter.Text = $"Ping: {NetworkManager.Instance.Ping}ms";
             _serverTickCounter.Text = $"Server tick: {GameManager.Instance.CurrentServerTick}";
             _clientTickCounter.Text = $"Client tick: {GameManager.Instance.CurrentClientTick}";
-            _positionDifference.Text = $"Position difference: {GameManager.Instance.PositionDifference}";
+            _tickDiffCounter.Text = $"Tick difference: {GameManager.Instance.TickDiff}";
             FrameTime = elapsed;
             _sceneGraph.Update(elapsed);
             _sceneGraph.Render(elapsed);
@@ -200,7 +200,7 @@ namespace RetroGame.Services
             AddRenderItem(_pingCounter);
             AddRenderItem(_serverTickCounter);
             AddRenderItem(_clientTickCounter);
-            AddRenderItem(_positionDifference);
+            AddRenderItem(_tickDiffCounter);
             _showFPS = value;
         }
 

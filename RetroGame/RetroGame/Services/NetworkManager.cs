@@ -51,6 +51,7 @@ namespace RetroGame.Services
         private readonly string _registerEndpoint = "users/register";
 
         public float Ping;
+        public DateTime LastReceived = DateTime.UtcNow;
 
         #endregion
 

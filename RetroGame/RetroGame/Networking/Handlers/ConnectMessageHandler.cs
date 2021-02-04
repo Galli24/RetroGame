@@ -31,6 +31,11 @@ namespace RetroGame.Networking.Handlers
                 UserManager.Instance.Authorized = true;
                 RenderService.Instance.DoInRenderThread(() => SceneManager.Instance.LoadScene(new LobbyMenuScene()));
             }
+            else
+            {
+                if (SceneManager.Instance.CurrentScene is LoginScene scene)
+                    RenderService.Instance.DoInRenderThread(() => scene.OnLoginFailed(message.Reason));
+            }
         }
 
         private static void OnNotAuthenticated()

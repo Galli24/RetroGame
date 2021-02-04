@@ -78,21 +78,15 @@ namespace RetroGame.Scenes
 
         private Player.Actions ConvertKeyToAction(Keys key)
         {
-            switch (key)
+            return key switch
             {
-                case Keys.Left:
-                    return Player.Actions.MOVE_LEFT;
-                case Keys.Right:
-                    return Player.Actions.MOVE_RIGHT;
-                case Keys.Down:
-                    return Player.Actions.MOVE_DOWN;
-                case Keys.Up:
-                    return Player.Actions.MOVE_UP;
-                case Keys.Boost:
-                    return Player.Actions.BOOST;
-                default:
-                    throw new ArgumentOutOfRangeException($"Unknown key {key}");
-            }
+                Keys.Left => Player.Actions.MOVE_LEFT,
+                Keys.Right => Player.Actions.MOVE_RIGHT,
+                Keys.Down => Player.Actions.MOVE_DOWN,
+                Keys.Up => Player.Actions.MOVE_UP,
+                Keys.Boost => Player.Actions.BOOST,
+                _ => throw new ArgumentOutOfRangeException($"Unknown key {key}"),
+            };
         }
 
         public override void BuildScene()

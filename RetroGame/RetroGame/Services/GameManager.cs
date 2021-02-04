@@ -30,8 +30,7 @@ namespace RetroGame.Services
 
         public long CurrentServerTick;
         public long CurrentClientTick;
-
-        public Vector2 PositionDifference;
+        public long TickDiff;
 
         private float _tickRate = 1; 
         public float TickRateDeltaTime => 1 / _tickRate;
@@ -64,6 +63,7 @@ namespace RetroGame.Services
         public void OnSyncSnapshot(ServerGameSyncSnapshotMessage message)
         {
             CurrentServerTick = message.CurrentServerTick;
+            TickDiff = CurrentClientTick - CurrentServerTick;
             var gotClientHistory = PlayerBufferedHistory.TryRemove(message.CurrentServerTick, out Player clientHistory);
 
             // Player reconciliation
@@ -72,7 +72,6 @@ namespace RetroGame.Services
                 var clientPlayer = message.PlayerList.Where(player => player.Name == UserManager.Instance.Username).First();
 
                 var positionDifference = clientHistory.Position - clientPlayer.Position;
-                PositionDifference = positionDifference;
                 Players["server difference"].Position = clientPlayer.Position;
 
                 if (positionDifference.X > 1 || positionDifference.Y > 1

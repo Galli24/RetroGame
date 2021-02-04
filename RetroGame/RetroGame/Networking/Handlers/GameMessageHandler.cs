@@ -1,5 +1,6 @@
 ﻿using LibNetworking.Messages.Server;
 using RetroGame.Services;
+using System;
 using System.Diagnostics;
 
 namespace RetroGame.Networking.Handlers
@@ -15,6 +16,11 @@ namespace RetroGame.Networking.Handlers
                     GameManager.Instance.OnSyncClock((message as ServerGameSyncClockMessage).RequestedClock);
                     break;
                 case ServerMessageType.GAME_SYNC_SNAPSHOT:
+                    var now = DateTime.UtcNow;
+                    var ping = (float)Math.Round((now - NetworkManager.Instance.LastReceived).TotalMilliseconds, 0);
+                    if (ping > 0)
+                        NetworkManager.Instance.Ping = ping;
+                    NetworkManager.Instance.LastReceived = now;
                     GameManager.Instance.OnSyncSnapshot(message as ServerGameSyncSnapshotMessage);
                     break;
                 default:

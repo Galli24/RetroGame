@@ -19,6 +19,11 @@ namespace RetroGame.Scenes
 
         private readonly RegisterScene _registerScene;
 
+        private Button _loginButton;
+        private Button _registerButton;
+        private TextBlock _loginBlock;
+        private TextBlock _errorBlock;
+
         public LoginScene() : base()
         {
             _registerScene = new RegisterScene(this);
@@ -45,34 +50,34 @@ namespace RetroGame.Scenes
             var passwordBox = new TextBox(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .06f * sc.Window.Size.Y),
                 IMenu.Anchor.Center, FontManager.Instance["Roboto", 28], Vector2.One * 10, 250);
 
-            var loginButton = new Button(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .16f * sc.Window.Size.Y),
+            _loginButton = new Button(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .16f * sc.Window.Size.Y),
                 "Login",
                 IMenu.Anchor.Center, FontManager.Instance["Roboto"], Vector2.One * 10);
-            var loginBlock = new TextBlock(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .16f * sc.Window.Size.Y),
+            _loginBlock = new TextBlock(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .16f * sc.Window.Size.Y),
                 "Logging in...",
                 IMenu.Anchor.Center, FontManager.Instance["Roboto"], Vector2.One * 10)
             {
                 BorderColor = new Vector4(1, 1, 1, 1)
             };
 
-            var registerButton = new Button(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .24f * sc.Window.Size.Y),
+            _registerButton = new Button(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .24f * sc.Window.Size.Y),
                 "Register",
                 IMenu.Anchor.Center, FontManager.Instance["Roboto"], Vector2.One * 10);
 
-            var errorBlock = new TextBlock(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .32f * sc.Window.Size.Y),
+            _errorBlock = new TextBlock(new Vector2(sc.Window.Size.X / 2, (sc.Window.Size.Y / 2) - .32f * sc.Window.Size.Y),
                 "",
                 IMenu.Anchor.Center, FontManager.Instance["Roboto"], Vector2.One * 10)
             {
                 TextColor = new Vector4(1, 0, 0, 1)
             };
 
-            loginButton.OnMousePress += async(_, __, ___) =>
+            _loginButton.OnMousePress += async(_, __, ___) =>
             {
-                loginButton.BorderColor = new Vector4(.5f, .5f, .5f, 1);
-                _menu.Remove(loginButton);
-                _menu.Remove(registerButton);
-                _menu.Add(loginBlock);
-                errorBlock.Text = "";
+                _loginButton.BorderColor = new Vector4(.5f, .5f, .5f, 1);
+                _menu.Remove(_loginButton);
+                _menu.Remove(_registerButton);
+                _menu.Add(_loginBlock);
+                _errorBlock.Text = "";
                 Reload();
                 var result = await NetworkManager.Instance.Connect(usernameBox.Text, passwordBox.Text);
 
@@ -80,10 +85,10 @@ namespace RetroGame.Scenes
                 {
                     if (result != "Connected")
                     {
-                        _menu.Remove(loginBlock);
-                        _menu.Add(loginButton);
-                        _menu.Add(registerButton);
-                        errorBlock.Text = result;
+                        _menu.Remove(_loginBlock);
+                        _menu.Add(_loginButton);
+                        _menu.Add(_registerButton);
+                        _errorBlock.Text = result;
                         Reload();
                     } else
                     {
@@ -92,13 +97,21 @@ namespace RetroGame.Scenes
                 }
             };
 
-            registerButton.OnMousePress += (_, __, ___) =>
+            _registerButton.OnMousePress += (_, __, ___) =>
             {
                 SceneManager.Instance.LoadScene(_registerScene);
             };
 
-            _menu = new List<IMenu> { title, usernameBlock, usernameBox, passwordBlock, passwordBox, loginButton, registerButton, errorBlock };
+            _menu = new List<IMenu> { title, usernameBlock, usernameBox, passwordBlock, passwordBox, _loginButton, _registerButton, _errorBlock };
         }
 
+        public void OnLoginFailed(string error)
+        {
+            _menu.Remove(_loginBlock);
+            _menu.Add(_loginButton);
+            _menu.Add(_registerButton);
+            _errorBlock.Text = error;
+            Reload();
+        }
     }
 }
