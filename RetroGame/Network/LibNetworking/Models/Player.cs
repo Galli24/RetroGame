@@ -15,7 +15,8 @@ namespace LibNetworking.Models
             MOVE_UP,
             MOVE_RIGHT,
             MOVE_DOWN,
-            BOOST
+            BOOST,
+            SHOOT
         }
 
         [ProtoIgnore]

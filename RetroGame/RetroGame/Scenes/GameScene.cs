@@ -3,6 +3,7 @@ using LibNetworking.Models;
 using RenderEngine;
 using RetroGame.Model;
 using RetroGame.Services;
+using RetroGame.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,28 +22,38 @@ namespace RetroGame.Scenes
             Right = 262,
             Down = 264,
             Boost = 340,
+            Shoot = 32
         }
 
-        private List<IMenu> _menu;
+        #region Scene
+
+        public override bool RequireClearOnLoad => true;
+        public override bool RequireClearOnExit => true;
         public override IEnumerable<IMenu> Menu => _menu;
         public override IEnumerable<IGraphNode> Sprites => _players.Select(elt => elt.Value);
 
-        public override bool RequireClearOnLoad => true;
+        #endregion
 
-        public override bool RequireClearOnExit => true;
-
+        private List<IMenu> _menu;
         public Dictionary<string, AnimatedSprite> _players = new Dictionary<string, AnimatedSprite>();
-
         private Dictionary<Player.Actions, bool> _actionStates;
-
         private Window _win = RenderService.Instance.Window;
 
-        private Timer _fixedLoopTimer;
+        private ObjectPool<AnimatedSprite> _enemiesPool;
+
+        private ConcurrentBag<AnimatedSprite> _testing = new ConcurrentBag<AnimatedSprite>();
+
+        #region Menu
 
         private TextBlock _fixedUpdates;
+        private Timer _fixedLoopTimer;
+
+        #endregion
 
         public GameScene()
         {
+            _enemiesPool = new ObjectPool<AnimatedSprite>(() => new AnimatedSprite(new List<string> { @"C:\Users\jerem\Pictures\PixelArt\BowserBlue.png" }, 1000, Vector2.Zero, new Vector2(32, 48)));
+
             _actionStates = Enum.GetValues(typeof(Player.Actions))
                 .Cast<Player.Actions>()
                 .ToDictionary(key => key, state => false);
@@ -70,13 +81,14 @@ namespace RetroGame.Scenes
                 case (int)Keys.Down:
                 case (int)Keys.Up:
                 case (int)Keys.Boost:
+                case (int)Keys.Shoot:
                     Player.Actions action = ConvertKeyToAction((Keys)key);
                     _actionStates[action] = pressed;
                     break;
             }
         }
 
-        private Player.Actions ConvertKeyToAction(Keys key)
+        private static Player.Actions ConvertKeyToAction(Keys key)
         {
             return key switch
             {
@@ -85,6 +97,7 @@ namespace RetroGame.Scenes
                 Keys.Down => Player.Actions.MOVE_DOWN,
                 Keys.Up => Player.Actions.MOVE_UP,
                 Keys.Boost => Player.Actions.BOOST,
+                Keys.Shoot => Player.Actions.SHOOT,
                 _ => throw new ArgumentOutOfRangeException($"Unknown key {key}"),
             };
         }
@@ -95,7 +108,7 @@ namespace RetroGame.Scenes
             foreach (var p in GameManager.Instance.Players)
             {
                 if (p.Key == "server difference")
-                    _players.Add(p.Key, new AnimatedSprite(new[] { @"C:\Users\jerem\Pictures\mlg_connor.png" }, 1000, Vector2.Zero, new Vector2(100)));
+                    _players.Add(p.Key, new AnimatedSprite(new[] { @"C:\Users\jerem\Pictures\mlg_glasses.png" }, 1000, Vector2.Zero, new Vector2(100)));
                 else
                     _players.Add(p.Key, new AnimatedSprite(new[] { @"C:\Users\jerem\Pictures\connor.png" }, 1000, Vector2.Zero, new Vector2(100)));
             }
