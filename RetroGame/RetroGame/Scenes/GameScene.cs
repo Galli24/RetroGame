@@ -39,9 +39,11 @@ namespace RetroGame.Scenes
         private Dictionary<Player.Actions, bool> _actionStates;
         private Window _win = RenderService.Instance.Window;
 
-        private ObjectPool<AnimatedSprite> _enemiesPool;
+        private ObjectPool<AnimatedSprite> _bulletPool;
 
-        private ConcurrentBag<AnimatedSprite> _testing = new ConcurrentBag<AnimatedSprite>();
+        private Dictionary<Guid, AnimatedSprite> _bullets = new Dictionary<Guid, AnimatedSprite>();
+
+        private List<Guid> _bulletsBeingAdded = new List<Guid>();
 
         #region Menu
 
@@ -52,7 +54,7 @@ namespace RetroGame.Scenes
 
         public GameScene()
         {
-            _enemiesPool = new ObjectPool<AnimatedSprite>(() => new AnimatedSprite(new List<string> { @"C:\Users\jerem\Pictures\PixelArt\BowserBlue.png" }, 1000, Vector2.Zero, new Vector2(32, 48)));
+            _bulletPool = new ObjectPool<AnimatedSprite>(() => new AnimatedSprite(new List<string> { @"C:\Users\jerem\Pictures\PixelArt\BowserBlue.png" }, 1000, Vector2.Zero, new Vector2(32, 48)));
 
             _actionStates = Enum.GetValues(typeof(Player.Actions))
                 .Cast<Player.Actions>()
@@ -182,6 +184,45 @@ namespace RetroGame.Scenes
                     }
                 }
             }
+
+            foreach (var bullet in GameManager.Instance.Bullets.ToArray())
+            {
+                if (!_bullets.ContainsKey(bullet.Key) && !_bulletsBeingAdded.Contains(bullet.Key))
+                {
+                    _bulletsBeingAdded.Add(bullet.Key);
+                    RenderService.Instance.DoInRenderThread(() =>
+                    {
+                        _bullets.Add(bullet.Key, _bulletPool.Spawn(bullet.Value.Position));
+                        _bulletsBeingAdded.Remove(bullet.Key);
+                    });
+                }
+                else if (!_bulletsBeingAdded.Contains(bullet.Key))
+                {
+                    if (bullet.Value.LerpElapsed < bullet.Value.LerpDuration)
+                    {
+                        _bullets[bullet.Key].Position = Vector2.Lerp(
+                            bullet.Value.LastRenderedPosition,
+                            bullet.Value.Position,
+                            bullet.Value.LerpElapsed / bullet.Value.LerpDuration);
+                        bullet.Value.LerpElapsed += fixedDeltaTime;
+                    }
+                    else
+                        _bullets[bullet.Key].Position = bullet.Value.Position;
+                }
+            }
+
+            var toRemove = _bullets.Where(elt => GameManager.Instance.Bullets.ToArray().All(e => e.Key != elt.Key)).ToArray();
+            foreach (var rm in toRemove)
+            {
+                RenderService.Instance.DoInRenderThread(() =>
+                {
+                    _bulletPool.Despawn(rm.Value);
+                    _bullets.Remove(rm.Key);
+                });
+            }
+
+
+
 
             GameManager.Instance.PlayerBufferedHistory[GameManager.Instance.CurrentClientTick] = GameManager.Instance.Players[UserManager.Instance.Username].CloneForBuffer();
             GameManager.Instance.CurrentClientTick++;

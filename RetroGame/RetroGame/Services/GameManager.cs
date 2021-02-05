@@ -1,11 +1,13 @@
 ﻿using LibNetworking.Messages.Server;
 using LibNetworking.Models;
 using RetroGame.Scenes;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RetroGame.Services
 {
@@ -32,9 +34,10 @@ namespace RetroGame.Services
         public long CurrentClientTick;
         public long TickDiff;
 
-        private float _tickRate = 1; 
+        private float _tickRate = 1;
         public float TickRateDeltaTime => 1 / _tickRate;
         public Dictionary<string, Player> Players = new Dictionary<string, Player>();
+        public Dictionary<Guid, Bullet> Bullets = new Dictionary<Guid, Bullet>();
 
         public readonly ConcurrentDictionary<long, Player> PlayerBufferedHistory = new ConcurrentDictionary<long, Player>();
 
@@ -47,6 +50,7 @@ namespace RetroGame.Services
             CurrentClientTick = 0;
             Players.Clear();
             PlayerBufferedHistory.Clear();
+            Bullets.Clear();
             foreach (var p in LobbyManager.Instance.PlayerList)
                 Players.Add(p.Key, p.Value);
 
@@ -90,6 +94,21 @@ namespace RetroGame.Services
                     Players[player.Name] = player;
                 }
             }
+
+            // bullets position
+            foreach (var bullet in message.BulletList)
+            {
+                if (!Bullets.ContainsKey(bullet.Id))
+                    Bullets.Add(bullet.Id, bullet);
+                bullet.LastRenderedPosition = Bullets[bullet.Id].Position;
+                bullet.LerpElapsed = 0;
+                bullet.LerpDuration = 1 * (1 / 22f);
+                Bullets[bullet.Id] = bullet;
+            }
+
+            var toRemove = Bullets.Where(elt => message.BulletList.All(e => e.Id != elt.Key));
+            foreach (var rm in toRemove)
+                Bullets.Remove(rm.Key);
 
             // Cleanup
             var keysToRemove = PlayerBufferedHistory.Keys.Where(key => key < message.CurrentServerTick).ToList();

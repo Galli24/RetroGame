@@ -1,5 +1,6 @@
 ﻿using LibNetworking.Models;
 using ProtoBuf;
+using System;
 using System.Net.Sockets;
 
 namespace LibNetworking.Messages.Server
@@ -15,13 +16,17 @@ namespace LibNetworking.Messages.Server
         public Bullet[] BulletList { get; private set; }
 
         public ServerGameSyncSnapshotMessage()
-            : base(null, ServerMessageType.GAME_SYNC_SNAPSHOT, MessageTarget.GAME) { }
+            : base(null, ServerMessageType.GAME_SYNC_SNAPSHOT, MessageTarget.GAME) 
+        {
+            PlayerList = Array.Empty<Player>();
+            BulletList = Array.Empty<Bullet>();
+        }
 
         public ServerGameSyncSnapshotMessage(Socket destination, long currentServerTick, Player[] playerList, Bullet[] bulletList)
             : base(destination, ServerMessageType.GAME_SYNC_SNAPSHOT, MessageTarget.GAME)
         {
             CurrentServerTick = currentServerTick;
-            PlayerList = playerList;
+            PlayerList = playerList; 
             BulletList = bulletList;
         }
     }
