@@ -19,10 +19,10 @@ RenderEngine::SceneGraph::SceneGraph(Vector2 size, String^ name, MenuManager^ me
 void RenderEngine::SceneGraph::Render(float deltaTime) 
 {
 	this->nativeResources->Render(deltaTime);
+	this->nativeResources->Blit();
 }
 
 void RenderEngine::SceneGraph::Update(float deltaTime)
 {
 	this->nativeResources->Update(deltaTime);
-	this->nativeResources->Blit();
 }
