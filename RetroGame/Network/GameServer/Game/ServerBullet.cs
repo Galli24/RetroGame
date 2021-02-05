@@ -6,20 +6,23 @@ namespace GameServer.Game
 {
     class ServerBullet
     {
-        public Guid Id { get; private set; }
+        private Bullet _bullet;
         public Vector2 Position;
         public bool ShouldDestroy;
 
-        public ServerBullet(Guid id, Vector2 position)
+        public ServerBullet(Bullet bullet, Vector2 position)
         {
-            Id = id;
+            _bullet = bullet;
             Position = position;
         }
 
         public void Update(float fixedDeltaTime)
         {
             if (Position.X < 2000)
+            {
                 Position.X += fixedDeltaTime * Bullet.SPEED;
+                _bullet.Position = Position;
+            }
             else
                 ShouldDestroy = true;
         }

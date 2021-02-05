@@ -125,9 +125,18 @@ namespace GameServer.Game
                             speed = 1000;
                             break;
                         case Player.Actions.SHOOT:
-                            var bulletGuid = Guid.NewGuid();
-                            var bulletPos = new Vector2(player.Position.X, player.Position.Y);
-                            _bullets.Add(new Bullet(bulletGuid, bulletPos), new ServerBullet(bulletGuid, bulletPos));
+                            if (player.ShootCooldown <= 0)
+                            {
+                                player.ShootCooldown = Player.SHOOT_COOLDOWN_TIME;
+                                var bulletGuid = Guid.NewGuid();
+                                var bulletPos = new Vector2(player.Position.X, player.Position.Y);
+                                var bullet = new Bullet(bulletGuid, bulletPos);
+                                _bullets.Add(bullet, new ServerBullet(bullet, bulletPos));
+                            }
+                            else
+                            {
+                                player.ShootCooldown -= deltaTime;
+                            }
                             break;
                     }
                 }

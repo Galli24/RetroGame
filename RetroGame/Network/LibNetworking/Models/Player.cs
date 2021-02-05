@@ -25,6 +25,11 @@ namespace LibNetworking.Models
         [ProtoIgnore]
         public const float SPEED = 200;
 
+        [ProtoIgnore]
+        public const float SHOOT_COOLDOWN_TIME = .2f;
+        [ProtoIgnore]
+        public float ShootCooldown;
+
         #endregion
 
         #region Members
