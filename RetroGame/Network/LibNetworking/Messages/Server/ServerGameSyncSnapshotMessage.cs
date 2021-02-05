@@ -11,15 +11,18 @@ namespace LibNetworking.Messages.Server
         public long CurrentServerTick { get; private set; }
         [ProtoMember(2)]
         public Player[] PlayerList { get; private set; }
+        [ProtoMember(3)]
+        public Bullet[] BulletList { get; private set; }
 
         public ServerGameSyncSnapshotMessage()
             : base(null, ServerMessageType.GAME_SYNC_SNAPSHOT, MessageTarget.GAME) { }
 
-        public ServerGameSyncSnapshotMessage(Socket destination, long currentServerTick, Player[] playerList)
+        public ServerGameSyncSnapshotMessage(Socket destination, long currentServerTick, Player[] playerList, Bullet[] bulletList)
             : base(destination, ServerMessageType.GAME_SYNC_SNAPSHOT, MessageTarget.GAME)
         {
             CurrentServerTick = currentServerTick;
             PlayerList = playerList;
+            BulletList = bulletList;
         }
     }
 }

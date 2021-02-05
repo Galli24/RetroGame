@@ -43,6 +43,7 @@ namespace GameServer.Game
         public bool Started { get; private set; }
 
         private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
+        private readonly Dictionary<Bullet, ServerBullet> _bullets = new Dictionary<Bullet, ServerBullet>();
 
         #endregion
 
@@ -83,6 +84,13 @@ namespace GameServer.Game
             // Player inputs
             HandlePlayerActions((float)_physicsInterval.TotalSeconds);
 
+            // Bullets
+            foreach (var bullet in _bullets.ToArray())
+                if (!bullet.Value.ShouldDestroy)
+                    bullet.Value.Update((float)_physicsInterval.TotalSeconds);
+                else
+                    _bullets.Remove(bullet.Key);
+
             // TODO: Physics
 
             if (_currentTick % SNAPSHOT_TICK_RATE_DIVIDE == 0)
@@ -116,7 +124,11 @@ namespace GameServer.Game
                         case Player.Actions.BOOST:
                             speed = 1000;
                             break;
-
+                        case Player.Actions.SHOOT:
+                            var bulletGuid = Guid.NewGuid();
+                            var bulletPos = new Vector2(player.Position.X, player.Position.Y);
+                            _bullets.Add(new Bullet(bulletGuid, bulletPos), new ServerBullet(bulletGuid, bulletPos));
+                            break;
                     }
                 }
 
@@ -192,9 +204,10 @@ namespace GameServer.Game
         private void SendSnapshot()
         {
             var playerList = _players.Values.ToArray();
+            var bulletList = _bullets.Keys.ToArray();
 
             foreach (var player in _players.Values)
-                new ServerGameSyncSnapshotMessage(player.State.Socket, _currentTick, playerList).Send();
+                new ServerGameSyncSnapshotMessage(player.State.Socket, _currentTick, playerList, bulletList).Send();
         }
 
         #endregion
