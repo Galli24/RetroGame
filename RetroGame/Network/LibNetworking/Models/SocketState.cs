@@ -10,6 +10,8 @@ namespace LibNetworking.Models
         public bool IsSocketDisposed;
         public byte[] SizeBuffer;
         public byte[] Buffer;
+        public int PacketSize;
+        public int Offset;
         public MemoryStream Data;
 
         // Authenticated User stuff

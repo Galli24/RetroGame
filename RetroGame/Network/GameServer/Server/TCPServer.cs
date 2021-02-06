@@ -69,9 +69,10 @@ namespace GameServer.Server
                 int readBytes = state.Socket.EndReceive(result);
                 if (readBytes == 4)
                 {
-                    var packetSize = BitConverter.ToInt32(state.SizeBuffer);
-                    state.Buffer = new byte[packetSize];
-                    state.Socket.BeginReceive(state.Buffer, 0, packetSize, SocketFlags.None, new AsyncCallback(OnReceivePacket), state);
+                    state.PacketSize = BitConverter.ToInt32(state.SizeBuffer);
+                    state.Offset = 0;
+                    state.Buffer = new byte[state.PacketSize];
+                    state.Socket.BeginReceive(state.Buffer, 0, state.PacketSize, SocketFlags.None, new AsyncCallback(OnReceivePacket), state);
                 }
                 else
                 {
@@ -93,14 +94,20 @@ namespace GameServer.Server
                 int readBytes = state.Socket.EndReceive(result);
                 if (readBytes > 0)
                 {
-                    state.Data = new MemoryStream(state.Buffer, 0, readBytes, false, true);
-                    var message = Message.DeserializeFromStream(state.Data);
-                    if (message.MessageType == MessageType.CLIENT)
-                        OnClientMessage(state, (ClientMessage)message);
-                    if (state.IsSocketDisposed)
-                        return;
-                    state.SizeBuffer = new byte[4];
-                    state.Socket.BeginReceive(state.SizeBuffer, 0, 4, SocketFlags.None, new AsyncCallback(OnReceivePacketSize), state);
+                    state.Offset += readBytes;
+                    if (state.Offset != state.PacketSize)
+                        state.Socket.BeginReceive(state.Buffer, state.Offset, state.PacketSize - state.Offset, SocketFlags.None, new AsyncCallback(OnReceivePacket), state);
+                    else
+                    {
+                        state.Data = new MemoryStream(state.Buffer, 0, state.PacketSize, false, true);
+                        var message = Message.DeserializeFromStream(state.Data);
+                        if (message.MessageType == MessageType.CLIENT)
+                            OnClientMessage(state, (ClientMessage)message);
+                        if (state.IsSocketDisposed)
+                            return;
+                        state.SizeBuffer = new byte[4];
+                        state.Socket.BeginReceive(state.SizeBuffer, 0, 4, SocketFlags.None, new AsyncCallback(OnReceivePacketSize), state);
+                    }
                 }
                 else
                 {
