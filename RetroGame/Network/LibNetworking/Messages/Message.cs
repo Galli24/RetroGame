@@ -44,8 +44,7 @@ namespace LibNetworking.Messages
 
         public static Message DeserializeFromStream(MemoryStream zipStream)
         {
-            using var rawStream = new MemoryStream(zipStream.GetBuffer());
-            return Serializer.Deserialize<Message>(rawStream);
+            return Serializer.Deserialize<Message>(zipStream);
         }
 
         public static byte[] SerializeToBytes(Message message)
