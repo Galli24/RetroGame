@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
 
 namespace RetroGame.Services
 {
@@ -37,7 +36,7 @@ namespace RetroGame.Services
         private float _tickRate = 1;
         public float TickRateDeltaTime => 1 / _tickRate;
         public Dictionary<string, Player> Players = new Dictionary<string, Player>();
-        public Dictionary<Guid, Bullet> Bullets = new Dictionary<Guid, Bullet>();
+        public ConcurrentDictionary<Guid, Bullet> Bullets = new ConcurrentDictionary<Guid, Bullet>();
 
         public readonly ConcurrentDictionary<long, Player> PlayerBufferedHistory = new ConcurrentDictionary<long, Player>();
 
@@ -99,7 +98,7 @@ namespace RetroGame.Services
             foreach (var bullet in message.BulletList)
             {
                 if (!Bullets.ContainsKey(bullet.Id))
-                    Bullets.Add(bullet.Id, bullet);
+                    Bullets.TryAdd(bullet.Id, bullet);
                 bullet.LastRenderedPosition = Bullets[bullet.Id].Position;
                 bullet.LerpElapsed = 0;
                 bullet.LerpDuration = 1 * (1 / 22f);
@@ -108,7 +107,7 @@ namespace RetroGame.Services
 
             var toRemove = Bullets.Where(elt => message.BulletList.All(e => e.Id != elt.Key));
             foreach (var rm in toRemove)
-                Bullets.Remove(rm.Key);
+                Bullets.TryRemove(rm.Key, out _);
 
             // Cleanup
             var keysToRemove = PlayerBufferedHistory.Keys.Where(key => key < message.CurrentServerTick).ToList();

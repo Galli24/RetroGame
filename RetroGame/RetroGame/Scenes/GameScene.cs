@@ -211,7 +211,7 @@ namespace RetroGame.Scenes
                 }
             }
 
-            var toRemove = _bullets.Where(elt => GameManager.Instance.Bullets.ToArray().All(e => e.Key != elt.Key)).ToArray();
+            var toRemove = _bullets.ToArray().Where(elt => GameManager.Instance.Bullets.ToArray().All(e => e.Key != elt.Key));
             foreach (var rm in toRemove)
             {
                 RenderService.Instance.DoInRenderThread(() =>
