@@ -151,7 +151,8 @@ namespace RetroGame.Scenes
                 }
             }
 
-            GameManager.Instance.Players[UserManager.Instance.Username].Position += p * dt * speed;
+            var clampedPos = Vector2.Clamp(GameManager.Instance.Players[UserManager.Instance.Username].Position + p * dt * speed, Vector2.Zero, new Vector2(1920, 1080) - new Vector2(100));
+            GameManager.Instance.Players[UserManager.Instance.Username].Position = clampedPos;
             if (_players.ContainsKey(UserManager.Instance.Username))
                 _players[UserManager.Instance.Username].Position = GameManager.Instance.Players[UserManager.Instance.Username].Position;
         }

@@ -1,10 +1,12 @@
-﻿using GameServer.Utils;
+﻿using GameServer.Physics;
+using GameServer.Utils;
 using LibNetworking.Messages.Client;
 using LibNetworking.Messages.Server;
 using LibNetworking.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Timers;
@@ -46,6 +48,8 @@ namespace GameServer.Game
         private readonly Dictionary<string, ServerPlayer> _players = new Dictionary<string, ServerPlayer>();
         private readonly List<ServerBullet> _bullets = new List<ServerBullet>();
 
+        private PhysicsManager _physicsManager = new PhysicsManager();
+
         #endregion
 
         public GameManager()
@@ -62,7 +66,10 @@ namespace GameServer.Game
         {
 
             foreach (var player in players)
+            {
                 _players.Add(player.Key, new ServerPlayer(player.Value.State, this));
+                _physicsManager.RegisterItem(_players[player.Key].Id, new Vector2(100));
+            }
 
             Started = true;
 
@@ -85,20 +92,20 @@ namespace GameServer.Game
 
             // Entity updates
 
-                // Players
+            // Players
             foreach (var player in _players.Values)
                 player.Update(_fixedDeltaTime);
 
-                // Bullets
+            // Bullets
             foreach (var bullet in _bullets.ToArray())
                 if (!bullet.ShouldDestroy)
                     bullet.Update(_fixedDeltaTime);
                 else
-                    _bullets.Remove(bullet);
+                    RemoveBullet(bullet);
 
-                // TODO: Enemies
+            // TODO: Enemies
 
-            // TODO: Physics
+            DoPhysics();
 
             if (_currentTick % SNAPSHOT_TICK_RATE_DIVIDE == 0)
                 SendSnapshot();
@@ -106,9 +113,53 @@ namespace GameServer.Game
             _currentTick++;
         }
 
+        private void DoPhysics()
+        {
+            var playerGroup = new Dictionary<Guid, Vector2>();
+            foreach (var p in _players)
+                playerGroup.Add(p.Value.Id, p.Value.Position);
+
+
+            var enemiesGroup = new Dictionary<Guid, Vector2>();
+            foreach (var b in _bullets)
+                enemiesGroup.Add(b.Id, b.Position);
+
+            //foreach (var e in _enemies)
+            //    enemiesGroup.Add(e.Id, e.Position);
+
+            var collisions = _physicsManager.ComputeCollisions(playerGroup, enemiesGroup);
+
+            foreach (var col in collisions)
+            {
+                var bullet = _bullets.FirstOrDefault(elt => elt.Id == col.Value);
+                var player = _players.Values.FirstOrDefault(elt => elt.Id == col.Key);
+                //var enemy = _enemies.FirstOrDefault(elt => elt.Id == col.Value);
+
+                if (bullet != null)
+                {
+                    bullet.ShouldDestroy = true;
+                    Console.WriteLine($"Hitting {player.Name}");
+                    // damage col.Value (enemy)
+                }
+                else if (player != null)
+                {
+                    // take damage (got hit by smt)
+                }
+            }
+
+        }
+
         public void AddBullet(Vector2 position)
         {
-            _bullets.Add(new ServerBullet(Guid.NewGuid(), position));
+            var bullet = new ServerBullet(Guid.NewGuid(), position);
+            _bullets.Add(bullet);
+            _physicsManager.RegisterItem(bullet.Id, new Vector2(32, 48));
+        }
+
+        public void RemoveBullet(ServerBullet bullet)
+        {
+            _bullets.Remove(bullet);
+            _physicsManager.UnregisterItem(bullet.Id);
         }
 
         public void PlayerLeft(string player)
@@ -125,7 +176,8 @@ namespace GameServer.Game
             {
                 new ServerGameSyncClockMessage(client.Socket, _currentTick + (_currentTick - tick + 20)).Send();
                 return;
-            } else if (tick >= _currentTick + 50)
+            }
+            else if (tick >= _currentTick + 50)
             {
                 new ServerGameSyncClockMessage(client.Socket, (_currentTick + tick) / 2).Send();
                 return;

@@ -53,7 +53,10 @@ namespace GameServer.Game
             }
 
             if (p != Vector2.Zero)
+            {
                 Position += p * fixedDeltaTime * speed;
+                Position = Vector2.Clamp(Position, Vector2.Zero, new Vector2(1920, 1080) - new Vector2(100)); // - player size
+            }
         }
     }
 }
