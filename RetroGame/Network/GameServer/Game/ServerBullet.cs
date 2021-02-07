@@ -4,25 +4,17 @@ using System.Numerics;
 
 namespace GameServer.Game
 {
-    class ServerBullet
+    class ServerBullet : Bullet
     {
-        private Bullet _bullet;
-        public Vector2 Position;
         public bool ShouldDestroy;
 
-        public ServerBullet(Bullet bullet, Vector2 position)
-        {
-            _bullet = bullet;
-            Position = position;
-        }
+        public ServerBullet(Guid id, Vector2 position)
+            : base(id, position) { }
 
         public void Update(float fixedDeltaTime)
         {
             if (Position.X < 2000)
-            {
-                Position.X += fixedDeltaTime * Bullet.SPEED;
-                _bullet.Position = Position;
-            }
+                Position = new Vector2(Position.X + fixedDeltaTime * SPEED, Position.Y);
             else
                 ShouldDestroy = true;
         }

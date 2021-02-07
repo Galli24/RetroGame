@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace LibNetworking.Models
 {
-    [ProtoContract(SkipConstructor = true)]
+    [ProtoContract(IgnoreUnknownSubTypes = true, SkipConstructor = true)]
     public class Player
     {
         #region Action handling
@@ -73,6 +73,12 @@ namespace LibNetworking.Models
         // Parameters-less constructor for ProtoBuf
 
         public Player() { }
+
+        public Player(Player player)
+        {
+            Name = player.Name;
+            Position = player.Position;
+        }
 
         // Server constructors
 

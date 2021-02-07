@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace LibNetworking.Models
 {
-    [ProtoContract(SkipConstructor = true)]
+    [ProtoContract(IgnoreUnknownSubTypes = true, SkipConstructor = true)]
     public class Bullet
     {
         #region Members
@@ -47,6 +47,12 @@ namespace LibNetworking.Models
         // Parameters-less constructor for ProtoBuf
 
         public Bullet() { }
+
+        public Bullet(Bullet bullet)
+        {
+            Id = bullet.Id;
+            Position = bullet.Position;
+        }
 
         // Server constructors
 

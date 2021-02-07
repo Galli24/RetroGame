@@ -37,13 +37,14 @@ namespace GameServer.Game
         const float PHYSICS_TICK_RATE = 66;
         const float SNAPSHOT_TICK_RATE_DIVIDE = 3;
         private readonly TimeSpan _physicsInterval = TimeSpan.FromSeconds(1 / PHYSICS_TICK_RATE);
-        private Timer _gameLoopTimer;
+        private readonly float _fixedDeltaTime;
+        private readonly Timer _gameLoopTimer;
         private long _currentTick;
 
         public bool Started { get; private set; }
 
-        private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
-        private readonly Dictionary<Bullet, ServerBullet> _bullets = new Dictionary<Bullet, ServerBullet>();
+        private readonly Dictionary<string, ServerPlayer> _players = new Dictionary<string, ServerPlayer>();
+        private readonly List<ServerBullet> _bullets = new List<ServerBullet>();
 
         #endregion
 
@@ -54,13 +55,14 @@ namespace GameServer.Game
             _gameLoopTimer = new Timer();
             _gameLoopTimer.Elapsed += (_, __) => GameLoop();
             _gameLoopTimer.Interval = _physicsInterval.TotalMilliseconds;
+            _fixedDeltaTime = (float)_physicsInterval.TotalSeconds;
         }
 
         public void Start(Dictionary<string, Player> players)
         {
 
             foreach (var player in players)
-                _players.Add(player.Key, new Player(player.Value.State));
+                _players.Add(player.Key, new ServerPlayer(player.Value.State, this));
 
             Started = true;
 
@@ -81,15 +83,20 @@ namespace GameServer.Game
             // Handle packets received since last tick(s)
             HandleMessages(_currentTick);
 
-            // Player inputs
-            HandlePlayerActions((float)_physicsInterval.TotalSeconds);
+            // Entity updates
 
-            // Bullets
+                // Players
+            foreach (var player in _players.Values)
+                player.Update(_fixedDeltaTime);
+
+                // Bullets
             foreach (var bullet in _bullets.ToArray())
-                if (!bullet.Value.ShouldDestroy)
-                    bullet.Value.Update((float)_physicsInterval.TotalSeconds);
+                if (!bullet.ShouldDestroy)
+                    bullet.Update(_fixedDeltaTime);
                 else
-                    _bullets.Remove(bullet.Key);
+                    _bullets.Remove(bullet);
+
+                // TODO: Enemies
 
             // TODO: Physics
 
@@ -99,51 +106,9 @@ namespace GameServer.Game
             _currentTick++;
         }
 
-        private void HandlePlayerActions(float deltaTime)
+        public void AddBullet(Vector2 position)
         {
-            foreach (var player in _players.Values)
-            {
-                var p = Vector2.Zero;
-                var speed = Player.SPEED;
-                foreach (var action in player.ActionStates.Where(action => action.Value))
-                {
-                    switch (action.Key)
-                    {
-                        case Player.Actions.MOVE_LEFT:
-                            p.X -= 1;
-                            break;
-                        case Player.Actions.MOVE_RIGHT:
-                            p.X += 1;
-                            break;
-                        case Player.Actions.MOVE_DOWN:
-                            p.Y -= 1;
-                            break;
-                        case Player.Actions.MOVE_UP:
-                            p.Y += 1;
-                            break;
-                        case Player.Actions.BOOST:
-                            speed = 1000;
-                            break;
-                        case Player.Actions.SHOOT:
-                            if (player.ShootCooldown <= 0)
-                            {
-                                player.ShootCooldown = Player.SHOOT_COOLDOWN_TIME;
-                                var bulletGuid = Guid.NewGuid();
-                                var bulletPos = new Vector2(player.Position.X, player.Position.Y);
-                                var bullet = new Bullet(bulletGuid, bulletPos);
-                                _bullets.Add(bullet, new ServerBullet(bullet, bulletPos));
-                            }
-                            else
-                            {
-                                player.ShootCooldown -= deltaTime;
-                            }
-                            break;
-                    }
-                }
-
-                if (p != Vector2.Zero)
-                    player.Position += p * deltaTime * speed;
-            }
+            _bullets.Add(new ServerBullet(Guid.NewGuid(), position));
         }
 
         public void PlayerLeft(string player)
@@ -213,7 +178,7 @@ namespace GameServer.Game
         private void SendSnapshot()
         {
             var playerList = _players.Values.ToArray();
-            var bulletList = _bullets.Keys.ToArray();
+            var bulletList = _bullets.ToArray();
 
             foreach (var player in _players.Values)
                 new ServerGameSyncSnapshotMessage(player.State.Socket, _currentTick, playerList, bulletList).Send();
